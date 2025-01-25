@@ -1,0 +1,7 @@
+# Ignore Expo related files and folders
+.expo
+.expo-shared/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+node_modules
