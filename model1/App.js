@@ -46,6 +46,26 @@ import Entertainment from './screens/Model2/Entertainment/EntertainmentM2';
 import NewsChannelsM2 from './screens/Model2/Entertainment/NewsChannelsM2';
 import NewsPapersM2 from './screens/Model2/Entertainment/NewsPapersM2';
 import GamesM2 from './screens/Model2/Entertainment/GamesM2';
+import Setup3 from './screens/Model3/SetupScreens/setUp';
+import SetUp23 from './screens/Model3/SetupScreens/SetUp2';
+import SetUp33 from './screens/Model3/SetupScreens/SetUp3';
+import SetUp43 from './screens/Model3/SetupScreens/SetUp4';
+import Premissions13 from './screens/Model3/PermissionsScreens/Premissions1';
+import Premissions23 from './screens/Model3/PermissionsScreens/Premissions2';
+import Premissions33 from './screens/Model3/PermissionsScreens/Premissions3';
+import Home13 from './screens/Model3/HomeScreens/Home1';
+import Home23 from './screens/Model3/HomeScreens/Home2';
+import BankPage3 from './screens/Model3/Bank/BankScreen';
+import Bank3 from './screens/Model3/Bank/BankScreen';
+import ContactBankerScreen3 from './screens/Model3/Bank/ContactBankerScreen';
+import ContactBanker3 from './screens/Model3/Bank/ContactBankerScreen';
+import Transaction3 from './screens/Model3/Bank/TransferScreen';
+import Emergency3 from './screens/Model3/EmergencyScreens/Emergency';
+import Health3 from './screens/Model3/HealthScreens/Health';
+import Results3 from './screens/Model3/HealthScreens/Results';
+import Schedule3 from './screens/Model3/HealthScreens/Schedule';
+import Supermarket3 from './screens/Model3/SupermarketScreens/Supermarket';
+import EditCart3 from './screens/Model3/SupermarketScreens/EditCart';
 
 const Stack = createStackNavigator();
 
@@ -268,6 +288,60 @@ export default function App() {
         </Stack.Screen>
         <Stack.Screen name="GamesM2" options={{gestureEnabled: false,headerLeft: () => null,headerShown: false}}>
           {(props) => <GamesM2 {...props} handleGlobalClick={handleGlobalClick} />}
+        </Stack.Screen>
+        <Stack.Screen name="Setup3" options={{headerShown: false}}>
+          {(props) => <Setup3 {...props} handleGlobalClick={handleGlobalClick}  />}
+        </Stack.Screen>
+        <Stack.Screen name="SetUp23" options={{headerShown: false}}>
+          {(props) => <SetUp23 {...props} handleGlobalClick={handleGlobalClick}  />}
+        </Stack.Screen>
+        <Stack.Screen name="SetUp33" options={{headerShown: false}}>
+          {(props) => <SetUp33 {...props} handleGlobalClick={handleGlobalClick}  />}
+        </Stack.Screen>
+        <Stack.Screen name="SetUp43" options={{headerShown: false}}>
+          {(props) => <SetUp43 {...props} handleGlobalClick={handleGlobalClick}  />}
+        </Stack.Screen>
+        <Stack.Screen name="Premissions13" options={{headerShown: false}}>
+          {(props) => <Premissions13 {...props} handleGlobalClick={handleGlobalClick} />}
+        </Stack.Screen>
+        <Stack.Screen name="Premissions23" options={{headerShown: false}}>
+          {(props) => <Premissions23 {...props} handleGlobalClick={handleGlobalClick} />}
+        </Stack.Screen>
+        <Stack.Screen name="Premissions33" options={{headerShown: false}}>
+          {(props) => <Premissions33 {...props} handleGlobalClick={handleGlobalClick} />}
+        </Stack.Screen>
+        <Stack.Screen name="Home13" options={{headerShown: false}}>
+          {(props) => <Home13 {...props} handleGlobalClick={handleGlobalClick} />}
+        </Stack.Screen>
+        <Stack.Screen name="Home23" options={{headerShown: false}}>
+          {(props) => <Home23 {...props} handleGlobalClick={handleGlobalClick} />}
+        </Stack.Screen>
+        <Stack.Screen name="Bank3" options={{headerShown: false}}>
+          {(props) => <Bank3 {...props} handleGlobalClick={handleGlobalClick} />}
+        </Stack.Screen>
+        <Stack.Screen name="ContactBanker3" options={{headerShown: false}}>
+          {(props) => <ContactBanker3 {...props} handleGlobalClick={handleGlobalClick} />}
+        </Stack.Screen>
+        <Stack.Screen name="Transaction3" options={{headerShown: false}}>
+          {(props) => <Transaction3 {...props} handleGlobalClick={handleGlobalClick} />}
+        </Stack.Screen>
+        <Stack.Screen name="Emergency3" options={{headerShown: false}}>
+          {(props) => <Emergency3 {...props} handleGlobalClick={handleGlobalClick} />}
+        </Stack.Screen>
+        <Stack.Screen name="Health3" options={{headerShown: false}}>
+          {(props) => <Health3 {...props} handleGlobalClick={handleGlobalClick} />}
+        </Stack.Screen>
+        <Stack.Screen name="Results3" options={{headerShown: false}}>
+          {(props) => <Results3 {...props} handleGlobalClick={handleGlobalClick} />}
+        </Stack.Screen>
+        <Stack.Screen name="Schedule3" options={{headerShown: false}}>
+          {(props) => <Schedule3 {...props} handleGlobalClick={handleGlobalClick} />}
+        </Stack.Screen>
+        <Stack.Screen name="Supermarket3" options={{headerShown: false}}>
+          {(props) => <Supermarket3 {...props} handleGlobalClick={handleGlobalClick} />}
+        </Stack.Screen>
+        <Stack.Screen name="EditCart3" options={{headerShown: false}}>
+          {(props) => <EditCart3 {...props} handleGlobalClick={handleGlobalClick} />}
         </Stack.Screen>
       </Stack.Navigator>
         <BottomTaskTimer

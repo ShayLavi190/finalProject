@@ -11,7 +11,7 @@ const Intro = ({ navigation, handleGlobalClick }) => {
   const models = [
     { label: 'מודל 1', route: 'Setup' },
     { label: 'מודל 2', route: 'SetUp' },
-    { label: 'מודל 3', route: 'Model3' },
+    { label: 'מודל 3', route: 'Setup3' },
   ];
 
   return (
