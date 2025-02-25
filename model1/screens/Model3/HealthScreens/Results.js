@@ -7,8 +7,10 @@ import {
   Modal,
   Image,
   ScrollView,
+  Alert
 } from "react-native";
 import * as Animatable from "react-native-animatable";
+import LottieView from "lottie-react-native";
 
 const Results3 = ({ navigation,handleGlobalClick }) => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -52,7 +54,9 @@ const Results3 = ({ navigation,handleGlobalClick }) => {
     setModalVisible(true);
     handleGlobalClick(`פתיחת מודאל עבור: ${title}`);
   };
-
+  const handleLottiePress = () => {
+      Alert.alert("play video")
+    }
   const closeModal = () => {
     animatableModalRef.current
       .animate("fadeOutDown", 500)
@@ -97,6 +101,16 @@ const Results3 = ({ navigation,handleGlobalClick }) => {
             onPress={() => handleNavigate("Health3", "back")}
           >
             <Text style={styles.forwardButtonText}>שירותי בריאות</Text>
+          </TouchableOpacity>
+        </View>
+        <View>
+          <TouchableOpacity style={styles.lottieButton} onPress={handleLottiePress}>
+            <LottieView
+              source={require("/Users/shaylavi/Desktop/final_project/m1/model1/screens/Model3/SetupScreens/robot.json")}
+              autoPlay
+              loop
+              style={styles.lottie}
+            />
           </TouchableOpacity>
         </View>
         <Modal visible={modalVisible} transparent animationType="none">
@@ -240,7 +254,17 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
   },
-  
+  lottieButton: {
+    position: "absolute",
+    top: 0,
+    right: 110,
+    width: 300,
+    height: 300,
+  },
+  lottie: {
+    width: "100%",
+    height: "100%",
+  }
 });
 
 export default Results3;

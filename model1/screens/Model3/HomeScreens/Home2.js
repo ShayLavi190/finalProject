@@ -16,10 +16,10 @@ const Home23 = ({ navigation }) => {
   const animatableRef = useRef(null);
 
   const buttons = [
-    { label: "בידור", route: "EntertainmentM2", backgroundColor: "#a39193" },
-    { label: 'עידכון פרטים אישיים', route: "SetUp", backgroundColor: "#8db1fa" },
-    { label: 'הרשאות פרטיות', route: "Premissions1", backgroundColor: "#35223c" },
-    { label: "ביצועים", route: "PerformanceM2", backgroundColor: "#9dbda4" },
+    { label: "בידור", route: "Entertainment3", backgroundColor: "#a39193" },
+    { label: 'עידכון פרטים אישיים', route: "Setup3", backgroundColor: "#8db1fa" },
+    { label: 'הרשאות פרטיות', route: "Premissions13", backgroundColor: "#35223c" },
+    { label: "ביצועים", route: "Performance3", backgroundColor: "#9dbda4" },
   ];
 
   const handleNavigate = (route) => {

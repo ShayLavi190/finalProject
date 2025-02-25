@@ -11,7 +11,7 @@ import { useUser } from "../../Model2/userContext";
 import * as Animatable from "react-native-animatable";
 import LottieView from "lottie-react-native";
 
-const Supermarket3 = ({ navigation, handleGlobalClick}) => {
+const Entertainment3 = ({ navigation,handleGlobalClick }) => {
   const { user } = useUser();
   const animatableRef = useRef(null);
 
@@ -26,8 +26,8 @@ const Supermarket3 = ({ navigation, handleGlobalClick}) => {
         .then(() => navigation.navigate(route));
     }
   };
-  const handelBank = () => {
-    Alert.alert("הסל הוזמן בהצלחה");
+  const handelConversation = () => {
+    Alert.alert("דוח שיח התחיל");
     handleGlobalClick();
     }
   const handleLottiePress = () => {
@@ -42,29 +42,31 @@ const Supermarket3 = ({ navigation, handleGlobalClick}) => {
     >
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.titleContainer}>
-          <Text style={styles.title}>ברוך הבא לשירותי הסופרמרקט</Text>
+          <Text style={styles.title}>ברוך הבא לשירותי הבידור</Text>
         </View>
         <View>
           <Text style={styles.subtitle}>
-            כדי לנווט בין השירותים השונים לשירותים השונים לחץ על לחצן יעודי. אם אין באפשרותכם להשתמש בשירות זה נא לעדכן פרטיכם האישיים וההרשאות המתאימות
+            כדי לנווט בין השירותים השונים לחץ על הכפתור המתאים לשירות שברצונך להשתמש בו
           </Text>
         </View>
-        <TouchableOpacity style={[styles.button, styles.forwardButton,{backgroundColor:'#52bfbf',marginTop:'150'}]} onPress={handelBank}>
-            <Text style={styles.forwardButtonText}>הזמנת סל קיים</Text>
-        </TouchableOpacity>
         <View style={styles.buttonRow}>
-        <TouchableOpacity
-            style={[styles.button, styles.forwardButton,{backgroundColor:'orange'}]}
-            onPress={() => handleNavigate("EditCart3", "forward")}
-          >
-            <Text style={styles.forwardButtonText}>עריכת סל קיים</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.button, styles.forwardButton,{backgroundColor:'green'}]}
-            onPress={() => handleNavigate("Home13", "back")}
-          >
-            <Text style={styles.forwardButtonText}>מסך בית</Text>
-          </TouchableOpacity>
+        <TouchableOpacity style={[styles.button, styles.forwardButton,{backgroundColor:'#52bfbf',marginTop:'70'}]} onPress={handelConversation}>
+            <Text style={styles.forwardButtonText}>דו שיח</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.button, styles.forwardButton,{backgroundColor:'#2D4B73',marginTop:'70'}]} onPress={() => handleNavigate("NewsChannels3", "forward")}>
+            <Text style={styles.forwardButtonText}>ערוצי חדשות</Text>
+        </TouchableOpacity>
+        </View>
+        <View style={styles.buttonRow}>
+        <TouchableOpacity style={[styles.button, styles.forwardButton,{backgroundColor:'#F2AB27',marginTop:'70'}]} onPress={() => handleNavigate("NewsPapers3", "forward")}>
+        <Text style={styles.forwardButtonText}>עיתונים</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.button, styles.forwardButton,{backgroundColor:'red',marginTop:'70'}]} onPress={() => handleNavigate("Games3", "forward")}>
+        <Text style={styles.forwardButtonText}>משחקים</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.button, styles.forwardButton,{backgroundColor:'green',marginTop:'70'}]} onPress={() => handleNavigate("Home13", "back")}>
+        <Text style={styles.forwardButtonText}>מסך בית</Text>
+        </TouchableOpacity>
         </View>
         <View>
           <TouchableOpacity style={styles.lottieButton} onPress={handleLottiePress}>
@@ -105,7 +107,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     width: "100%",
-    marginTop: 50,
+    marginTop: 10,
   },
   button: {
     paddingVertical: 30,
@@ -114,13 +116,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     elevation: 5,
     marginBottom: 50,
-    marginTop: 20,
+    marginTop: 10,
   },
   forwardButton: {
     paddingVertical: 15,
     paddingHorizontal: 30,
     borderRadius: 10,
     width: 230,
+    height:70
   },
   forwardButtonText: {
     color: "#fff",
@@ -129,7 +132,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   subtitle: {
-    fontSize: 30,
+    fontSize: 38,
     color: "#555",
     textAlign: "center",
     marginTop: 20,
@@ -137,7 +140,7 @@ const styles = StyleSheet.create({
   },
   lottieButton: {
     position: "absolute",
-    top:10,
+    bottom: -300,
     right: 110,
     width: 300,
     height: 300,
@@ -148,4 +151,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default Supermarket3;
+export default Entertainment3;

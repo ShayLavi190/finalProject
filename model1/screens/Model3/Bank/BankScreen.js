@@ -46,8 +46,7 @@ const Bank3 = ({ navigation,handleGlobalClick }) => {
         </View>
         <View>
           <Text style={styles.subtitle}>
-            כדי לנווט בין השירותים השונים ניתן לעבור למסך העברה משם לשאר השירותים
-            שניתנים. למצב חשבון ניתן ללחוץ על המקש במסך זה
+          כדי לנווט בין השירותים השונים לחץ על הכפתור המתאים לשירות שברצונך להשתמש בו
           </Text>
         </View>
         <View style={styles.buttonRow}>
