@@ -66,6 +66,11 @@ import Results3 from './screens/Model3/HealthScreens/Results';
 import Schedule3 from './screens/Model3/HealthScreens/Schedule';
 import Supermarket3 from './screens/Model3/SupermarketScreens/Supermarket';
 import EditCart3 from './screens/Model3/SupermarketScreens/EditCart';
+import Performance3 from './screens/Model3/Performance/Performance3';
+import Entertainment3 from './screens/Model3/Entertainment/Entertainment3';
+import Games3 from './screens/Model3/Entertainment/Games3';
+import NewsChannels3 from './screens/Model3/Entertainment/NewsChannels3';
+import NewsPapers3 from './screens/Model3/Entertainment/NewsPapers3';
 
 const Stack = createStackNavigator();
 
@@ -342,6 +347,21 @@ export default function App() {
         </Stack.Screen>
         <Stack.Screen name="EditCart3" options={{headerShown: false}}>
           {(props) => <EditCart3 {...props} handleGlobalClick={handleGlobalClick} />}
+        </Stack.Screen>
+        <Stack.Screen name="Performance3" options={{headerShown: false}}>
+          {(props) => <Performance3 {...props} handleGlobalClick={handleGlobalClick} />}
+        </Stack.Screen>
+        <Stack.Screen name="Entertainment3" options={{headerShown: false}}>
+          {(props) => <Entertainment3 {...props} handleGlobalClick={handleGlobalClick} />}
+        </Stack.Screen>
+        <Stack.Screen name="Games3" options={{headerShown: false}}>
+          {(props) => <Games3 {...props} handleGlobalClick={handleGlobalClick} />}
+        </Stack.Screen>
+        <Stack.Screen name="NewsChannels3" options={{headerShown: false}}>
+          {(props) => <NewsChannels3 {...props} handleGlobalClick={handleGlobalClick} />}
+        </Stack.Screen>
+        <Stack.Screen name="NewsPapers3" options={{headerShown: false}}>
+          {(props) => <NewsPapers3 {...props} handleGlobalClick={handleGlobalClick} />}
         </Stack.Screen>
       </Stack.Navigator>
         <BottomTaskTimer
