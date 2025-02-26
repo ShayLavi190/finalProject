@@ -236,6 +236,10 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     width: 300,
     marginTop: 50,
+    shadowColor: "black",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 2
   },
   forwardButtonText: {
     color: "#fff",

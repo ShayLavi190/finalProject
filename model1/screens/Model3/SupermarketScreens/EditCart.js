@@ -212,6 +212,10 @@ const styles = StyleSheet.create({
     width:'85%',
     borderColor: 'gray',
     borderRadius: 5,
+    shadowColor: "black",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 2,
   },
   dropdownContainer: {
     width: '70%',
@@ -242,6 +246,10 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     alignItems: 'center',
     marginBottom: 10,
+    shadowColor: "black",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 2
   },
   addButtonText: {
     color: '#fff',
@@ -271,6 +279,10 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     marginLeft: 15,
+    shadowColor: "black",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 2
   },
   removeButtonText: {
     color: '#fff',
@@ -283,6 +295,10 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     paddingBottom: 200, 
+    shadowColor: "black",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 1,
   },
   checkoutButton: {
     backgroundColor: '#5cb85c',
@@ -292,11 +308,16 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     marginHorizontal: 5,
     marginTop: 20,
+    shadowColor: "black",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 2,
   },
   checkoutButtonText: {
     color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
+    
   },
   buttonRow: {
     flexDirection: 'row',
@@ -308,6 +329,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     borderRadius: 10,
     width: 200,
+    shadowColor: "black",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 2
   },
   forwardButtonText: {
     color: '#fff',

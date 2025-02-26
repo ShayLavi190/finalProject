@@ -99,6 +99,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom:30,
     elevation: 5,
+    shadowColor: "black",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 2
   },
   buttonText: {
     color: '#fff',
@@ -119,6 +123,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     borderRadius: 10,
     width: 300,
+    shadowColor: "black",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 2
   },
   forwardButtonText: {
     color: "#fff",

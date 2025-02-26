@@ -116,6 +116,10 @@ const styles = StyleSheet.create({
     elevation: 5,
     marginBottom: 50,
     marginTop: 20,
+    shadowColor: "black",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 2,
   },
   buttonText: {
     color: "#fff",
@@ -130,6 +134,10 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     width: 300,
     marginTop: 50,
+    shadowColor: "black",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 2,
   },
   forwardButtonText: {
     color: "#fff",

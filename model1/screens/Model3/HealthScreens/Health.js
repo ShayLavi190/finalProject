@@ -120,13 +120,21 @@ const styles = StyleSheet.create({
     elevation: 5,
     marginBottom: 30,
     marginTop: 10,
+    shadowColor: "black",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 2
   },
   forwardButton: {
     paddingVertical: 15,
     paddingHorizontal: 30,
     borderRadius: 10,
     width: 230,
-    height:70
+    height:70,
+    shadowColor: "black",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 2
   },
   forwardButtonText: {
     color: "#fff",
