@@ -61,7 +61,7 @@ const Games3 = ({ handleGlobalClick,navigation }) => {
     <Animatable.View ref={animatableRef} style={{ flex: 1 }} animation="fadeInDown" duration={2000}>
     <View style={styles.container}>
       {isWebViewVisible ? (
-          <Animatable.View ref={modalRef} style={{ flex: 1 }} animation="fadeIn" duration={1000}>
+          <Animatable.View ref={modalRef} style={{ flex: 1,zIndex:10 }} animation="fadeIn" duration={1000}>
             <View style={styles.webviewContainer}>
                 <TouchableOpacity style={styles.closeButton} onPress={closeWebView}>
                 <Text style={styles.closeButtonText}>סגור</Text>
@@ -235,6 +235,10 @@ const styles = StyleSheet.create({
     right: 510,
     width: 300,
     height: 300,
+    shadowColor: "black",
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.3,
+    shadowRadius: 2
   },
   lottie: {
     width: "100%",

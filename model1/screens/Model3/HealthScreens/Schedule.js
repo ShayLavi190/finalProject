@@ -22,7 +22,7 @@ const Schedule3 = ({ navigation,handleGlobalClick }) => {
   const { user, updateUser } = useUser();
   const [time, setTime] = useState(new Date());
   const [date, setDate] = useState(new Date());
-  const [type, setType] = useState(null);
+  const [type, setType] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
   const [explanation, setExplanation] = useState("");
   const [iconAnimation, setIconAnimation] = useState("");
@@ -367,6 +367,10 @@ const styles = StyleSheet.create({
     right: 110,
     width: 300,
     height: 300,
+    shadowColor: "black",
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.3,
+    shadowRadius: 2
   },
   lottie: {
     width: "100%",

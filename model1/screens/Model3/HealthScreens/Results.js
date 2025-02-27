@@ -272,6 +272,10 @@ const styles = StyleSheet.create({
     right: 110,
     width: 300,
     height: 300,
+    shadowColor: "black",
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.3,
+    shadowRadius: 2
   },
   lottie: {
     width: "100%",

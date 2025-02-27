@@ -12,10 +12,12 @@ import products from '../../SuperMarket/products';
 import * as Animatable from 'react-native-animatable';
 import DropDownPicker from "react-native-dropdown-picker";
 import LottieView from "lottie-react-native";
+import { useUser } from "../../Model2/userContext";
 
 const EditCart3 = ({ navigation,handleGlobalClick }) => {
+  const { user, updateUser } = useUser(); 
   const animatableRef = useRef(null);
-  const [cartItems, setCartItems] = useState([
+  const [cartItems, setCartItems] = user.cart ? useState(user.cart) : useState([
     { id: '1', name: 'חלב', quantity: 1 },
     { id: '2', name: 'לחם', quantity: 2 },
     { id: '3', name: 'ביצים', quantity: 1 },
@@ -69,9 +71,9 @@ const EditCart3 = ({ navigation,handleGlobalClick }) => {
   };
 
   const handleCheckout = () => {
-    Alert.alert('הצלחה', 'העגלה נשלחה לתשלום!');
-    setCartItems([]);
-    handleGlobalClick('תשלום בוצע');
+    Alert.alert('הצלחה', 'העגלה נשמרה בהצלחה !');
+    updateUser({ ...user, cart: cartItems });
+    handleGlobalClick('עריכה בוצעה');
   };
   const handleNavigate = (route) => {
     animatableRef.current
@@ -156,7 +158,7 @@ const EditCart3 = ({ navigation,handleGlobalClick }) => {
 
   {cartItems.length > 0 && (
     <TouchableOpacity style={styles.checkoutButton} onPress={handleCheckout}>
-      <Text style={styles.checkoutButtonText}>לתשלום</Text>
+      <Text style={styles.checkoutButtonText}>שמירה</Text>
     </TouchableOpacity>
   )}
           <View>
@@ -352,6 +354,10 @@ const styles = StyleSheet.create({
     left:0 ,
     width: 300,
     height: 300,
+    shadowColor: "black",
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.3,
+    shadowRadius: 2
   },
   lottie: {
     width: "100%",

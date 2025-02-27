@@ -142,7 +142,7 @@ const ContactBanker3 = ({ navigation,handleGlobalClick }) => {
                 style={[styles.button, styles.sendBtn]}
                 onPress={handelSend}
                 >
-                <Text style={styles.buttonText}>ביצוע העברה</Text>
+                <Text style={styles.buttonText}>שליחת בקשה</Text>
                 </TouchableOpacity>
           </View>
           {/* Buttons */}
@@ -327,6 +327,10 @@ const styles = StyleSheet.create({
     right: 110,
     width: 300,
     height: 300,
+    shadowColor: "black",
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.3,
+    shadowRadius: 2
   },
   lottie: {
     width: "100%",

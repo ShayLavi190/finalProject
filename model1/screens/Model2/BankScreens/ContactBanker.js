@@ -139,7 +139,7 @@ const ContactBankerM2 = ({ navigation,handleGlobalClick }) => {
                 style={[styles.button, styles.sendBtn]}
                 onPress={handelSend}
                 >
-                <Text style={styles.buttonText}>ביצוע העברה</Text>
+                <Text style={styles.buttonText}>שליחת בקשה</Text>
                 </TouchableOpacity>
           </View>
           {/* Buttons */}

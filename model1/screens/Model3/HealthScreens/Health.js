@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     shadowColor: "black",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
-    shadowRadius: 2
+    shadowRadius: 2,
   },
   forwardButton: {
     paddingVertical: 15,
@@ -155,6 +155,10 @@ const styles = StyleSheet.create({
     right: 110,
     width: 300,
     height: 300,
+    shadowColor: "black",
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.3,
+    shadowRadius: 2
   },
   lottie: {
     width: "100%",
