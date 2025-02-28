@@ -11,7 +11,7 @@ import { useUser } from "../../Model2/userContext";
 import * as Animatable from "react-native-animatable";
 import LottieView from "lottie-react-native";
 
-const Home13 = ({ navigation }) => {
+const Home13 = ({ navigation,handleGlobalClick }) => {
   const { user } = useUser();
   const animatableRef = useRef(null);
 
@@ -28,6 +28,7 @@ const Home13 = ({ navigation }) => {
       .then(() => navigation.navigate(route));
   };
   const handleLottiePress = () => {
+    handleGlobalClick();
     Alert.alert("play video")
   }
   return (

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -11,59 +11,22 @@ import {
 } from "react-native";
 import RNPickerSelect from "react-native-picker-select";
 import Icon from "react-native-vector-icons/MaterialIcons";
-import { doc, setDoc, getDoc } from "firebase/firestore";
-import { db } from "../server/firebase";
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { encryptData, decryptData } from "../server/utils";
+import { useUser } from "./Model2/userContext";
+
 
 const SetupScreen = ({ navigation,handleGlobalClick }) => {
-  const [name, setName] = useState("");
-  const [id, setId] = useState("");
-  const [address, setAddress] = useState("");
-  const [phone, setPhone] = useState("");
-  const [emergencyPhone, setEmergencyPhone] = useState("");
-  const [bankAccountNumber, setBankAccountNumber] = useState("");
-  const [bankBranchNumber, setBankBranchNumber] = useState("");
-  const [selectedBank, setSelectedBank] = useState("");
-  const [selectedhealthFund, setSelectedhealthFund] = useState("");
-  const [healthFundAccountNumber, setHealthFundAccountNumber] = useState("");
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const userId = await AsyncStorage.getItem("currentUserId");
-        if (userId) {
-          const userRef = doc(db, "users", userId);
-          const userSnapshot = await getDoc(userRef);
+  const { user, updateUser } = useUser(); 
+  const [name, setName] = useState(user.name ? user.name : "");
+  const [id, setId] = useState(user.id ? user.id : "");
+  const [address, setAddress] = useState(user.address ? user.address : "");
+  const [phone, setPhone] = useState(user.phone ? user.phone : "");
+  const [emergencyPhone, setEmergencyPhone] = useState(user.emergencyPhone ? user.emergencyPhone : "");
+  const [bankAccountNumber, setBankAccountNumber] = useState(user.bankAccountNumber ? user.bankAccountNumber : "");
+  const [bankBranchNumber, setBankBranchNumber] = useState(user.bankBranchNumber ? user.bankBranchNumber : "");
+  const [selectedBank, setSelectedBank] = useState(user.selectedBank ? user.selectedBank : "");
+  const [selectedhealthFund, setSelectedhealthFund] = useState(user.selectedhealthFund ? user.selectedhealthFund : "");
+  const [healthFundAccountNumber, setHealthFundAccountNumber] = useState(user.healthFundAccountNumber ? user.healthFundAccountNumber : "");
   
-          if (userSnapshot.exists()) {
-            const userData = userSnapshot.data();
-            const secretKey = "model1";
-            if (userData.encryptedData) {
-              const decryptedData = decryptData(userData.encryptedData, secretKey);
-              setName(decryptedData.name || "");
-              setAddress(decryptedData.address || "");
-              setPhone(decryptedData.phone || "");
-              setEmergencyPhone(decryptedData.emergencyPhone || "");
-              setBankAccountNumber(decryptedData.bankAccountNumber || "");
-              setBankBranchNumber(decryptedData.bankBranchNumber || "");
-              setSelectedBank(decryptedData.selectedBank || "");
-              setSelectedhealthFund(decryptedData.selectedhealthFund || "");
-              setHealthFundAccountNumber(decryptedData.healthFundAccountNumber || "");
-            }
-            setId(userData.id || ""); 
-          }
-        }
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-        Alert.alert("Error", "Failed to fetch user data.");
-      }
-    };
-  
-    fetchUserData();
-  }, []);
-  
-
   const validateInputs = () => {
     const errors = [];
 
@@ -88,42 +51,21 @@ const SetupScreen = ({ navigation,handleGlobalClick }) => {
 
   const handleSave = async () => {
     if (!validateInputs()) return;
-    const secretKey = "model1"; 
-    const encryptedData = encryptData(
-      {
+    else {
+      updateUser({
         name,
+        id,
         address,
         phone,
         emergencyPhone,
+        selectedBank,
         bankAccountNumber,
         bankBranchNumber,
-        selectedBank,
         selectedhealthFund,
         healthFundAccountNumber,
-      },
-      secretKey
-    );
-    const userData = {
-      id, 
-      encryptedData, 
-    };
-  
-    try {
-      const userRef = doc(db, "users", id);
-      const userSnapshot = await getDoc(userRef);
-  
-      if (userSnapshot.exists()) {
-        await setDoc(userRef, userData, { merge: true });
-        Alert.alert("Success", "הפרטים עודכנו בהצלחה!");
-      } else {
-        await setDoc(userRef, userData);
-        Alert.alert("Success", "הפרטים נשמרו בהצלחה!");
-      }
-      await AsyncStorage.setItem("currentUserId", id);
+      });
+      Alert.alert("הפרטים נשמרו בהצלחה");
       navigation.navigate("Premission");
-    } catch (error) {
-      console.error("Error saving user:", error);
-      Alert.alert("Error", "שגיאה בשמירת הפרטים.");
     }
   };  
 

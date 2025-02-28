@@ -8,26 +8,26 @@ import {
   Alert,
   ScrollView,
 } from 'react-native';
-import { doc, setDoc, getDoc } from "firebase/firestore";
-import { db } from "../server/firebase";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useUser } from "./Model2/userContext";
+
 
 const PremissionScreen = ({ navigation,handleGlobalClick }) => {
+    const { user, updateUser } = useUser(); 
   const [permissions, setPermissions] = useState({
-    healthMonitoring: false,
-    emergencyContacts: false,
-    shareHealthInfo: false,
-    robotTracking: false,
-    automatedTasks: false,
-    smartHomeControl: false,
-    financialActions: false,
-    socialInteraction: false,
-    cameraAccess: false,
-    voiceRecognition: false,
-    publicServices: false,
-    familyUpdates: false,
-    customization: false,
-    maintenance: false,
+    healthMonitoring:  user.permissions.healthMonitoring ? user.permissions.healthMonitoring : false,
+    emergencyContacts:  user.permissions.emergencyContacts ? user.permissions.emergencyContacts : false,
+    shareHealthInfo:  user.permissions.shareHealthInfo ? user.permissions.shareHealthInfo : false,
+    robotTracking:  user.permissions.robotTracking ? user.permissions.robotTracking : false,
+    automatedTasks:  user.permissions.automatedTasks ? user.permissions.automatedTasks : false,
+    smartHomeControl:  user.permissions.smartHomeControl ? user.permissions.smartHomeControl : false,
+    financialActions:  user.permissions.financialActions ? user.permissions.financialActions : false,
+    socialInteraction:  user.permissions.socialInteraction ? user.permissions.socialInteraction : false,
+    cameraAccess:  user.permissions.cameraAccess ? user.permissions.cameraAccess : false,
+    voiceRecognition:  user.permissions.voiceRecognition ? user.permissions.voiceRecognition : false,
+    publicServices:  user.permissions.publicServices ? user.permissions.publicServices : false,
+    familyUpdates:  user.permissions.familyUpdates ? user.permissions.familyUpdates : false,
+    customization:  user.permissions.customization ? user.permissions.customization : false,
+    maintenance:  user.permissions.maintenance ? user.permissions.maintenance : false,
   });
 
   const permissionLabels = {
@@ -55,57 +55,13 @@ const PremissionScreen = ({ navigation,handleGlobalClick }) => {
     }));
   };
 
-  useEffect(() => {
-    const fetchPermissions = async () => {
-      try {
-        const userId = await AsyncStorage.getItem('currentUserId');
-        if (!userId) {
-          Alert.alert('Error', 'User ID not found. Please log in again.');
-          navigation.navigate('Setup');
-          return;
-        }
-
-        const userRef = doc(db, "users", userId);
-        const userSnapshot = await getDoc(userRef);
-
-        if (userSnapshot.exists()) {
-          const userData = userSnapshot.data();
-          if (userData.permissions) {
-            setPermissions(userData.permissions);
-          }
-        } else {
-          Alert.alert("Info", "No existing permissions found for this user.");
-        }
-      } catch (error) {
-        console.error("Error fetching permissions:", error);
-        Alert.alert("Error", "Failed to fetch permissions.");
-      }
-    };
-
-    fetchPermissions();
-  }, [navigation]);
-
   const handleSave = async () => {
-    try {
-      const userId = await AsyncStorage.getItem('currentUserId');
-      if (!userId) {
-        Alert.alert('Error', 'User ID not found. Please log in again.');
-        navigation.navigate('Setup');
-        return;
-      }
-
-      const userRef = doc(db, "users", userId);
-      await setDoc(
-        userRef,
-        { permissions },
-        { merge: true }
-      );
-      Alert.alert("Success", "Permissions updated successfully!");
-      navigation.navigate("Home");
-    } catch (error) {
-      console.error("Error saving permissions:", error);
-      Alert.alert("Error", "Failed to save permissions.");
-    }
+    handleGlobalClick();
+    updateUser({
+      permissions,
+    });
+    Alert.alert('ההעדפות נשמרו בהצלחה');
+    navigation.navigate('Home');
   };
 
   return (
