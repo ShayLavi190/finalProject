@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   View,
   Text,
@@ -10,12 +10,16 @@ import {
 import { useUser } from "../../Model2/userContext";
 import * as Animatable from "react-native-animatable";
 import LottieView from "lottie-react-native";
+import { Audio } from "expo-av";
 
 const Entertainment3 = ({ navigation, handleGlobalClick }) => {
   const { user } = useUser();
   const animatableRef = useRef(null);
+  const [sound, setSound] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   const handleNavigate = (route, direction) => {
+    stopAudio(); // Ensure audio stops before navigating
     if (direction === "forward") {
       animatableRef.current
         .animate("fadeOutLeft", 500)
@@ -26,13 +30,46 @@ const Entertainment3 = ({ navigation, handleGlobalClick }) => {
         .then(() => navigation.navigate(route));
     }
   };
+
   const handelConversation = () => {
+    stopAudio(); // Add this line to stop audio when starting conversation
     Alert.alert("דוח שיח התחיל");
     handleGlobalClick();
   };
-  const handleLottiePress = () => {
-    Alert.alert("play video");
+
+  // Play / Pause Audio
+  const handleLottiePress = async () => {
+    if (sound && isPlaying) {
+      await sound.pauseAsync();
+      setIsPlaying(false);
+    } else if (sound) {
+      await sound.playAsync();
+      setIsPlaying(true);
+    } else {
+      const { sound: newSound } = await Audio.Sound.createAsync(
+        require("../../../assets/Recordings/entertainment.mp3"), // Ensure the file exists
+        { shouldPlay: true }
+      );
+      setSound(newSound);
+      setIsPlaying(true);
+    }
   };
+
+  const stopAudio = async () => {
+    if (sound) {
+      await sound.stopAsync();
+      await sound.unloadAsync();
+      setSound(null);
+      setIsPlaying(false);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      stopAudio(); // Cleanup audio when unmounting
+    };
+  }, []);
+
   return (
     <Animatable.View
       ref={animatableRef}

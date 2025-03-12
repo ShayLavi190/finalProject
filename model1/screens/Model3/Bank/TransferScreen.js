@@ -15,6 +15,7 @@ import * as Animatable from "react-native-animatable";
 import DropDownPicker from "react-native-dropdown-picker";
 import { useUser } from "../../Model2/userContext";
 import LottieView from "lottie-react-native";
+import { Audio } from "expo-av";
 
 const Transaction3 = ({ navigation, handleGlobalClick }) => {
   const { user, updateUser } = useUser();
@@ -56,6 +57,8 @@ const Transaction3 = ({ navigation, handleGlobalClick }) => {
   ]);
   const animatableRef = useRef(null);
   const modalRef = useRef(null);
+  const [sound, setSound] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   useEffect(() => {
     setSelectedBank(user.selectedBank || "");
@@ -63,7 +66,40 @@ const Transaction3 = ({ navigation, handleGlobalClick }) => {
     setBankBranchNumber(user.bankBranchNumber || "");
   }, [user]);
 
+  const handleLottiePress = async () => {
+    if (sound && isPlaying) {
+      await sound.pauseAsync();
+      setIsPlaying(false);
+    } else if (sound) {
+      await sound.playAsync();
+      setIsPlaying(true);
+    } else {
+      const { sound: newSound } = await Audio.Sound.createAsync(
+        require("../../../assets/Recordings/moneyTransfer.mp3"), // Ensure the file exists
+        { shouldPlay: true }
+      );
+      setSound(newSound);
+      setIsPlaying(true);
+    }
+  };
+
+  const stopAudio = async () => {
+    if (sound) {
+      await sound.stopAsync();
+      await sound.unloadAsync();
+      setSound(null);
+      setIsPlaying(false);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      stopAudio();
+    };
+  }, []);
+
   const handleIconPress = (field) => {
+    stopAudio(); // Add this line
     const fieldExplanations = {
       bank: "אנא בחר בנק מהרשימה.",
       account: "אנא הזן את מספר חשבון הבנק שלך.",
@@ -78,6 +114,7 @@ const Transaction3 = ({ navigation, handleGlobalClick }) => {
   };
 
   const handleNavigate = (route, direction) => {
+    stopAudio(); // Add this line
     if (direction === "forward") {
       animatableRef.current
         .animate("fadeOutLeft", 500)
@@ -88,10 +125,9 @@ const Transaction3 = ({ navigation, handleGlobalClick }) => {
         .then(() => navigation.navigate(route));
     }
   };
-  const handleLottiePress = () => {
-    Alert.alert("play video");
-  };
+
   const handelSend = () => {
+    stopAudio(); // Add this line
     handleGlobalClick();
     if (
       reason !== "" &&
@@ -114,6 +150,7 @@ const Transaction3 = ({ navigation, handleGlobalClick }) => {
   };
 
   const closeModal = () => {
+    stopAudio(); // Add this line
     modalRef.current
       .animate("fadeOutDown", 500)
       .then(() => setModalVisible(false));

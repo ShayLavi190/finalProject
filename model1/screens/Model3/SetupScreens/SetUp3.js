@@ -8,12 +8,14 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
+  Alert, // Added Alert import
 } from "react-native";
 import Entypo from "react-native-vector-icons/Entypo";
 import * as Animatable from "react-native-animatable";
 import DropDownPicker from "react-native-dropdown-picker";
 import { useUser } from "../../Model2/userContext";
 import LottieView from "lottie-react-native";
+import { Audio } from "expo-av"; // Added Audio import
 
 const SetUp33 = ({ navigation, handleGlobalClick }) => {
   const { user, updateUser } = useUser();
@@ -24,6 +26,9 @@ const SetUp33 = ({ navigation, handleGlobalClick }) => {
   const [explanation, setExplanation] = useState("");
   const [iconAnimation, setIconAnimation] = useState("");
   const [open, setOpen] = useState(false);
+  // Added audio state variables
+  const [sound, setSound] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
   const [items, setItems] = useState([
     { label: "לאומי", value: "10" },
     { label: "פועלים", value: "12" },
@@ -57,7 +62,19 @@ const SetUp33 = ({ navigation, handleGlobalClick }) => {
     setBankBranchNumber(user.bankBranchNumber || "");
   }, [user]);
 
+  // Function to stop audio playback
+  const stopAudio = async () => {
+    if (sound) {
+      await sound.stopAsync();
+      await sound.unloadAsync();
+      setSound(null);
+      setIsPlaying(false);
+    }
+  };
+
   const handleIconPress = (field) => {
+    stopAudio(); // Stop audio when opening explanation modal
+
     const fieldExplanations = {
       bank: "אנא בחר בנק מהרשימה.",
       account: "אנא הזן את מספר חשבון הבנק שלך.",
@@ -70,6 +87,8 @@ const SetUp33 = ({ navigation, handleGlobalClick }) => {
   };
 
   const handleMoveForward = () => {
+    stopAudio(); // Stop audio when navigating forward
+
     animatableRef.current.animate("fadeOutLeft", 500).then(() => {
       updateUser({
         ...user,
@@ -80,10 +99,36 @@ const SetUp33 = ({ navigation, handleGlobalClick }) => {
       navigation.navigate("SetUp43");
     });
   };
-  const handleLottiePress = () => {
-    Alert.alert("play video");
+
+  // Updated to handle audio playback
+  const handleLottiePress = async () => {
+    if (sound && isPlaying) {
+      // If playing, pause the audio
+      await sound.pauseAsync();
+      setIsPlaying(false);
+    } else if (sound) {
+      // If paused, resume playing
+      await sound.playAsync();
+      setIsPlaying(true);
+    } else {
+      // Load and play new sound
+      try {
+        const { sound: newSound } = await Audio.Sound.createAsync(
+          require("../../../assets/Recordings/setup3.mp3"), // Make sure this file exists
+          { shouldPlay: true }
+        );
+        setSound(newSound);
+        setIsPlaying(true);
+      } catch (error) {
+        console.error("Error playing audio:", error);
+        Alert.alert("שגיאה בהפעלת ההקלטה", "לא ניתן להפעיל את ההקלטה כרגע.");
+      }
+    }
   };
+
   const handleGoBack = () => {
+    stopAudio(); // Stop audio when navigating back
+
     animatableRef.current.animate("fadeOutRight", 500).then(() => {
       updateUser({
         ...user,
@@ -96,12 +141,21 @@ const SetUp33 = ({ navigation, handleGlobalClick }) => {
   };
 
   const closeModal = () => {
+    stopAudio(); // Stop audio when closing modal
+
     modalRef.current
       .animate("fadeOutDown", 500)
       .then(() => setModalVisible(false));
     setIconAnimation("");
     handleGlobalClick();
   };
+
+  // Cleanup audio on component unmount
+  useEffect(() => {
+    return () => {
+      stopAudio();
+    };
+  }, []);
 
   return (
     <Animatable.View
@@ -124,7 +178,7 @@ const SetUp33 = ({ navigation, handleGlobalClick }) => {
           {/* Bank Picker */}
           <View style={styles.inputContainer}>
             {/* Icon and Label */}
-            <TouchableOpacity onPress={() => pickerRef.current?.togglePicker()}>
+            <TouchableOpacity onPress={() => handleIconPress("bank")}>
               <Animatable.View
                 animation={iconAnimation}
                 style={styles.iconContainer}

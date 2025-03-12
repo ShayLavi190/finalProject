@@ -1,19 +1,21 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import {
   View,
   Text,
   TouchableOpacity,
   StyleSheet,
   ScrollView,
-  Alert,
 } from "react-native";
 import { useUser } from "../../Model2/userContext";
 import * as Animatable from "react-native-animatable";
 import LottieView from "lottie-react-native";
+import { Audio } from "expo-av";
 
 const Home13 = ({ navigation, handleGlobalClick }) => {
   const { user } = useUser();
   const animatableRef = useRef(null);
+  const [sound, setSound] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false); // Track if audio is playing
 
   const buttons = [
     { label: "בנק", route: "Bank3", backgroundColor: "#0f473a" },
@@ -23,14 +25,47 @@ const Home13 = ({ navigation, handleGlobalClick }) => {
   ];
 
   const handleNavigate = (route) => {
+    stopAudio(); // Stop audio when navigating
     animatableRef.current
       .animate("fadeOutLeft", 500)
       .then(() => navigation.navigate(route));
   };
-  const handleLottiePress = () => {
-    handleGlobalClick();
-    Alert.alert("play video");
+
+  const handleLottiePress = async () => {
+    if (sound && isPlaying) {
+      // If playing, pause the audio
+      await sound.pauseAsync();
+      setIsPlaying(false);
+    } else if (sound) {
+      // If paused, resume playing
+      await sound.playAsync();
+      setIsPlaying(true);
+    } else {
+      // Load and play new sound
+      const { sound: newSound } = await Audio.Sound.createAsync(
+        require("../../../assets/Recordings/homeScreen1.mp3"), // Ensure file exists
+        { shouldPlay: true }
+      );
+      setSound(newSound);
+      setIsPlaying(true);
+    }
   };
+
+  const stopAudio = async () => {
+    if (sound) {
+      await sound.stopAsync();
+      await sound.unloadAsync();
+      setSound(null);
+      setIsPlaying(false);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      stopAudio(); // Stop audio when leaving the screen
+    };
+  }, []);
+
   return (
     <Animatable.View
       ref={animatableRef}
@@ -42,10 +77,7 @@ const Home13 = ({ navigation, handleGlobalClick }) => {
         <View style={styles.titleContainer}>
           <Text style={styles.title}> ברוך הבא {user.name} !</Text>
           <Text style={styles.subtitle}>
-            ברוך הבא לדף הבית. בחר את השירות שברצונך להשתמש. כל כפתור יוביל אותך
-            לשירותים באותו נושא. אם קיבלת הודעה שלא ניתן לבצע את השירות הנ״ל ככל
-            הנראה צריך למלא פרטים אישיים מסוימים או להפעיל הרשאות מסויימות.
-            תיקון הפרטים יופיעו בהודעת השגיאה.
+            ברוך הבא לדף הבית. בחר את השירות שברצונך להשתמש...
           </Text>
         </View>
         <View style={styles.buttonRowContainer}>

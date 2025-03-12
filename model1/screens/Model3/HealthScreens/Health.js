@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   View,
   Text,
@@ -7,6 +7,7 @@ import {
   ScrollView,
   Alert,
 } from "react-native";
+import { Audio } from "expo-av"; // Import Audio from expo
 import { useUser } from "../../Model2/userContext";
 import * as Animatable from "react-native-animatable";
 import LottieView from "lottie-react-native";
@@ -14,8 +15,12 @@ import LottieView from "lottie-react-native";
 const Health3 = ({ navigation, handleGlobalClick }) => {
   const { user } = useUser();
   const animatableRef = useRef(null);
+  const [sound, setSound] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   const handleNavigate = (route, direction) => {
+    stopAudio(); // Add this line to stop audio when navigating
+
     if (direction === "forward") {
       animatableRef.current
         .animate("fadeOutLeft", 500)
@@ -26,13 +31,46 @@ const Health3 = ({ navigation, handleGlobalClick }) => {
         .then(() => navigation.navigate(route));
     }
   };
+
   const handelBuy = () => {
+    stopAudio(); // Add this line to stop audio when buying medications
     Alert.alert("התרופות הוזמנו");
     handleGlobalClick();
   };
-  const handleLottiePress = () => {
-    Alert.alert("play video");
+
+  const handleLottiePress = async () => {
+    if (sound && isPlaying) {
+      await sound.pauseAsync();
+      setIsPlaying(false);
+    } else if (sound) {
+      await sound.playAsync();
+      setIsPlaying(true);
+    } else {
+      const { sound: newSound } = await Audio.Sound.createAsync(
+        require("../../../assets/Recordings/health.mp3"), // Make sure this file exists
+        { shouldPlay: true }
+      );
+      setSound(newSound);
+      setIsPlaying(true);
+    }
   };
+
+  const stopAudio = async () => {
+    if (sound) {
+      await sound.stopAsync();
+      await sound.unloadAsync();
+      setSound(null);
+      setIsPlaying(false);
+    }
+  };
+
+  // Cleanup Audio on Unmount
+  useEffect(() => {
+    return () => {
+      stopAudio();
+    };
+  }, []);
+
   return (
     <Animatable.View
       ref={animatableRef}
@@ -97,7 +135,7 @@ const Health3 = ({ navigation, handleGlobalClick }) => {
         <View>
           <TouchableOpacity
             style={styles.lottieButton}
-            onPress={handleLottiePress}
+            onPress={handleLottiePress} // Plays the audio when pressed
           >
             <LottieView
               source={require("../SetupScreens/robot.json")}

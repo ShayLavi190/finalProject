@@ -17,6 +17,7 @@ import { useUser } from "../../Model2/userContext";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import LottieView from "lottie-react-native";
+import { Audio } from "expo-av"; // Added Audio import
 
 const Schedule3 = ({ navigation, handleGlobalClick }) => {
   const { user, updateUser } = useUser();
@@ -32,10 +33,25 @@ const Schedule3 = ({ navigation, handleGlobalClick }) => {
     { label: "רופא משפחה", value: "רופא משפחה" },
     { label: "בדיקות דם", value: "בדיקות דם" },
   ]);
+  // Added audio state variables
+  const [sound, setSound] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
   const animatableRef = useRef(null);
   const modalRef = useRef(null);
 
+  // Function to stop audio playback
+  const stopAudio = async () => {
+    if (sound) {
+      await sound.stopAsync();
+      await sound.unloadAsync();
+      setSound(null);
+      setIsPlaying(false);
+    }
+  };
+
   const handleIconPress = (field) => {
+    stopAudio(); // Stop audio when opening explanation modal
+
     const fieldExplanations = {
       type: "בחר/י את סוג הטיפול שברצונך לקבוע",
       time: "בחר/י את השעה שאת/ה מעוניין/ת לקבוע בו את התור",
@@ -48,6 +64,8 @@ const Schedule3 = ({ navigation, handleGlobalClick }) => {
   };
 
   const handleNavigate = (route, direction) => {
+    stopAudio(); // Stop audio when navigating
+
     if (direction === "forward") {
       animatableRef.current
         .animate("fadeOutLeft", 500)
@@ -60,6 +78,8 @@ const Schedule3 = ({ navigation, handleGlobalClick }) => {
   };
 
   const handelSend = () => {
+    stopAudio(); // Stop audio when submitting the form
+
     if (time !== "" && date !== "" && type !== "") {
       Alert.alert("התור נקבע בהצלחה");
       handleGlobalClick();
@@ -72,15 +92,48 @@ const Schedule3 = ({ navigation, handleGlobalClick }) => {
   };
 
   const closeModal = () => {
+    stopAudio(); // Stop audio when closing the modal
+
     modalRef.current
       .animate("fadeOutDown", 500)
       .then(() => setModalVisible(false));
     setIconAnimation("");
     handleGlobalClick();
   };
-  const handleLottiePress = () => {
-    Alert.alert("play video");
+
+  // Updated to handle audio
+  const handleLottiePress = async () => {
+    if (sound && isPlaying) {
+      // If playing, pause the audio
+      await sound.pauseAsync();
+      setIsPlaying(false);
+    } else if (sound) {
+      // If paused, resume playing
+      await sound.playAsync();
+      setIsPlaying(true);
+    } else {
+      // Load and play new sound
+      try {
+        const { sound: newSound } = await Audio.Sound.createAsync(
+          require("../../../assets/Recordings/scheduleAppointment.mp3"), // Make sure this file exists
+          { shouldPlay: true }
+        );
+        setSound(newSound);
+        setIsPlaying(true);
+      } catch (error) {
+        console.error("Error playing audio:", error);
+        Alert.alert("שגיאה בהפעלת ההקלטה", "לא ניתן להפעיל את ההקלטה כרגע.");
+      }
+    }
   };
+
+  // Cleanup audio on component unmount
+  useEffect(() => {
+    return () => {
+      stopAudio();
+    };
+  }, []);
+
   return (
     <Animatable.View
       ref={animatableRef}

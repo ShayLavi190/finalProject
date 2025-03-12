@@ -14,6 +14,7 @@ import Entypo from "react-native-vector-icons/Entypo";
 import * as Animatable from "react-native-animatable";
 import { useUser } from "../../Model2/userContext";
 import LottieView from "lottie-react-native";
+import { Audio } from "expo-av"; // Added Audio import
 
 const Premissions13 = ({ navigation, handleGlobalClick }) => {
   const { user, updateUser } = useUser();
@@ -24,6 +25,9 @@ const Premissions13 = ({ navigation, handleGlobalClick }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [explanation, setExplanation] = useState("");
   const [iconAnimation, setIconAnimation] = useState("");
+  // Added audio state variables
+  const [sound, setSound] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
   const modalRef = useRef(null);
   const animatableRef = useRef(null);
 
@@ -34,7 +38,19 @@ const Premissions13 = ({ navigation, handleGlobalClick }) => {
     setHealthMonitoring(user.permissions.healthMonitoring);
   }, [user]);
 
+  // Function to stop audio playback
+  const stopAudio = async () => {
+    if (sound) {
+      await sound.stopAsync();
+      await sound.unloadAsync();
+      setSound(null);
+      setIsPlaying(false);
+    }
+  };
+
   const handleIconPress = (field) => {
+    stopAudio(); // Stop audio when opening explanation modal
+
     const fieldExplanations = {
       publicServices:
         "ללא הרשאה זו לא נוכל להשתמש במידע שהזנת לשירותים ציבוריים כגון בנק, קופת חולים וסופרמרקט",
@@ -52,6 +68,8 @@ const Premissions13 = ({ navigation, handleGlobalClick }) => {
   };
 
   const handleMoveForward = () => {
+    stopAudio(); // Stop audio when navigating forward
+
     animatableRef.current.animate("fadeOutLeft", 500).then(() => {
       updateUser({
         ...user,
@@ -66,16 +84,49 @@ const Premissions13 = ({ navigation, handleGlobalClick }) => {
       navigation.navigate("Premissions23");
     });
   };
-  const handleLottiePress = () => {
-    Alert.alert("play video");
+
+  // Updated to handle audio playback
+  const handleLottiePress = async () => {
+    if (sound && isPlaying) {
+      // If playing, pause the audio
+      await sound.pauseAsync();
+      setIsPlaying(false);
+    } else if (sound) {
+      // If paused, resume playing
+      await sound.playAsync();
+      setIsPlaying(true);
+    } else {
+      // Load and play new sound
+      try {
+        const { sound: newSound } = await Audio.Sound.createAsync(
+          require("../../../assets/Recordings/permissions1.mp3"), // Make sure this file exists
+          { shouldPlay: true }
+        );
+        setSound(newSound);
+        setIsPlaying(true);
+      } catch (error) {
+        console.error("Error playing audio:", error);
+        Alert.alert("שגיאה בהפעלת ההקלטה", "לא ניתן להפעיל את ההקלטה כרגע.");
+      }
+    }
   };
+
   const closeModal = () => {
+    stopAudio(); // Stop audio when closing modal
+
     modalRef.current
       .animate("fadeOutDown", 500)
       .then(() => setModalVisible(false));
     setIconAnimation("");
     handleGlobalClick();
   };
+
+  // Cleanup audio on component unmount
+  useEffect(() => {
+    return () => {
+      stopAudio();
+    };
+  }, []);
 
   return (
     <Animatable.View

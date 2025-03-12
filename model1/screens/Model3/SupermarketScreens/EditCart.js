@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   View,
   Text,
@@ -13,6 +13,7 @@ import * as Animatable from "react-native-animatable";
 import DropDownPicker from "react-native-dropdown-picker";
 import LottieView from "lottie-react-native";
 import { useUser } from "../../Model2/userContext";
+import { Audio } from "expo-av"; // Added Audio import
 
 const EditCart3 = ({ navigation, handleGlobalClick }) => {
   const { user, updateUser } = useUser();
@@ -27,6 +28,19 @@ const EditCart3 = ({ navigation, handleGlobalClick }) => {
   const [selectedProduct, setSelectedProduct] = useState("");
   const [productQuantity, setProductQuantity] = useState(1);
   const [open, setOpen] = useState(false);
+  // Added audio state variables
+  const [sound, setSound] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  // Function to stop audio playback
+  const stopAudio = async () => {
+    if (sound) {
+      await sound.stopAsync();
+      await sound.unloadAsync();
+      setSound(null);
+      setIsPlaying(false);
+    }
+  };
 
   const handleQuantityChange = (id, newQuantity) => {
     if (newQuantity < 1) {
@@ -42,15 +56,41 @@ const EditCart3 = ({ navigation, handleGlobalClick }) => {
   };
 
   const handleRemoveItem = (id) => {
+    stopAudio(); // Stop audio when removing item
+
     setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
     handleGlobalClick(`הסרת פריט ${id}`);
   };
 
-  const handleLottiePress = () => {
-    Alert.alert("play video");
+  // Updated to handle audio playback
+  const handleLottiePress = async () => {
+    if (sound && isPlaying) {
+      // If playing, pause the audio
+      await sound.pauseAsync();
+      setIsPlaying(false);
+    } else if (sound) {
+      // If paused, resume playing
+      await sound.playAsync();
+      setIsPlaying(true);
+    } else {
+      // Load and play new sound
+      try {
+        const { sound: newSound } = await Audio.Sound.createAsync(
+          require("../../../assets/Recordings/editCart.mp3"), // Make sure this file exists
+          { shouldPlay: true }
+        );
+        setSound(newSound);
+        setIsPlaying(true);
+      } catch (error) {
+        console.error("Error playing audio:", error);
+        Alert.alert("שגיאה בהפעלת ההקלטה", "לא ניתן להפעיל את ההקלטה כרגע.");
+      }
+    }
   };
 
   const handleAddItem = () => {
+    stopAudio(); // Stop audio when adding item
+
     if (!selectedProduct) {
       Alert.alert("שגיאה", "אנא בחר מוצר.");
       return;
@@ -73,11 +113,16 @@ const EditCart3 = ({ navigation, handleGlobalClick }) => {
   };
 
   const handleCheckout = () => {
+    stopAudio(); // Stop audio when checking out
+
     Alert.alert("הצלחה", "העגלה נשמרה בהצלחה !");
     updateUser({ ...user, cart: cartItems });
     handleGlobalClick("עריכה בוצעה");
   };
+
   const handleNavigate = (route) => {
+    stopAudio(); // Stop audio when navigating
+
     animatableRef.current
       .animate("fadeOutRight", 500)
       .then(() => {
@@ -88,6 +133,13 @@ const EditCart3 = ({ navigation, handleGlobalClick }) => {
         navigation.navigate(route);
       });
   };
+
+  // Cleanup audio on component unmount
+  useEffect(() => {
+    return () => {
+      stopAudio();
+    };
+  }, []);
 
   const renderItem = ({ item }) => (
     <View style={styles.itemContainer}>

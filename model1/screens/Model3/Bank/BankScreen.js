@@ -1,38 +1,67 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import {
   View,
   Text,
   TouchableOpacity,
   StyleSheet,
   ScrollView,
-  Alert,
 } from "react-native";
 import { useUser } from "../../Model2/userContext";
 import * as Animatable from "react-native-animatable";
 import LottieView from "lottie-react-native";
+import { Audio } from "expo-av";
 
 const Bank3 = ({ navigation, handleGlobalClick }) => {
   const { user } = useUser();
   const animatableRef = useRef(null);
+  const [sound, setSound] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false); // Track if audio is playing
 
   const handleNavigate = (route, direction) => {
-    if (direction === "forward") {
-      animatableRef.current
-        .animate("fadeOutLeft", 500)
-        .then(() => navigation.navigate(route));
-    } else if (direction === "back") {
-      animatableRef.current
-        .animate("fadeOutRight", 500)
-        .then(() => navigation.navigate(route));
+    stopAudio(); // Stop audio when navigating
+    const animation = direction === "forward" ? "fadeOutLeft" : "fadeOutRight";
+    animatableRef.current
+      .animate(animation, 500)
+      .then(() => navigation.navigate(route));
+  };
+
+  const handleLottiePress = async () => {
+    if (sound && isPlaying) {
+      await sound.pauseAsync(); // Pause if already playing
+      setIsPlaying(false);
+    } else if (sound) {
+      await sound.playAsync(); // Resume if paused
+      setIsPlaying(true);
+    } else {
+      const { sound: newSound } = await Audio.Sound.createAsync(
+        require("../../../assets/Recordings/bank.mp3"), // Ensure the file exists
+        { shouldPlay: true }
+      );
+      setSound(newSound);
+      setIsPlaying(true);
     }
   };
-  const handelBank = () => {
-    Alert.alert("הועברת למצב חשבון");
+
+  const stopAudio = async () => {
+    if (sound) {
+      await sound.stopAsync();
+      await sound.unloadAsync();
+      setSound(null);
+      setIsPlaying(false);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      stopAudio(); // Stop audio when leaving the screen
+    };
+  }, []);
+
+  const handleBank = () => {
+    stopAudio(); // Stop audio before performing action
     handleGlobalClick();
   };
-  const handleLottiePress = () => {
-    Alert.alert("play video");
-  };
+
   return (
     <Animatable.View
       ref={animatableRef}
@@ -55,9 +84,9 @@ const Bank3 = ({ navigation, handleGlobalClick }) => {
             style={[
               styles.button,
               styles.forwardButton,
-              { backgroundColor: "#52bfbf", marginTop: "70" },
+              { backgroundColor: "#52bfbf", marginTop: 70 },
             ]}
-            onPress={handelBank}
+            onPress={handleBank}
           >
             <Text style={styles.forwardButtonText}>מצב חשבון</Text>
           </TouchableOpacity>
@@ -65,7 +94,7 @@ const Bank3 = ({ navigation, handleGlobalClick }) => {
             style={[
               styles.button,
               styles.forwardButton,
-              { backgroundColor: "#2D4B73", marginTop: "70" },
+              { backgroundColor: "#2D4B73", marginTop: 70 },
             ]}
             onPress={() => handleNavigate("ContactBanker3", "forward")}
           >
@@ -77,7 +106,7 @@ const Bank3 = ({ navigation, handleGlobalClick }) => {
             style={[
               styles.button,
               styles.forwardButton,
-              { backgroundColor: "#F2AB27", marginTop: "70" },
+              { backgroundColor: "#F2AB27", marginTop: 70 },
             ]}
             onPress={() => handleNavigate("Transaction3", "forward")}
           >
@@ -87,7 +116,7 @@ const Bank3 = ({ navigation, handleGlobalClick }) => {
             style={[
               styles.button,
               styles.forwardButton,
-              { backgroundColor: "green", marginTop: "70" },
+              { backgroundColor: "green", marginTop: 70 },
             ]}
             onPress={() => handleNavigate("Home13", "back")}
           >

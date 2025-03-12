@@ -14,6 +14,7 @@ import Entypo from "react-native-vector-icons/Entypo";
 import * as Animatable from "react-native-animatable";
 import { useUser } from "../../Model2/userContext";
 import LottieView from "lottie-react-native";
+import { Audio } from "expo-av"; // Added Audio import
 
 const SetUp23 = ({ navigation, handleGlobalClick }) => {
   const { user, updateUser } = useUser();
@@ -24,6 +25,9 @@ const SetUp23 = ({ navigation, handleGlobalClick }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [explanation, setExplanation] = useState("");
   const [iconAnimation, setIconAnimation] = useState("");
+  // Added audio state variables
+  const [sound, setSound] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   const modalRef = useRef(null);
   const animatableRef = useRef(null);
@@ -35,7 +39,19 @@ const SetUp23 = ({ navigation, handleGlobalClick }) => {
     setStreet(user.street);
   }, [user]);
 
+  // Function to stop audio playback
+  const stopAudio = async () => {
+    if (sound) {
+      await sound.stopAsync();
+      await sound.unloadAsync();
+      setSound(null);
+      setIsPlaying(false);
+    }
+  };
+
   const handleIconPress = (field) => {
+    stopAudio(); // Stop audio when opening explanation modal
+
     const fieldExplanations = {
       street: "אנא הזן את שם הרחוב שלך.",
       "number and apartment":
@@ -63,10 +79,36 @@ const SetUp23 = ({ navigation, handleGlobalClick }) => {
     }
     return true;
   };
-  const handleLottiePress = () => {
-    Alert.alert("play video");
+
+  // Updated to handle audio playback
+  const handleLottiePress = async () => {
+    if (sound && isPlaying) {
+      // If playing, pause the audio
+      await sound.pauseAsync();
+      setIsPlaying(false);
+    } else if (sound) {
+      // If paused, resume playing
+      await sound.playAsync();
+      setIsPlaying(true);
+    } else {
+      // Load and play new sound
+      try {
+        const { sound: newSound } = await Audio.Sound.createAsync(
+          require("../../../assets/Recordings/setup2.mp3"), // Make sure this file exists
+          { shouldPlay: true }
+        );
+        setSound(newSound);
+        setIsPlaying(true);
+      } catch (error) {
+        console.error("Error playing audio:", error);
+        Alert.alert("שגיאה בהפעלת ההקלטה", "לא ניתן להפעיל את ההקלטה כרגע.");
+      }
+    }
   };
+
   const handleMoveForward = () => {
+    stopAudio(); // Stop audio when navigating forward
+
     if (!validateInputs()) return;
 
     animatableRef.current.animate("fadeOutLeft", 500).then(() => {
@@ -82,6 +124,8 @@ const SetUp23 = ({ navigation, handleGlobalClick }) => {
   };
 
   const handleGoBack = () => {
+    stopAudio(); // Stop audio when navigating back
+
     animatableRef.current.animate("fadeOutRight", 500).then(() => {
       updateUser({
         ...user,
@@ -95,12 +139,21 @@ const SetUp23 = ({ navigation, handleGlobalClick }) => {
   };
 
   const closeModal = () => {
+    stopAudio(); // Stop audio when closing modal
+
     modalRef.current
       .animate("fadeOutDown", 500)
       .then(() => setModalVisible(false));
     setIconAnimation("");
     handleGlobalClick();
   };
+
+  // Cleanup audio on component unmount
+  useEffect(() => {
+    return () => {
+      stopAudio();
+    };
+  }, []);
 
   return (
     <Animatable.View

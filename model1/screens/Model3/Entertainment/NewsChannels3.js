@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   View,
   Text,
@@ -11,6 +11,7 @@ import {
 import { WebView } from "react-native-webview";
 import * as Animatable from "react-native-animatable";
 import LottieView from "lottie-react-native";
+import { Audio } from "expo-av"; // Import audio module
 
 const channels = [
   {
@@ -45,24 +46,30 @@ const NewsChannels3 = ({ handleGlobalClick, navigation }) => {
   const [loading, setLoading] = useState(false);
   const animatableRef = useRef(null);
   const modalRef = useRef(null);
+  const [sound, setSound] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   const openWebView = (url) => {
-    setCurrentUrl(url);
-    setWebViewVisible(true);
-    handleGlobalClick("Opened WebView for: " + url);
-  };
-  const closeWebView = () => {
-    modalRef.current.animate("fadeOut", 300).then(() => {
-      setWebViewVisible(false);
-      setCurrentUrl("");
-      handleGlobalClick("Closed WebView");
-    });
+    stopAudio(); // Add this line to stop audio when opening a news channel
+    if (currentUrl !== url) {
+      setCurrentUrl(url);
+      setWebViewVisible(true);
+      handleGlobalClick("Opened WebView for: " + url);
+    }
   };
 
-  const handleLottiePress = () => {
-    Alert.alert("play video");
+  const closeWebView = async () => {
+    stopAudio(); // Add this line to stop audio when closing a news channel
+    if (modalRef.current) {
+      await modalRef.current.animate("fadeOut", 300);
+    }
+    setWebViewVisible(false);
+    setCurrentUrl("");
+    handleGlobalClick("Closed WebView");
   };
+
   const handleNavigate = (route, direction) => {
+    stopAudio(); // Ensure audio stops before navigating
     if (direction === "forward") {
       animatableRef.current
         .animate("fadeOutLeft", 500)
@@ -73,6 +80,38 @@ const NewsChannels3 = ({ handleGlobalClick, navigation }) => {
         .then(() => navigation.navigate(route));
     }
   };
+
+  const handleLottiePress = async () => {
+    if (sound && isPlaying) {
+      await sound.pauseAsync();
+      setIsPlaying(false);
+    } else if (sound) {
+      await sound.playAsync();
+      setIsPlaying(true);
+    } else {
+      const { sound: newSound } = await Audio.Sound.createAsync(
+        require("../../../assets/Recordings/newsChannels.mp3"), // Ensure the file exists
+        { shouldPlay: true }
+      );
+      setSound(newSound);
+      setIsPlaying(true);
+    }
+  };
+
+  const stopAudio = async () => {
+    if (sound) {
+      await sound.stopAsync();
+      await sound.unloadAsync();
+      setSound(null);
+      setIsPlaying(false);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      stopAudio(); // Cleanup audio when unmounting
+    };
+  }, []);
 
   return (
     <Animatable.View

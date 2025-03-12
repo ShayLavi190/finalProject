@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   View,
   Text,
@@ -11,6 +11,7 @@ import {
 import { WebView } from "react-native-webview";
 import * as Animatable from "react-native-animatable";
 import LottieView from "lottie-react-native";
+import { Audio } from "expo-av";
 
 const newspapers = [
   {
@@ -49,37 +50,78 @@ const NewsPapers3 = ({ handleGlobalClick, navigation }) => {
   const [currentUrl, setCurrentUrl] = useState("");
   const [isWebViewVisible, setWebViewVisible] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [sound, setSound] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
   const animatableRef = useRef(null);
   const modalRef = useRef(null);
 
   const openWebView = (url) => {
-    setCurrentUrl(url);
-    setWebViewVisible(true);
-    handleGlobalClick("Opened WebView for: " + url);
-  };
-  const closeWebView = () => {
-    modalRef.current.animate("fadeOut", 300).then(() => {
-      setWebViewVisible(false);
-      setCurrentUrl("");
-      handleGlobalClick("Closed WebView");
-    });
+    stopAudio(); // Add this line to stop audio when opening a newspaper
+    if (currentUrl !== url) {
+      setCurrentUrl(url);
+      setWebViewVisible(true);
+      handleGlobalClick("Opened WebView for: " + url);
+    }
   };
 
-  const handleLottiePress = () => {
-    Alert.alert("play video");
+  const closeWebView = async () => {
+    stopAudio(); // Add this line to stop audio when closing a newspaper
+    if (modalRef.current) {
+      await modalRef.current.animate("fadeOut", 300);
+    }
+    setWebViewVisible(false);
+    setCurrentUrl("");
+    handleGlobalClick("Closed WebView");
   };
 
+  // Handle Navigation with Animations
   const handleNavigate = (route, direction) => {
+    stopAudio(); // Stop audio when navigating away
     if (direction === "forward") {
       animatableRef.current
         .animate("fadeOutLeft", 500)
         .then(() => navigation.navigate(route));
-    } else if (direction === "back") {
+    } else {
       animatableRef.current
         .animate("fadeOutRight", 500)
         .then(() => navigation.navigate(route));
     }
   };
+
+  // Handle Audio Play/Pause
+  const handleAudioPress = async () => {
+    if (sound && isPlaying) {
+      await sound.pauseAsync();
+      setIsPlaying(false);
+    } else if (sound) {
+      await sound.playAsync();
+      setIsPlaying(true);
+    } else {
+      const { sound: newSound } = await Audio.Sound.createAsync(
+        require("../../../assets/Recordings/newspapers.mp3"), // Make sure this file exists
+        { shouldPlay: true }
+      );
+      setSound(newSound);
+      setIsPlaying(true);
+    }
+  };
+
+  // Stop and Unload Audio
+  const stopAudio = async () => {
+    if (sound) {
+      await sound.stopAsync();
+      await sound.unloadAsync();
+      setSound(null);
+      setIsPlaying(false);
+    }
+  };
+
+  // Cleanup Audio on Unmount
+  useEffect(() => {
+    return () => {
+      stopAudio();
+    };
+  }, []);
 
   return (
     <Animatable.View
@@ -122,8 +164,8 @@ const NewsPapers3 = ({ handleGlobalClick, navigation }) => {
           <ScrollView contentContainerStyle={styles.scrollContainer}>
             <Text style={styles.title}>עיתונים</Text>
             <Text style={styles.subtitle}>
-              על מנת לקרוא עיתונים לחץ על העיתון לקרוא. כדי לעבור לשאר המסכים
-              לחץ על לחצן משחקים
+              לחץ על עיתון לקריאה. כדי לעבור למסכים נוספים לחץ על כפתור שירותי
+              בידור
             </Text>
             <View style={styles.buttonRowContainer}>
               {newspapers.map((paper) => (
@@ -161,13 +203,21 @@ const NewsPapers3 = ({ handleGlobalClick, navigation }) => {
                 <Text style={styles.forwardButtonText}>שירותי בידור</Text>
               </TouchableOpacity>
             </View>
+            <TouchableOpacity
+              style={styles.audioButton}
+              onPress={handleAudioPress}
+            >
+              <Text style={styles.audioButtonText}>
+                {isPlaying ? "השהה קריינות" : "הפעל קריינות"}
+              </Text>
+            </TouchableOpacity>
           </ScrollView>
         )}
       </View>
       <View>
         <TouchableOpacity
           style={styles.lottieButton}
-          onPress={handleLottiePress}
+          onPress={handleAudioPress}
         >
           <LottieView
             source={require("../SetupScreens/robot.json")}

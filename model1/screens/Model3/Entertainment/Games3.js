@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   View,
   Text,
@@ -11,6 +11,7 @@ import {
 import { WebView } from "react-native-webview";
 import * as Animatable from "react-native-animatable";
 import LottieView from "lottie-react-native";
+import { Audio } from "expo-av";
 
 const games = [
   {
@@ -52,23 +53,28 @@ const Games3 = ({ handleGlobalClick, navigation }) => {
   const animatableRef = useRef(null);
   const modalRef = useRef(null);
 
+  // Audio State
+  const [sound, setSound] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+
   const openWebView = (url) => {
+    stopAudio(); // Add this line to stop audio when opening a game
     setCurrentUrl(url);
     setWebViewVisible(true);
     handleGlobalClick("Opened WebView for: " + url);
   };
+
   const closeWebView = () => {
+    stopAudio(); // Add this line to stop audio when closing a game
     modalRef.current.animate("fadeOut", 300).then(() => {
       setWebViewVisible(false);
       setCurrentUrl("");
       handleGlobalClick("Closed WebView");
     });
   };
-  const handleLottiePress = () => {
-    Alert.alert("play video");
-  };
 
   const handleNavigate = (route, direction) => {
+    stopAudio(); // Ensure audio stops before navigating
     if (direction === "forward") {
       animatableRef.current
         .animate("fadeOutLeft", 500)
@@ -79,6 +85,39 @@ const Games3 = ({ handleGlobalClick, navigation }) => {
         .then(() => navigation.navigate(route));
     }
   };
+
+  // Play / Pause Audio
+  const handleLottiePress = async () => {
+    if (sound && isPlaying) {
+      await sound.pauseAsync();
+      setIsPlaying(false);
+    } else if (sound) {
+      await sound.playAsync();
+      setIsPlaying(true);
+    } else {
+      const { sound: newSound } = await Audio.Sound.createAsync(
+        require("../../../assets/Recordings/games.mp3"), // Ensure the file exists
+        { shouldPlay: true }
+      );
+      setSound(newSound);
+      setIsPlaying(true);
+    }
+  };
+
+  const stopAudio = async () => {
+    if (sound) {
+      await sound.stopAsync();
+      await sound.unloadAsync();
+      setSound(null);
+      setIsPlaying(false);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      stopAudio(); // Cleanup audio when unmounting
+    };
+  }, []);
 
   return (
     <Animatable.View

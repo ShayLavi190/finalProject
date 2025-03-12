@@ -15,6 +15,7 @@ import * as Animatable from "react-native-animatable";
 import DropDownPicker from "react-native-dropdown-picker";
 import { useUser } from "../../Model2/userContext";
 import LottieView from "lottie-react-native";
+import { Audio } from "expo-av"; // Added Audio import
 
 const SetUp43 = ({ navigation, handleGlobalClick }) => {
   const { user, updateUser } = useUser();
@@ -25,6 +26,9 @@ const SetUp43 = ({ navigation, handleGlobalClick }) => {
   const [explanation, setExplanation] = useState("");
   const [iconAnimation, setIconAnimation] = useState("");
   const [open, setOpen] = useState(false);
+  // Added audio state variables
+  const [sound, setSound] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
   const [items, setItems] = useState([
     { label: "מכבי", value: "מכבי" },
     { label: "כללית", value: "כללית" },
@@ -42,7 +46,19 @@ const SetUp43 = ({ navigation, handleGlobalClick }) => {
     setEmergencyPhone(user.emergencyNumber || "");
   }, [user]);
 
+  // Function to stop audio playback
+  const stopAudio = async () => {
+    if (sound) {
+      await sound.stopAsync();
+      await sound.unloadAsync();
+      setSound(null);
+      setIsPlaying(false);
+    }
+  };
+
   const handleIconPress = (field) => {
+    stopAudio(); // Stop audio when opening explanation modal
+
     const fieldExplanations = {
       healthFund: "אנא בחר קופת חולים מהרשימה.",
       account: "אנא הזן את מספר החשבון שלך.",
@@ -55,6 +71,8 @@ const SetUp43 = ({ navigation, handleGlobalClick }) => {
   };
 
   const handleMoveForward = () => {
+    stopAudio(); // Stop audio when navigating forward
+
     if (!animatableRef.current) {
       // Fallback if the animation reference is not set
       navigation.navigate("Premission13");
@@ -78,20 +96,55 @@ const SetUp43 = ({ navigation, handleGlobalClick }) => {
   };
 
   const handleGoBack = () => {
+    stopAudio(); // Stop audio when navigating back
+
     animatableRef.current.animate("fadeOutRight", 500).then(() => {
       navigation.navigate("SetUp33");
     });
   };
-  const handleLottiePress = () => {
-    Alert.alert("play video");
+
+  // Updated to handle audio playback
+  const handleLottiePress = async () => {
+    if (sound && isPlaying) {
+      // If playing, pause the audio
+      await sound.pauseAsync();
+      setIsPlaying(false);
+    } else if (sound) {
+      // If paused, resume playing
+      await sound.playAsync();
+      setIsPlaying(true);
+    } else {
+      // Load and play new sound
+      try {
+        const { sound: newSound } = await Audio.Sound.createAsync(
+          require("../../../assets/Recordings/setup4.mp3"), // Make sure this file exists
+          { shouldPlay: true }
+        );
+        setSound(newSound);
+        setIsPlaying(true);
+      } catch (error) {
+        console.error("Error playing audio:", error);
+        Alert.alert("שגיאה בהפעלת ההקלטה", "לא ניתן להפעיל את ההקלטה כרגע.");
+      }
+    }
   };
+
   const closeModal = () => {
+    stopAudio(); // Stop audio when closing modal
+
     modalRef.current
       .animate("fadeOutDown", 500)
       .then(() => setModalVisible(false));
     setIconAnimation("");
     handleGlobalClick();
   };
+
+  // Cleanup audio on component unmount
+  useEffect(() => {
+    return () => {
+      stopAudio();
+    };
+  }, []);
 
   return (
     <Animatable.View
@@ -373,32 +426,5 @@ const styles = StyleSheet.create({
     height: "100%",
   },
 });
-
-const pickerSelectStyles = {
-  inputIOS: {
-    fontSize: 16,
-    paddingVertical: 10,
-    paddingHorizontal: 10,
-    borderWidth: 1,
-    borderColor: "gray",
-    borderRadius: 5,
-    color: "black",
-    marginBottom: 15,
-    width: 595,
-    textAlign: "center",
-  },
-  inputAndroid: {
-    fontSize: 16,
-    paddingVertical: 10,
-    textAlign: "center",
-    paddingHorizontal: 10,
-    borderWidth: 1,
-    borderColor: "gray",
-    borderRadius: 5,
-    color: "black",
-    marginBottom: 15,
-    width: 595,
-  },
-};
 
 export default SetUp43;

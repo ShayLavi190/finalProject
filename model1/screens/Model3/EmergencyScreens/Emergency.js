@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -9,15 +9,19 @@ import {
 } from "react-native";
 import * as Animatable from "react-native-animatable";
 import LottieView from "lottie-react-native";
+import { Audio } from "expo-av";
 
 const Emergency3 = ({ navigation, handleGlobalClick }) => {
   const animatableRef = useRef(null);
+  const [sound, setSound] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   const buttons = [
     {
       label: "חיוג למשטרה",
       backgroundColor: "#1f5eff",
       action: () => {
+        stopAudio(); // Add this line
         Alert.alert("חירום", "מחייג למשטרה");
         handleGlobalClick();
       },
@@ -26,6 +30,7 @@ const Emergency3 = ({ navigation, handleGlobalClick }) => {
       label: "חיוג מכבי אש",
       backgroundColor: "#ffd900",
       action: () => {
+        stopAudio(); // Add this line
         Alert.alert("חירום", "מחייג למכבי אש");
         handleGlobalClick();
       },
@@ -34,6 +39,7 @@ const Emergency3 = ({ navigation, handleGlobalClick }) => {
       label: "חיוג למגן דוד אדום",
       backgroundColor: "#f44336",
       action: () => {
+        stopAudio(); // Add this line
         Alert.alert("חירום", "מחייג למגן דוד אדום");
         handleGlobalClick();
       },
@@ -42,19 +48,52 @@ const Emergency3 = ({ navigation, handleGlobalClick }) => {
       label: "חיוג לאיש קשר",
       backgroundColor: "#6aa84f",
       action: () => {
+        stopAudio(); // Add this line
         Alert.alert("חירום", "מחייג לאיש קשר");
         handleGlobalClick();
       },
     },
   ];
+
   const handleNavigate = (route) => {
+    stopAudio(); // Ensure audio stops before navigating
     animatableRef.current
       .animate("fadeOutRight", 500)
       .then(() => navigation.navigate(route));
   };
-  const handleLottiePress = () => {
-    Alert.alert("play video");
+
+  const handleLottiePress = async () => {
+    if (sound && isPlaying) {
+      await sound.pauseAsync();
+      setIsPlaying(false);
+    } else if (sound) {
+      await sound.playAsync();
+      setIsPlaying(true);
+    } else {
+      const { sound: newSound } = await Audio.Sound.createAsync(
+        require("../../../assets/Recordings/emergency.mp3"), // Ensure the file exists
+        { shouldPlay: true }
+      );
+      setSound(newSound);
+      setIsPlaying(true);
+    }
   };
+
+  const stopAudio = async () => {
+    if (sound) {
+      await sound.stopAsync();
+      await sound.unloadAsync();
+      setSound(null);
+      setIsPlaying(false);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      stopAudio(); // Cleanup audio when unmounting
+    };
+  }, []);
+
   return (
     <Animatable.View
       ref={animatableRef}
@@ -70,31 +109,27 @@ const Emergency3 = ({ navigation, handleGlobalClick }) => {
             שהזנת במערכת. כדי להתקשר לחץ על הכפתור המתאים
           </Text>
         </View>
+
         <View style={styles.buttonRowContainer}>
-          {buttons.map((button, index) => (
-            <View key={button.label} style={[styles.buttonWrapper]}>
+          {buttons.map(({ label, backgroundColor, action }) => (
+            <View key={label} style={styles.buttonWrapper}>
               <TouchableOpacity
-                style={[
-                  styles.button,
-                  { backgroundColor: button.backgroundColor },
-                ]}
-                onPress={
-                  button.route
-                    ? () => navigation.navigate(button.route)
-                    : button.action
-                }
+                style={[styles.button, { backgroundColor }]}
+                onPress={action}
               >
-                <Text style={styles.buttonText}>{button.label}</Text>
+                <Text style={styles.buttonText}>{label}</Text>
               </TouchableOpacity>
             </View>
           ))}
         </View>
+
         <TouchableOpacity
           style={styles.forwardButton}
           onPress={() => handleNavigate("Home13")}
         >
           <Text style={styles.forwardButtonText}>מסך בית</Text>
         </TouchableOpacity>
+
         <View>
           <TouchableOpacity
             style={styles.lottieButton}
