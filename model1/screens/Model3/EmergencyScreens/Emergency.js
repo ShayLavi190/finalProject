@@ -1,23 +1,51 @@
-import React,{useRef} from 'react';
+import React, { useRef } from "react";
 import {
   View,
   Text,
   TouchableOpacity,
   StyleSheet,
   ScrollView,
-  Alert
-} from 'react-native';
+  Alert,
+} from "react-native";
 import * as Animatable from "react-native-animatable";
 import LottieView from "lottie-react-native";
 
-const Emergency3 = ({ navigation,handleGlobalClick }) => {
-    const animatableRef = useRef(null);
+const Emergency3 = ({ navigation, handleGlobalClick }) => {
+  const animatableRef = useRef(null);
 
   const buttons = [
-    { label: 'חיוג למשטרה',backgroundColor:'#1f5eff', action: () => {Alert.alert('חירום', 'מחייג למשטרה'); handleGlobalClick();}},
-    { label: 'חיוג מכבי אש',backgroundColor:'#ffd900', action: () => {Alert.alert('חירום', 'מחייג למכבי אש'); handleGlobalClick();}},
-    { label: 'חיוג למגן דוד אדום',backgroundColor:'#f44336', action: () => {Alert.alert('חירום', 'מחייג למגן דוד אדום'); handleGlobalClick();}},
-    { label: 'חיוג לאיש קשר',backgroundColor:'#6aa84f', action: () => {Alert.alert('חירום', 'מחייג לאיש קשר'); handleGlobalClick();}}
+    {
+      label: "חיוג למשטרה",
+      backgroundColor: "#1f5eff",
+      action: () => {
+        Alert.alert("חירום", "מחייג למשטרה");
+        handleGlobalClick();
+      },
+    },
+    {
+      label: "חיוג מכבי אש",
+      backgroundColor: "#ffd900",
+      action: () => {
+        Alert.alert("חירום", "מחייג למכבי אש");
+        handleGlobalClick();
+      },
+    },
+    {
+      label: "חיוג למגן דוד אדום",
+      backgroundColor: "#f44336",
+      action: () => {
+        Alert.alert("חירום", "מחייג למגן דוד אדום");
+        handleGlobalClick();
+      },
+    },
+    {
+      label: "חיוג לאיש קשר",
+      backgroundColor: "#6aa84f",
+      action: () => {
+        Alert.alert("חירום", "מחייג לאיש קשר");
+        handleGlobalClick();
+      },
+    },
   ];
   const handleNavigate = (route) => {
     animatableRef.current
@@ -25,41 +53,62 @@ const Emergency3 = ({ navigation,handleGlobalClick }) => {
       .then(() => navigation.navigate(route));
   };
   const handleLottiePress = () => {
-      Alert.alert("play video")
-    }
+    Alert.alert("play video");
+  };
   return (
-    <Animatable.View ref={animatableRef} style={{ flex: 1 }} animation="fadeInDown" duration={2000} >
-        <ScrollView contentContainerStyle={styles.container}>
+    <Animatable.View
+      ref={animatableRef}
+      style={{ flex: 1 }}
+      animation="fadeInDown"
+      duration={2000}
+    >
+      <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.titleContainer}>
-            <Text style={styles.title}>חירום</Text>
-            <Text style={styles.subtitle}>דף זה מאפשר לך להתקשר לגופי ביטחון והצלה ובנוסף לאיש קשר למקרה חירום שהזנת במערכת. כדי להתקשר לחץ על הכפתור המתאים</Text>
-        </View>      
-        <View style={styles.buttonRowContainer}>
-            {buttons.map((button, index) => (
-            <View key={button.label} style={[styles.buttonWrapper]}>
-                <TouchableOpacity
-                style={[styles.button,{backgroundColor:button.backgroundColor}]}
-                onPress={button.route ? () => navigation.navigate(button.route) : button.action}
-                >
-                <Text style={styles.buttonText}>{button.label}</Text>
-                </TouchableOpacity>
-            </View>
-            ))}
+          <Text style={styles.title}>חירום</Text>
+          <Text style={styles.subtitle}>
+            דף זה מאפשר לך להתקשר לגופי ביטחון והצלה ובנוסף לאיש קשר למקרה חירום
+            שהזנת במערכת. כדי להתקשר לחץ על הכפתור המתאים
+          </Text>
         </View>
-        <TouchableOpacity style={styles.forwardButton} onPress={() => handleNavigate("Home13")}>
-            <Text style={styles.forwardButtonText}>מסך בית</Text>
+        <View style={styles.buttonRowContainer}>
+          {buttons.map((button, index) => (
+            <View key={button.label} style={[styles.buttonWrapper]}>
+              <TouchableOpacity
+                style={[
+                  styles.button,
+                  { backgroundColor: button.backgroundColor },
+                ]}
+                onPress={
+                  button.route
+                    ? () => navigation.navigate(button.route)
+                    : button.action
+                }
+              >
+                <Text style={styles.buttonText}>{button.label}</Text>
+              </TouchableOpacity>
+            </View>
+          ))}
+        </View>
+        <TouchableOpacity
+          style={styles.forwardButton}
+          onPress={() => handleNavigate("Home13")}
+        >
+          <Text style={styles.forwardButtonText}>מסך בית</Text>
         </TouchableOpacity>
         <View>
-          <TouchableOpacity style={styles.lottieButton} onPress={handleLottiePress}>
+          <TouchableOpacity
+            style={styles.lottieButton}
+            onPress={handleLottiePress}
+          >
             <LottieView
-              source={require("/Users/shaylavi/Desktop/final_project/m1/model1/screens/Model3/SetupScreens/robot.json")}
+              source={require("../SetupScreens/robot.json")}
               autoPlay
               loop
               style={styles.lottie}
             />
           </TouchableOpacity>
         </View>
-        </ScrollView>
+      </ScrollView>
     </Animatable.View>
   );
 };
@@ -67,54 +116,54 @@ const Emergency3 = ({ navigation,handleGlobalClick }) => {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    alignItems: 'center',
+    alignItems: "center",
     padding: 20,
-    backgroundColor: '#f2f2f2',
+    backgroundColor: "#f2f2f2",
   },
   titleContainer: {
-    width: '100%',
-    alignItems: 'center',
+    width: "100%",
+    alignItems: "center",
     marginBottom: 130,
-    marginTop: 100, 
+    marginTop: 100,
   },
   title: {
     fontSize: 32,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
   },
   buttonRowContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    width: '100%',
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    width: "100%",
   },
   buttonWrapper: {
-    width: '48%', 
+    width: "48%",
     marginBottom: 20,
   },
   button: {
     paddingVertical: 30,
     borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom:30,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 30,
     elevation: 5,
     shadowColor: "black",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
-    shadowRadius: 2
+    shadowRadius: 2,
   },
   buttonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   subtitle: {
     fontSize: 20,
     color: "#555",
     textAlign: "center",
-    marginTop:50,
-    fontWeight:'bold'
+    marginTop: 50,
+    fontWeight: "bold",
   },
   forwardButton: {
     marginTop: 30,
@@ -126,7 +175,7 @@ const styles = StyleSheet.create({
     shadowColor: "black",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
-    shadowRadius: 2
+    shadowRadius: 2,
   },
   forwardButtonText: {
     color: "#fff",
@@ -143,12 +192,12 @@ const styles = StyleSheet.create({
     shadowColor: "black",
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.3,
-    shadowRadius: 2
+    shadowRadius: 2,
   },
   lottie: {
     width: "100%",
     height: "100%",
-  }
+  },
 });
 
 export default Emergency3;

@@ -16,7 +16,7 @@ import DropDownPicker from "react-native-dropdown-picker";
 import { useUser } from "../../Model2/userContext";
 import LottieView from "lottie-react-native";
 
-const Transaction3 = ({ navigation,handleGlobalClick }) => {
+const Transaction3 = ({ navigation, handleGlobalClick }) => {
   const { user, updateUser } = useUser();
   const [selectedBank, setSelectedBank] = useState("");
   const [bankAccountNumber, setBankAccountNumber] = useState("");
@@ -43,9 +43,9 @@ const Transaction3 = ({ navigation,handleGlobalClick }) => {
     { label: "Citibank N.A", value: "22" },
     { label: "מזרחי טפחות", value: "20" },
     { label: "HSBC Bank plc", value: "23" },
-    { label: "יובנק בע\"מ", value: "26" },
+    { label: 'יובנק בע"מ', value: "26" },
     { label: "Barclays Bank PLC", value: "27" },
-    { label: "בנק למסחר בע\"מ", value: "30" },
+    { label: 'בנק למסחר בע"מ', value: "30" },
     { label: "הבינלאומי הראשון לישראל", value: "31" },
     { label: "SBI State Bank of India", value: "39" },
     { label: "מסד", value: "46" },
@@ -89,20 +89,26 @@ const Transaction3 = ({ navigation,handleGlobalClick }) => {
     }
   };
   const handleLottiePress = () => {
-      Alert.alert("play video")
-    }
+    Alert.alert("play video");
+  };
   const handelSend = () => {
     handleGlobalClick();
-    if ( reason !== "" && selectedBank !== "" && money !== "" && bankBranchNumber !== "" && bankAccountNumber !== "" && selectedBankReciver !== "" && bankAccountNumberReciver !== "" && bankBranchNumberReciver !== "") 
-    {
+    if (
+      reason !== "" &&
+      selectedBank !== "" &&
+      money !== "" &&
+      bankBranchNumber !== "" &&
+      bankAccountNumber !== "" &&
+      selectedBankReciver !== "" &&
+      bankAccountNumberReciver !== "" &&
+      bankBranchNumberReciver !== ""
+    ) {
       Alert.alert("העברה בוצעה בהצלחה");
       setBankAccountNumberReciver("");
       setBankBranchNumberReciver("");
       setReason("");
       setMoney("");
-    } 
-    else 
-    {
+    } else {
       Alert.alert("לא כל השדות מולאו. מלא/י את כלל השדות");
     }
   };
@@ -134,8 +140,8 @@ const Transaction3 = ({ navigation,handleGlobalClick }) => {
 
           {/* Bank Picker */}
           <View style={styles.inputContainer}>
-          <TouchableOpacity onPress={() => handleIconPress("bank")}>
-            <Animatable.View
+            <TouchableOpacity onPress={() => handleIconPress("bank")}>
+              <Animatable.View
                 animation={iconAnimation}
                 style={styles.iconContainer}
               >
@@ -146,7 +152,10 @@ const Transaction3 = ({ navigation,handleGlobalClick }) => {
               open={open}
               value={selectedBank}
               items={items}
-              setOpen={(value) => {setOpen(value); handleGlobalClick();}}
+              setOpen={(value) => {
+                setOpen(value);
+                handleGlobalClick();
+              }}
               setValue={setSelectedBank}
               setItems={setItems}
               textStyle={styles.input}
@@ -159,7 +168,10 @@ const Transaction3 = ({ navigation,handleGlobalClick }) => {
           {/* Account Number Input */}
           <View style={styles.inputContainer}>
             <TouchableOpacity onPress={() => handleIconPress("account")}>
-              <Animatable.View animation={iconAnimation} style={styles.iconContainer}>
+              <Animatable.View
+                animation={iconAnimation}
+                style={styles.iconContainer}
+              >
                 <Entypo name="light-bulb" size={40} color="yellow" />
               </Animatable.View>
             </TouchableOpacity>
@@ -168,10 +180,10 @@ const Transaction3 = ({ navigation,handleGlobalClick }) => {
               placeholder="מספר חשבון בנק"
               value={bankAccountNumber}
               onPress={handleGlobalClick}
-              onChangeText={(text) =>{
+              onChangeText={(text) => {
                 setBankAccountNumber(text.replace(/[^0-9]/g, ""));
-                handleGlobalClick();}
-              }
+                handleGlobalClick();
+              }}
               keyboardType="numeric"
             />
           </View>
@@ -179,7 +191,10 @@ const Transaction3 = ({ navigation,handleGlobalClick }) => {
           {/* Branch Number Input */}
           <View style={styles.inputContainer}>
             <TouchableOpacity onPress={() => handleIconPress("branch")}>
-              <Animatable.View animation={iconAnimation} style={styles.iconContainer}>
+              <Animatable.View
+                animation={iconAnimation}
+                style={styles.iconContainer}
+              >
                 <Entypo name="light-bulb" size={40} color="yellow" />
               </Animatable.View>
             </TouchableOpacity>
@@ -188,10 +203,10 @@ const Transaction3 = ({ navigation,handleGlobalClick }) => {
               placeholder="מספר סניף בנק"
               value={bankBranchNumber}
               onPress={handleGlobalClick}
-              onChangeText={(text) =>{
+              onChangeText={(text) => {
                 setBankBranchNumber(text.replace(/[^0-9]/g, ""));
-                handleGlobalClick();}
-              }
+                handleGlobalClick();
+              }}
               keyboardType="numeric"
             />
           </View>
@@ -209,7 +224,10 @@ const Transaction3 = ({ navigation,handleGlobalClick }) => {
               open={open2}
               value={selectedBankReciver}
               items={items}
-              setOpen={(value) => {setOpen2(value); handleGlobalClick();}}
+              setOpen={(value) => {
+                setOpen2(value);
+                handleGlobalClick();
+              }}
               setValue={setSelectedBankReciver}
               setItems={setItems}
               textStyle={styles.input}
@@ -222,7 +240,10 @@ const Transaction3 = ({ navigation,handleGlobalClick }) => {
           {/* Account Number Input */}
           <View style={styles.inputContainer}>
             <TouchableOpacity onPress={() => handleIconPress("account")}>
-              <Animatable.View animation={iconAnimation} style={styles.iconContainer}>
+              <Animatable.View
+                animation={iconAnimation}
+                style={styles.iconContainer}
+              >
                 <Entypo name="light-bulb" size={40} color="yellow" />
               </Animatable.View>
             </TouchableOpacity>
@@ -231,11 +252,10 @@ const Transaction3 = ({ navigation,handleGlobalClick }) => {
               placeholder="מספר חשבון בנק של המקבל"
               value={bankAccountNumberReciver}
               onPress={handleGlobalClick}
-              onChangeText={(text) =>{
-                setBankAccountNumberReciver(text.replace(/[^0-9]/g, ""))
+              onChangeText={(text) => {
+                setBankAccountNumberReciver(text.replace(/[^0-9]/g, ""));
                 handleGlobalClick();
-              }
-              }
+              }}
               keyboardType="numeric"
             />
           </View>
@@ -243,7 +263,10 @@ const Transaction3 = ({ navigation,handleGlobalClick }) => {
           {/* Branch Number Input */}
           <View style={styles.inputContainer}>
             <TouchableOpacity onPress={() => handleIconPress("branch")}>
-              <Animatable.View animation={iconAnimation} style={styles.iconContainer}>
+              <Animatable.View
+                animation={iconAnimation}
+                style={styles.iconContainer}
+              >
                 <Entypo name="light-bulb" size={40} color="yellow" />
               </Animatable.View>
             </TouchableOpacity>
@@ -252,7 +275,7 @@ const Transaction3 = ({ navigation,handleGlobalClick }) => {
               placeholder="מספר סניף בנק של המקבל"
               value={bankBranchNumberReciver}
               onPress={handleGlobalClick}
-              onChangeText={(text) =>{
+              onChangeText={(text) => {
                 setBankBranchNumberReciver(text.replace(/[^0-9]/g, ""));
                 handleGlobalClick();
               }}
@@ -262,7 +285,10 @@ const Transaction3 = ({ navigation,handleGlobalClick }) => {
           {/* Reason and Money Inputs */}
           <View style={styles.inputContainer}>
             <TouchableOpacity onPress={() => handleIconPress("reason")}>
-              <Animatable.View animation={iconAnimation} style={styles.iconContainer}>
+              <Animatable.View
+                animation={iconAnimation}
+                style={styles.iconContainer}
+              >
                 <Entypo name="light-bulb" size={40} color="yellow" />
               </Animatable.View>
             </TouchableOpacity>
@@ -271,12 +297,18 @@ const Transaction3 = ({ navigation,handleGlobalClick }) => {
               placeholder="סיבת העברה"
               value={reason}
               onPress={handleGlobalClick}
-              onChangeText={(val)=>{setReason(val);handleGlobalClick();}}
+              onChangeText={(val) => {
+                setReason(val);
+                handleGlobalClick();
+              }}
             />
           </View>
           <View style={styles.inputContainer}>
             <TouchableOpacity onPress={() => handleIconPress("money")}>
-              <Animatable.View animation={iconAnimation} style={styles.iconContainer}>
+              <Animatable.View
+                animation={iconAnimation}
+                style={styles.iconContainer}
+              >
                 <Entypo name="light-bulb" size={40} color="yellow" />
               </Animatable.View>
             </TouchableOpacity>
@@ -285,17 +317,22 @@ const Transaction3 = ({ navigation,handleGlobalClick }) => {
               placeholder="סכום העברה"
               value={money}
               onPress={handleGlobalClick}
-              onChangeText={(text) => {setMoney(text.replace(/[^0-9]/g, ""));handleGlobalClick();}}
+              onChangeText={(text) => {
+                setMoney(text.replace(/[^0-9]/g, ""));
+                handleGlobalClick();
+              }}
               keyboardType="numeric"
             />
           </View>
-          <View style={{alignItems:'center',marginBottom:20,marginTop:10}}>
+          <View
+            style={{ alignItems: "center", marginBottom: 20, marginTop: 10 }}
+          >
             <TouchableOpacity
-                style={[styles.button, styles.sendBtn]}
-                onPress={handelSend}
-                >
-                <Text style={styles.buttonText}>ביצוע העברה</Text>
-                </TouchableOpacity>
+              style={[styles.button, styles.sendBtn]}
+              onPress={handelSend}
+            >
+              <Text style={styles.buttonText}>ביצוע העברה</Text>
+            </TouchableOpacity>
           </View>
           {/* Buttons */}
           <View style={styles.buttonRow}>
@@ -322,16 +359,22 @@ const Transaction3 = ({ navigation,handleGlobalClick }) => {
               style={styles.modalContent}
             >
               <Text style={styles.fontex}>{explanation}</Text>
-              <TouchableOpacity style={[styles.button, styles.closeBtn]} onPress={closeModal}>
+              <TouchableOpacity
+                style={[styles.button, styles.closeBtn]}
+                onPress={closeModal}
+              >
                 <Text style={styles.buttonText}>סגור</Text>
               </TouchableOpacity>
             </Animatable.View>
           </View>
         </Modal>
         <View>
-          <TouchableOpacity style={styles.lottieButton} onPress={handleLottiePress}>
+          <TouchableOpacity
+            style={styles.lottieButton}
+            onPress={handleLottiePress}
+          >
             <LottieView
-              source={require("/Users/shaylavi/Desktop/final_project/m1/model1/screens/Model3/SetupScreens/robot.json")}
+              source={require("../SetupScreens/robot.json")}
               autoPlay
               loop
               style={styles.lottie}
@@ -362,7 +405,7 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     shadowOffset: { width: 0, height: 2 },
     elevation: 5,
-    marginBottom:140
+    marginBottom: 140,
   },
   title: {
     fontSize: 24,
@@ -412,24 +455,21 @@ const styles = StyleSheet.create({
     shadowColor: "black",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
-    shadowRadius: 2
+    shadowRadius: 2,
   },
-  forwardBtn:
-  {
-    backgroundColor:'green'
+  forwardBtn: {
+    backgroundColor: "green",
   },
-  backBtn:
-  {
-    backgroundColor:'orange'
+  backBtn: {
+    backgroundColor: "orange",
   },
-  closeBtn:
-  {
-    backgroundColor:'red'
+  closeBtn: {
+    backgroundColor: "red",
   },
   buttonText: {
     fontSize: 18,
     color: "#fff",
-    fontWeight:'bold'
+    fontWeight: "bold",
   },
   modalContainer: {
     flex: 1,
@@ -442,15 +482,15 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 10,
     alignItems: "center",
-    backgroundColor:"whitesmoke",
-    borderEndColor:'black',
-    borderBottomEndRadius:'2'
+    backgroundColor: "whitesmoke",
+    borderEndColor: "black",
+    borderBottomEndRadius: "2",
   },
   fontex: {
     fontSize: 20,
     marginBottom: 15,
-    fontWeight:'bold',
-    color:'black'
+    fontWeight: "bold",
+    color: "black",
   },
   buttonRow: {
     flexDirection: "row",
@@ -462,15 +502,13 @@ const styles = StyleSheet.create({
     borderColor: "gray",
     borderRadius: 5,
   },
-  
+
   dropdownContainer: {
     width: 595,
     borderColor: "gray",
-    
   },
-  sendBtn:
-  {
-    backgroundColor:'#52bfbf'
+  sendBtn: {
+    backgroundColor: "#52bfbf",
   },
   lottieButton: {
     position: "absolute",
@@ -481,12 +519,12 @@ const styles = StyleSheet.create({
     shadowColor: "black",
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.3,
-    shadowRadius: 2
+    shadowRadius: 2,
   },
   lottie: {
     width: "100%",
     height: "100%",
-  }
+  },
 });
 
 export default Transaction3;

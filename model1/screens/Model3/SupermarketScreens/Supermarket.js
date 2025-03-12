@@ -11,7 +11,7 @@ import { useUser } from "../../Model2/userContext";
 import * as Animatable from "react-native-animatable";
 import LottieView from "lottie-react-native";
 
-const Supermarket3 = ({ navigation, handleGlobalClick}) => {
+const Supermarket3 = ({ navigation, handleGlobalClick }) => {
   const { user } = useUser();
   const animatableRef = useRef(null);
 
@@ -29,10 +29,10 @@ const Supermarket3 = ({ navigation, handleGlobalClick}) => {
   const handelBank = () => {
     Alert.alert("הסל הוזמן בהצלחה");
     handleGlobalClick();
-    }
+  };
   const handleLottiePress = () => {
-      Alert.alert("play video")
-    }
+    Alert.alert("play video");
+  };
   return (
     <Animatable.View
       ref={animatableRef}
@@ -46,30 +46,50 @@ const Supermarket3 = ({ navigation, handleGlobalClick}) => {
         </View>
         <View>
           <Text style={styles.subtitle}>
-            כדי לנווט בין השירותים השונים לשירותים השונים לחץ על לחצן יעודי. אם אין באפשרותכם להשתמש בשירות זה נא לעדכן פרטיכם האישיים וההרשאות המתאימות
+            כדי לנווט בין השירותים השונים לשירותים השונים לחץ על לחצן יעודי. אם
+            אין באפשרותכם להשתמש בשירות זה נא לעדכן פרטיכם האישיים וההרשאות
+            המתאימות
           </Text>
         </View>
-        <TouchableOpacity style={[styles.button, styles.forwardButton,{backgroundColor:'#52bfbf',marginTop:'150'}]} onPress={handelBank}>
-            <Text style={styles.forwardButtonText}>הזמנת סל קיים</Text>
+        <TouchableOpacity
+          style={[
+            styles.button,
+            styles.forwardButton,
+            { backgroundColor: "#52bfbf", marginTop: "150" },
+          ]}
+          onPress={handelBank}
+        >
+          <Text style={styles.forwardButtonText}>הזמנת סל קיים</Text>
         </TouchableOpacity>
         <View style={styles.buttonRow}>
-        <TouchableOpacity
-            style={[styles.button, styles.forwardButton,{backgroundColor:'orange'}]}
+          <TouchableOpacity
+            style={[
+              styles.button,
+              styles.forwardButton,
+              { backgroundColor: "orange" },
+            ]}
             onPress={() => handleNavigate("EditCart3", "forward")}
           >
             <Text style={styles.forwardButtonText}>עריכת סל קיים</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={[styles.button, styles.forwardButton,{backgroundColor:'green'}]}
+            style={[
+              styles.button,
+              styles.forwardButton,
+              { backgroundColor: "green" },
+            ]}
             onPress={() => handleNavigate("Home13", "back")}
           >
             <Text style={styles.forwardButtonText}>מסך בית</Text>
           </TouchableOpacity>
         </View>
         <View>
-          <TouchableOpacity style={styles.lottieButton} onPress={handleLottiePress}>
+          <TouchableOpacity
+            style={styles.lottieButton}
+            onPress={handleLottiePress}
+          >
             <LottieView
-              source={require("/Users/shaylavi/Desktop/final_project/m1/model1/screens/Model3/SetupScreens/robot.json")}
+              source={require("../SetupScreens/robot.json")}
               autoPlay
               loop
               style={styles.lottie}
@@ -141,19 +161,19 @@ const styles = StyleSheet.create({
   },
   lottieButton: {
     position: "absolute",
-    top:10,
+    top: 10,
     right: 110,
     width: 300,
     height: 300,
     shadowColor: "black",
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.3,
-    shadowRadius: 2
+    shadowRadius: 2,
   },
   lottie: {
     width: "100%",
     height: "100%",
-  }
+  },
 });
 
 export default Supermarket3;

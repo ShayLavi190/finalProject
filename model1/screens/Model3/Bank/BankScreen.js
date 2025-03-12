@@ -11,7 +11,7 @@ import { useUser } from "../../Model2/userContext";
 import * as Animatable from "react-native-animatable";
 import LottieView from "lottie-react-native";
 
-const Bank3 = ({ navigation,handleGlobalClick }) => {
+const Bank3 = ({ navigation, handleGlobalClick }) => {
   const { user } = useUser();
   const animatableRef = useRef(null);
 
@@ -29,10 +29,10 @@ const Bank3 = ({ navigation,handleGlobalClick }) => {
   const handelBank = () => {
     Alert.alert("הועברת למצב חשבון");
     handleGlobalClick();
-    }
+  };
   const handleLottiePress = () => {
-      Alert.alert("play video")
-    }
+    Alert.alert("play video");
+  };
   return (
     <Animatable.View
       ref={animatableRef}
@@ -46,29 +46,61 @@ const Bank3 = ({ navigation,handleGlobalClick }) => {
         </View>
         <View>
           <Text style={styles.subtitle}>
-          כדי לנווט בין השירותים השונים לחץ על הכפתור המתאים לשירות שברצונך להשתמש בו
+            כדי לנווט בין השירותים השונים לחץ על הכפתור המתאים לשירות שברצונך
+            להשתמש בו
           </Text>
         </View>
         <View style={styles.buttonRow}>
-        <TouchableOpacity style={[styles.button, styles.forwardButton,{backgroundColor:'#52bfbf',marginTop:'70'}]} onPress={handelBank}>
+          <TouchableOpacity
+            style={[
+              styles.button,
+              styles.forwardButton,
+              { backgroundColor: "#52bfbf", marginTop: "70" },
+            ]}
+            onPress={handelBank}
+          >
             <Text style={styles.forwardButtonText}>מצב חשבון</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.button, styles.forwardButton,{backgroundColor:'#2D4B73',marginTop:'70'}]} onPress={() => handleNavigate("ContactBanker3", "forward")}>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.button,
+              styles.forwardButton,
+              { backgroundColor: "#2D4B73", marginTop: "70" },
+            ]}
+            onPress={() => handleNavigate("ContactBanker3", "forward")}
+          >
             <Text style={styles.forwardButtonText}>כתוב לבנקאי</Text>
-        </TouchableOpacity>
+          </TouchableOpacity>
         </View>
         <View style={styles.buttonRow}>
-        <TouchableOpacity style={[styles.button, styles.forwardButton,{backgroundColor:'#F2AB27',marginTop:'70'}]} onPress={() => handleNavigate("Transaction3", "forward")}>
-        <Text style={styles.forwardButtonText}>העברה</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.button, styles.forwardButton,{backgroundColor:'green',marginTop:'70'}]} onPress={() => handleNavigate("Home13", "back")}>
-        <Text style={styles.forwardButtonText}>מסך בית</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.button,
+              styles.forwardButton,
+              { backgroundColor: "#F2AB27", marginTop: "70" },
+            ]}
+            onPress={() => handleNavigate("Transaction3", "forward")}
+          >
+            <Text style={styles.forwardButtonText}>העברה</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.button,
+              styles.forwardButton,
+              { backgroundColor: "green", marginTop: "70" },
+            ]}
+            onPress={() => handleNavigate("Home13", "back")}
+          >
+            <Text style={styles.forwardButtonText}>מסך בית</Text>
+          </TouchableOpacity>
         </View>
         <View>
-          <TouchableOpacity style={styles.lottieButton} onPress={handleLottiePress}>
+          <TouchableOpacity
+            style={styles.lottieButton}
+            onPress={handleLottiePress}
+          >
             <LottieView
-              source={require("/Users/shaylavi/Desktop/final_project/m1/model1/screens/Model3/SetupScreens/robot.json")}
+              source={require("../SetupScreens/robot.json")}
               autoPlay
               loop
               style={styles.lottie}
@@ -124,7 +156,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     borderRadius: 10,
     width: 230,
-    height:70,
+    height: 70,
     shadowColor: "black",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
@@ -152,12 +184,12 @@ const styles = StyleSheet.create({
     shadowColor: "black",
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.3,
-    shadowRadius: 2
+    shadowRadius: 2,
   },
   lottie: {
     width: "100%",
     height: "100%",
-  }
+  },
 });
 
 export default Bank3;

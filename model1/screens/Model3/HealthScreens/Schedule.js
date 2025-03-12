@@ -18,7 +18,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import LottieView from "lottie-react-native";
 
-const Schedule3 = ({ navigation,handleGlobalClick }) => {
+const Schedule3 = ({ navigation, handleGlobalClick }) => {
   const { user, updateUser } = useUser();
   const [time, setTime] = useState(new Date());
   const [date, setDate] = useState(new Date());
@@ -28,9 +28,9 @@ const Schedule3 = ({ navigation,handleGlobalClick }) => {
   const [iconAnimation, setIconAnimation] = useState("");
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState([
-    { label: 'בדיקה כללית', value: 'בדיקה כללית' },
-    { label: 'רופא משפחה', value: 'רופא משפחה' },
-    { label: 'בדיקות דם', value: 'בדיקות דם' },
+    { label: "בדיקה כללית", value: "בדיקה כללית" },
+    { label: "רופא משפחה", value: "רופא משפחה" },
+    { label: "בדיקות דם", value: "בדיקות דם" },
   ]);
   const animatableRef = useRef(null);
   const modalRef = useRef(null);
@@ -60,16 +60,13 @@ const Schedule3 = ({ navigation,handleGlobalClick }) => {
   };
 
   const handelSend = () => {
-    if ( time !== "" && date !== "" && type !== "" ) 
-    {
+    if (time !== "" && date !== "" && type !== "") {
       Alert.alert("התור נקבע בהצלחה");
       handleGlobalClick();
       setType("");
       setDate(new Date());
       setTime(new Date());
-    } 
-    else 
-    {
+    } else {
       Alert.alert("לא כל השדות מולאו. מלא/י את כלל השדות");
     }
   };
@@ -82,8 +79,8 @@ const Schedule3 = ({ navigation,handleGlobalClick }) => {
     handleGlobalClick();
   };
   const handleLottiePress = () => {
-      Alert.alert("play video")
-    }
+    Alert.alert("play video");
+  };
   return (
     <Animatable.View
       ref={animatableRef}
@@ -102,77 +99,82 @@ const Schedule3 = ({ navigation,handleGlobalClick }) => {
           </Text>
 
           <View style={styles.inputContainer}>
-          <TouchableOpacity onPress={() => handleIconPress("type")}>
-            <Animatable.View
+            <TouchableOpacity onPress={() => handleIconPress("type")}>
+              <Animatable.View
                 animation={iconAnimation}
                 style={styles.iconContainer}
               >
                 <Entypo name="light-bulb" size={40} color="yellow" />
               </Animatable.View>
             </TouchableOpacity>
-              <DropDownPicker
-                open={open}
-                value={type}
-                items={items}
-                setOpen={(value) => {setOpen(value); handleGlobalClick();}}
-                setValue={setType}
-                setItems={setItems}
-                textStyle={styles.input}
-                placeholder="בחר סוג טיפול..."
-                style={styles.dropdown}
-                dropDownContainerStyle={styles.dropdownContainer}
-              />
+            <DropDownPicker
+              open={open}
+              value={type}
+              items={items}
+              setOpen={(value) => {
+                setOpen(value);
+                handleGlobalClick();
+              }}
+              setValue={setType}
+              setItems={setItems}
+              textStyle={styles.input}
+              placeholder="בחר סוג טיפול..."
+              style={styles.dropdown}
+              dropDownContainerStyle={styles.dropdownContainer}
+            />
           </View>
           <View style={styles.inputContainer}>
             <TouchableOpacity onPress={() => handleIconPress("date")}>
-                <Animatable.View
+              <Animatable.View
                 animation={iconAnimation}
                 style={styles.iconContainer}
-                >
+              >
                 <Entypo name="light-bulb" size={40} color="yellow" />
-                </Animatable.View>
+              </Animatable.View>
             </TouchableOpacity>
-                <View style={styles.datePickerContainer}>
-                    <DateTimePicker
-                    value={date}
-                    mode="date"
-                    display="inline" 
-                    onChange={(event, selectedDate) => {
-                        setDate(selectedDate || date);
-                        handleGlobalClick();
-                    }}
-                    />
-                </View>
-        </View>
-        <View style={styles.inputContainer}>
+            <View style={styles.datePickerContainer}>
+              <DateTimePicker
+                value={date}
+                mode="date"
+                display="inline"
+                onChange={(event, selectedDate) => {
+                  setDate(selectedDate || date);
+                  handleGlobalClick();
+                }}
+              />
+            </View>
+          </View>
+          <View style={styles.inputContainer}>
             <TouchableOpacity onPress={() => handleIconPress("time")}>
-                <Animatable.View
+              <Animatable.View
                 animation={iconAnimation}
                 style={styles.iconContainer}
-                >
+              >
                 <Entypo name="light-bulb" size={40} color="yellow" />
-                </Animatable.View>
+              </Animatable.View>
             </TouchableOpacity>
-                <View style={styles.datePickerContainer}>
-                    <DateTimePicker
-                    value={time}
-                    mode="time"
-                    display="inline"
-                    onChange={(event, selectedTime) => {
-                        setTime(selectedTime || time);
-                        handleGlobalClick();
-                    }}
-                    style = {styles.time}
-                    />
-                </View>
-        </View>
-          <View style={{alignItems:'center',marginBottom:20,marginTop:10}}>
+            <View style={styles.datePickerContainer}>
+              <DateTimePicker
+                value={time}
+                mode="time"
+                display="inline"
+                onChange={(event, selectedTime) => {
+                  setTime(selectedTime || time);
+                  handleGlobalClick();
+                }}
+                style={styles.time}
+              />
+            </View>
+          </View>
+          <View
+            style={{ alignItems: "center", marginBottom: 20, marginTop: 10 }}
+          >
             <TouchableOpacity
-                style={[styles.button, styles.sendBtn]}
-                onPress={handelSend}
-                >
-                <Text style={styles.buttonText}>קבע תור</Text>
-                </TouchableOpacity>
+              style={[styles.button, styles.sendBtn]}
+              onPress={handelSend}
+            >
+              <Text style={styles.buttonText}>קבע תור</Text>
+            </TouchableOpacity>
           </View>
           {/* Buttons */}
           <View style={styles.buttonRow}>
@@ -191,9 +193,12 @@ const Schedule3 = ({ navigation,handleGlobalClick }) => {
           </View>
         </View>
         <View>
-          <TouchableOpacity style={styles.lottieButton} onPress={handleLottiePress}>
+          <TouchableOpacity
+            style={styles.lottieButton}
+            onPress={handleLottiePress}
+          >
             <LottieView
-              source={require("/Users/shaylavi/Desktop/final_project/m1/model1/screens/Model3/SetupScreens/robot.json")}
+              source={require("../SetupScreens/robot.json")}
               autoPlay
               loop
               style={styles.lottie}
@@ -209,7 +214,10 @@ const Schedule3 = ({ navigation,handleGlobalClick }) => {
               style={styles.modalContent}
             >
               <Text style={styles.fontex}>{explanation}</Text>
-              <TouchableOpacity style={[styles.button, styles.closeBtn]} onPress={closeModal}>
+              <TouchableOpacity
+                style={[styles.button, styles.closeBtn]}
+                onPress={closeModal}
+              >
                 <Text style={styles.buttonText}>סגור</Text>
               </TouchableOpacity>
             </Animatable.View>
@@ -239,7 +247,7 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     shadowOffset: { width: 0, height: 2 },
     elevation: 5,
-    marginBottom:140
+    marginBottom: 140,
   },
   title: {
     fontSize: 24,
@@ -289,24 +297,21 @@ const styles = StyleSheet.create({
     shadowColor: "black",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
-    shadowRadius: 2
+    shadowRadius: 2,
   },
-  forwardBtn:
-  {
-    backgroundColor:'green'
+  forwardBtn: {
+    backgroundColor: "green",
   },
-  backBtn:
-  {
-    backgroundColor:'orange'
+  backBtn: {
+    backgroundColor: "orange",
   },
-  closeBtn:
-  {
-    backgroundColor:'red'
+  closeBtn: {
+    backgroundColor: "red",
   },
   buttonText: {
     fontSize: 18,
     color: "#fff",
-    fontWeight:'bold'
+    fontWeight: "bold",
   },
   modalContainer: {
     flex: 1,
@@ -319,15 +324,15 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 10,
     alignItems: "center",
-    backgroundColor:"whitesmoke",
-    borderEndColor:'black',
-    borderBottomEndRadius:'2'
+    backgroundColor: "whitesmoke",
+    borderEndColor: "black",
+    borderBottomEndRadius: "2",
   },
   fontex: {
     fontSize: 20,
     marginBottom: 15,
-    fontWeight:'bold',
-    color:'black'
+    fontWeight: "bold",
+    color: "black",
   },
   buttonRow: {
     flexDirection: "row",
@@ -339,27 +344,24 @@ const styles = StyleSheet.create({
     borderColor: "gray",
     borderRadius: 5,
   },
-  
+
   dropdownContainer: {
     width: 595,
     borderColor: "gray",
-    
   },
-  sendBtn:
-  {
-    backgroundColor:'#52bfbf'
+  sendBtn: {
+    backgroundColor: "#52bfbf",
   },
   datePickerContainer: {
-    alignContent: 'center',
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'row',
-    width: '85%', 
+    alignContent: "center",
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
+    width: "85%",
     padding: 10,
   },
-  time:
-  {
-    width:200
+  time: {
+    width: 200,
   },
   lottieButton: {
     position: "absolute",
@@ -370,12 +372,12 @@ const styles = StyleSheet.create({
     shadowColor: "black",
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.3,
-    shadowRadius: 2
+    shadowRadius: 2,
   },
   lottie: {
     width: "100%",
     height: "100%",
-  }
+  },
 });
 
 export default Schedule3;

@@ -15,7 +15,7 @@ import * as Animatable from "react-native-animatable";
 import DropDownPicker from "react-native-dropdown-picker";
 import LottieView from "lottie-react-native";
 
-const ContactBanker3 = ({ navigation,handleGlobalClick }) => {
+const ContactBanker3 = ({ navigation, handleGlobalClick }) => {
   const [selectedAction, setSelectedAction] = useState("");
   const [info, setInfo] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
@@ -23,19 +23,19 @@ const ContactBanker3 = ({ navigation,handleGlobalClick }) => {
   const [iconAnimation, setIconAnimation] = useState("");
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState([
-        { label: 'בקשה למידע נוסף', value: 'בקשה למידע נוסף' },
-        { label: 'תלונה', value: 'תלונה' },
-        { label: 'שירות לקוחות', value: 'שירות לקוחות' },
-        { label: 'פעולה', value: 'פעולה' },
-        { label: 'הגדלת מסגרת', value: 'הגדלת מסגרת' },
-        { label: 'הלוואה', value: 'הלוואה' },
-        { label: 'אחר', value: 'אחר' },
+    { label: "בקשה למידע נוסף", value: "בקשה למידע נוסף" },
+    { label: "תלונה", value: "תלונה" },
+    { label: "שירות לקוחות", value: "שירות לקוחות" },
+    { label: "פעולה", value: "פעולה" },
+    { label: "הגדלת מסגרת", value: "הגדלת מסגרת" },
+    { label: "הלוואה", value: "הלוואה" },
+    { label: "אחר", value: "אחר" },
   ]);
   const animatableRef = useRef(null);
   const modalRef = useRef(null);
   const handleLottiePress = () => {
-      Alert.alert("play video")
-    }
+    Alert.alert("play video");
+  };
   const handleIconPress = (field) => {
     const fieldExplanations = {
       action: "אנא בחר פעולה שברצונך לבצע מהרשימה.",
@@ -61,14 +61,11 @@ const ContactBanker3 = ({ navigation,handleGlobalClick }) => {
 
   const handelSend = () => {
     handleGlobalClick();
-    if ( info !== "" && selectedAction !== "")
-    {
+    if (info !== "" && selectedAction !== "") {
       Alert.alert("הבקשה הועברה לבנקאי בהצלחה");
       setInfo("");
       setSelectedAction("");
-    } 
-    else 
-    {
+    } else {
       Alert.alert("לא כל השדות מולאו. מלא/י את כלל השדות");
     }
   };
@@ -100,8 +97,8 @@ const ContactBanker3 = ({ navigation,handleGlobalClick }) => {
 
           {/* Bank Picker */}
           <View style={styles.inputContainer}>
-          <TouchableOpacity onPress={() => handleIconPress("action")}>
-            <Animatable.View
+            <TouchableOpacity onPress={() => handleIconPress("action")}>
+              <Animatable.View
                 animation={iconAnimation}
                 style={styles.iconContainer}
               >
@@ -112,7 +109,10 @@ const ContactBanker3 = ({ navigation,handleGlobalClick }) => {
               open={open}
               value={selectedAction}
               items={items}
-              setOpen={(value) => {setOpen(value); handleGlobalClick();}}
+              setOpen={(value) => {
+                setOpen(value);
+                handleGlobalClick();
+              }}
               setValue={setSelectedAction}
               setItems={setItems}
               textStyle={styles.input}
@@ -125,25 +125,33 @@ const ContactBanker3 = ({ navigation,handleGlobalClick }) => {
           {/* Account Number Input */}
           <View style={styles.inputContainer}>
             <TouchableOpacity onPress={() => handleIconPress("info")}>
-              <Animatable.View animation={iconAnimation} style={styles.iconContainer}>
+              <Animatable.View
+                animation={iconAnimation}
+                style={styles.iconContainer}
+              >
                 <Entypo name="light-bulb" size={40} color="yellow" />
               </Animatable.View>
             </TouchableOpacity>
             <TextInput
-              style={[styles.input,{height:200}]}
+              style={[styles.input, { height: 200 }]}
               placeholder="תיאור"
               value={info}
               onPress={handleGlobalClick}
-              onChangeText={(text) => {setInfo(text);handleGlobalClick();}}
+              onChangeText={(text) => {
+                setInfo(text);
+                handleGlobalClick();
+              }}
             />
           </View>
-          <View style={{alignItems:'center',marginBottom:20,marginTop:10}}>
+          <View
+            style={{ alignItems: "center", marginBottom: 20, marginTop: 10 }}
+          >
             <TouchableOpacity
-                style={[styles.button, styles.sendBtn]}
-                onPress={handelSend}
-                >
-                <Text style={styles.buttonText}>שליחת בקשה</Text>
-                </TouchableOpacity>
+              style={[styles.button, styles.sendBtn]}
+              onPress={handelSend}
+            >
+              <Text style={styles.buttonText}>שליחת בקשה</Text>
+            </TouchableOpacity>
           </View>
           {/* Buttons */}
           <View style={styles.buttonRow}>
@@ -170,16 +178,22 @@ const ContactBanker3 = ({ navigation,handleGlobalClick }) => {
               style={styles.modalContent}
             >
               <Text style={styles.fontex}>{explanation}</Text>
-              <TouchableOpacity style={[styles.button, styles.closeBtn]} onPress={closeModal}>
+              <TouchableOpacity
+                style={[styles.button, styles.closeBtn]}
+                onPress={closeModal}
+              >
                 <Text style={styles.buttonText}>סגור</Text>
               </TouchableOpacity>
             </Animatable.View>
           </View>
         </Modal>
         <View>
-          <TouchableOpacity style={styles.lottieButton} onPress={handleLottiePress}>
+          <TouchableOpacity
+            style={styles.lottieButton}
+            onPress={handleLottiePress}
+          >
             <LottieView
-              source={require("/Users/shaylavi/Desktop/final_project/m1/model1/screens/Model3/SetupScreens/robot.json")}
+              source={require("../SetupScreens/robot.json")}
               autoPlay
               loop
               style={styles.lottie}
@@ -210,7 +224,7 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     shadowOffset: { width: 0, height: 2 },
     elevation: 5,
-    marginBottom:140
+    marginBottom: 140,
   },
   title: {
     fontSize: 24,
@@ -257,28 +271,25 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     width: "48%",
-    marginTop:20,
+    marginTop: 20,
     shadowColor: "black",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 2,
   },
-  forwardBtn:
-  {
-    backgroundColor:'green'
+  forwardBtn: {
+    backgroundColor: "green",
   },
-  backBtn:
-  {
-    backgroundColor:'orange'
+  backBtn: {
+    backgroundColor: "orange",
   },
-  closeBtn:
-  {
-    backgroundColor:'red'
+  closeBtn: {
+    backgroundColor: "red",
   },
   buttonText: {
     fontSize: 18,
     color: "#fff",
-    fontWeight:'bold'
+    fontWeight: "bold",
   },
   modalContainer: {
     flex: 1,
@@ -291,15 +302,15 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 10,
     alignItems: "center",
-    backgroundColor:"whitesmoke",
-    borderEndColor:'black',
-    borderBottomEndRadius:'2'
+    backgroundColor: "whitesmoke",
+    borderEndColor: "black",
+    borderBottomEndRadius: "2",
   },
   fontex: {
     fontSize: 20,
     marginBottom: 15,
-    fontWeight:'bold',
-    color:'black'
+    fontWeight: "bold",
+    color: "black",
   },
   buttonRow: {
     flexDirection: "row",
@@ -311,15 +322,13 @@ const styles = StyleSheet.create({
     borderColor: "gray",
     borderRadius: 5,
   },
-  
+
   dropdownContainer: {
     width: 595,
     borderColor: "gray",
-    
   },
-  sendBtn:
-  {
-    backgroundColor:'#52bfbf'
+  sendBtn: {
+    backgroundColor: "#52bfbf",
   },
   lottieButton: {
     position: "absolute",
@@ -330,12 +339,12 @@ const styles = StyleSheet.create({
     shadowColor: "black",
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.3,
-    shadowRadius: 2
+    shadowRadius: 2,
   },
   lottie: {
     width: "100%",
     height: "100%",
-  }
+  },
 });
 
 export default ContactBanker3;

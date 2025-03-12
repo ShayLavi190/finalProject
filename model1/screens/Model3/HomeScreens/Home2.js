@@ -17,8 +17,16 @@ const Home23 = ({ navigation }) => {
 
   const buttons = [
     { label: "בידור", route: "Entertainment3", backgroundColor: "#a39193" },
-    { label: 'עידכון פרטים אישיים', route: "Setup3", backgroundColor: "#8db1fa" },
-    { label: 'הרשאות פרטיות', route: "Premissions13", backgroundColor: "#35223c" },
+    {
+      label: "עידכון פרטים אישיים",
+      route: "Setup3",
+      backgroundColor: "#8db1fa",
+    },
+    {
+      label: "הרשאות פרטיות",
+      route: "Premissions13",
+      backgroundColor: "#35223c",
+    },
     { label: "ביצועים", route: "Performance3", backgroundColor: "#9dbda4" },
   ];
 
@@ -28,19 +36,32 @@ const Home23 = ({ navigation }) => {
       .then(() => navigation.navigate(route));
   };
   const handleLottiePress = () => {
-      Alert.alert("play video")
-    }
+    Alert.alert("play video");
+  };
   return (
-    <Animatable.View ref={animatableRef} style={{ flex: 1 }} animation="fadeInDown" duration={2000} >
+    <Animatable.View
+      ref={animatableRef}
+      style={{ flex: 1 }}
+      animation="fadeInDown"
+      duration={2000}
+    >
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.titleContainer}>
-          <Text style={styles.subtitle}>ברוך הבא לדף הבית. בחר את השירות שברצונך להשתמש. כל כפתור יוביל אותך לשירותים באותו נושא. אם קיבלת הודעה שלא ניתן לבצע את השירות הנ״ל ככל הנראה צריך למלא פרטים אישיים מסוימים או להפעיל הרשאות מסויימות. תיקון הפרטים יופיעו בהודעת השגיאה.</Text>
+          <Text style={styles.subtitle}>
+            ברוך הבא לדף הבית. בחר את השירות שברצונך להשתמש. כל כפתור יוביל אותך
+            לשירותים באותו נושא. אם קיבלת הודעה שלא ניתן לבצע את השירות הנ״ל ככל
+            הנראה צריך למלא פרטים אישיים מסוימים או להפעיל הרשאות מסויימות.
+            תיקון הפרטים יופיעו בהודעת השגיאה.
+          </Text>
         </View>
         <View style={styles.buttonRowContainer}>
           {buttons.map((button) => (
             <View key={button.label} style={styles.buttonWrapper}>
               <TouchableOpacity
-                style={[styles.button, { backgroundColor: button.backgroundColor }]}
+                style={[
+                  styles.button,
+                  { backgroundColor: button.backgroundColor },
+                ]}
                 onPress={() => handleNavigate(button.route)}
               >
                 <Text style={styles.buttonText}>{button.label}</Text>
@@ -48,13 +69,19 @@ const Home23 = ({ navigation }) => {
             </View>
           ))}
         </View>
-        <TouchableOpacity style={styles.forwardButton} onPress={() => handleNavigate("Home13")}>
+        <TouchableOpacity
+          style={styles.forwardButton}
+          onPress={() => handleNavigate("Home13")}
+        >
           <Text style={styles.forwardButtonText}>חזור</Text>
         </TouchableOpacity>
         <View>
-          <TouchableOpacity style={styles.lottieButton} onPress={handleLottiePress}>
+          <TouchableOpacity
+            style={styles.lottieButton}
+            onPress={handleLottiePress}
+          >
             <LottieView
-              source={require("/Users/shaylavi/Desktop/final_project/m1/model1/screens/Model3/SetupScreens/robot.json")}
+              source={require("../SetupScreens/robot.json")}
               autoPlay
               loop
               style={styles.lottie}
@@ -72,7 +99,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 20,
     backgroundColor: "#f2f2f2",
-    marginTop:50,
+    marginTop: 50,
   },
   titleContainer: {
     width: "100%",
@@ -89,7 +116,7 @@ const styles = StyleSheet.create({
     shadowColor: "black",
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.3,
-    shadowRadius: 2
+    shadowRadius: 2,
   },
   lottie: {
     width: "100%",
@@ -153,9 +180,9 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: "#555",
     textAlign: "center",
-    marginTop:20,
-    fontWeight:'bold'
-  }
+    marginTop: 20,
+    fontWeight: "bold",
+  },
 });
 
 export default Home23;

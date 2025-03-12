@@ -11,7 +11,7 @@ import { useUser } from "../../Model2/userContext";
 import * as Animatable from "react-native-animatable";
 import LottieView from "lottie-react-native";
 
-const Health3 = ({ navigation,handleGlobalClick }) => {
+const Health3 = ({ navigation, handleGlobalClick }) => {
   const { user } = useUser();
   const animatableRef = useRef(null);
 
@@ -29,10 +29,10 @@ const Health3 = ({ navigation,handleGlobalClick }) => {
   const handelBuy = () => {
     Alert.alert("התרופות הוזמנו");
     handleGlobalClick();
-    }
+  };
   const handleLottiePress = () => {
-      Alert.alert("play video")
-    }
+    Alert.alert("play video");
+  };
   return (
     <Animatable.View
       ref={animatableRef}
@@ -45,36 +45,62 @@ const Health3 = ({ navigation,handleGlobalClick }) => {
           <Text style={styles.title}>ברוך הבא לשירותי קופת חולים</Text>
         </View>
         <View>
-        <Text style={styles.subtitle}>
-        כדי לנווט בין השירותים השונים לחץ על הכפתור המתאים לשירות שברצונך להשתמש בו
+          <Text style={styles.subtitle}>
+            כדי לנווט בין השירותים השונים לחץ על הכפתור המתאים לשירות שברצונך
+            להשתמש בו
           </Text>
         </View>
         <View style={styles.buttonRow}>
-        <TouchableOpacity style={[styles.button, styles.forwardButton,{backgroundColor:'#52bfbf',marginTop:'120'}]}  onPress={() => handleNavigate("Results3", "forward")}>
+          <TouchableOpacity
+            style={[
+              styles.button,
+              styles.forwardButton,
+              { backgroundColor: "#52bfbf", marginTop: "120" },
+            ]}
+            onPress={() => handleNavigate("Results3", "forward")}
+          >
             <Text style={styles.forwardButtonText}>תוצאות בדיקות</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.button, styles.forwardButton,{backgroundColor:'#2D4B73',marginTop:'120'}]} onPress={handelBuy}>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.button,
+              styles.forwardButton,
+              { backgroundColor: "#2D4B73", marginTop: "120" },
+            ]}
+            onPress={handelBuy}
+          >
             <Text style={styles.forwardButtonText}>הזמנת סל תרופות</Text>
-        </TouchableOpacity>
+          </TouchableOpacity>
         </View>
         <View style={styles.buttonRow}>
-        <TouchableOpacity
-            style={[styles.button, styles.forwardButton,{backgroundColor:'orange'}]}
+          <TouchableOpacity
+            style={[
+              styles.button,
+              styles.forwardButton,
+              { backgroundColor: "orange" },
+            ]}
             onPress={() => handleNavigate("Schedule3", "forward")}
           >
             <Text style={styles.forwardButtonText}>קביעת תור</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={[styles.button, styles.forwardButton,{backgroundColor:'green'}]}
+            style={[
+              styles.button,
+              styles.forwardButton,
+              { backgroundColor: "green" },
+            ]}
             onPress={() => handleNavigate("Home13", "back")}
           >
             <Text style={styles.forwardButtonText}>מסך בית</Text>
           </TouchableOpacity>
         </View>
         <View>
-          <TouchableOpacity style={styles.lottieButton} onPress={handleLottiePress}>
+          <TouchableOpacity
+            style={styles.lottieButton}
+            onPress={handleLottiePress}
+          >
             <LottieView
-              source={require("/Users/shaylavi/Desktop/final_project/m1/model1/screens/Model3/SetupScreens/robot.json")}
+              source={require("../SetupScreens/robot.json")}
               autoPlay
               loop
               style={styles.lottie}
@@ -130,11 +156,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     borderRadius: 10,
     width: 230,
-    height:70,
+    height: 70,
     shadowColor: "black",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
-    shadowRadius: 2
+    shadowRadius: 2,
   },
   forwardButtonText: {
     color: "#fff",
@@ -158,12 +184,12 @@ const styles = StyleSheet.create({
     shadowColor: "black",
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.3,
-    shadowRadius: 2
+    shadowRadius: 2,
   },
   lottie: {
     width: "100%",
     height: "100%",
-  }
+  },
 });
 
 export default Health3;
