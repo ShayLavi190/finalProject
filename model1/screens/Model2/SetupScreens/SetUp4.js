@@ -15,7 +15,7 @@ import * as Animatable from "react-native-animatable";
 import DropDownPicker from "react-native-dropdown-picker";
 import { useUser } from "../userContext";
 
-const SetUp4 = ({ navigation,handleGlobalClick }) => {
+const SetUp4 = ({ navigation, handleGlobalClick }) => {
   const { user, updateUser } = useUser();
   const [selectedhealthFund, setSelectedhealthFund] = useState("");
   const [healthFundAccountNumber, sethealthFundAccountNumber] = useState("");
@@ -25,13 +25,13 @@ const SetUp4 = ({ navigation,handleGlobalClick }) => {
   const [iconAnimation, setIconAnimation] = useState("");
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState([
-        { label: 'מכבי', value: 'מכבי' },
-        { label: 'כללית', value: 'כללית' },
-        { label: 'מאוחדת', value: 'מאוחדת' },
-        { label: 'לאומית', value: 'לאומית' }
-    ]);
-    
-  const animatableRef = useRef(null); 
+    { label: "מכבי", value: "מכבי" },
+    { label: "כללית", value: "כללית" },
+    { label: "מאוחדת", value: "מאוחדת" },
+    { label: "לאומית", value: "לאומית" },
+  ]);
+
+  const animatableRef = useRef(null);
   const modalRef = useRef(null);
   const pickerRef = useRef(null);
 
@@ -52,7 +52,7 @@ const SetUp4 = ({ navigation,handleGlobalClick }) => {
     setModalVisible(true);
     handleGlobalClick();
   };
-  
+
   const handleMoveForward = () => {
     if (!animatableRef.current) {
       // Fallback if the animation reference is not set
@@ -75,14 +75,11 @@ const SetUp4 = ({ navigation,handleGlobalClick }) => {
         navigation.navigate("Premissions1");
       });
   };
-  
 
   const handleGoBack = () => {
-    animatableRef.current
-      .animate("fadeOutRight", 500)
-      .then(() => {
-        navigation.navigate("SetUp3");
-      });
+    animatableRef.current.animate("fadeOutRight", 500).then(() => {
+      navigation.navigate("SetUp3");
+    });
   };
 
   const closeModal = () => {
@@ -107,34 +104,46 @@ const SetUp4 = ({ navigation,handleGlobalClick }) => {
         <View style={styles.card}>
           <Text style={styles.title}>הגדרת פרטי חשבון קופת חולים ואיש קשר</Text>
           <Text style={styles.subtitle}>
-            .כדי שהרובוט המטפל יוכל להפעיל את שירותיו לטובך, נצטרך את פרטי קופת החולים שלך ומספר טלפון לאיש קשר למקרה חירום. קיימת אפשרות לא להזין את פרטי חשבונך אך לא תוכל להשתמש בשירותי קופת החולים או להתקשר לאיש קשר במקרה חירום. המידע נשמר בצורה מאובטחת.
+            .כדי שהרובוט המטפל יוכל להפעיל את שירותיו לטובך, נצטרך את פרטי קופת
+            החולים שלך ומספר טלפון לאיש קשר למקרה חירום. קיימת אפשרות לא להזין
+            את פרטי חשבונך אך לא תוכל להשתמש בשירותי קופת החולים או להתקשר לאיש
+            קשר במקרה חירום. המידע נשמר בצורה מאובטחת.
           </Text>
           {/* Bank Picker */}
           <View style={styles.inputContainer}>
             {/* Icon and Label */}
             <TouchableOpacity onPress={() => handleIconPress("healthFund")}>
-              <Animatable.View animation={iconAnimation} style={styles.iconContainer}>
+              <Animatable.View
+                animation={iconAnimation}
+                style={styles.iconContainer}
+              >
                 <Entypo name="light-bulb" size={40} color="yellow" />
               </Animatable.View>
             </TouchableOpacity>
-                <DropDownPicker
-                  open={open}
-                  value={selectedhealthFund}
-                  items={items}
-                  setOpen={(val)=>{setOpen(val);handleGlobalClick();}}
-                  setValue={setSelectedhealthFund}
-                  setItems={setItems}
-                  textStyle={styles.input}
-                  placeholder="בחר קופת חולים..."
-                  style={styles.dropdown}
-                  dropDownContainerStyle={styles.dropdownContainer}
-                />
+            <DropDownPicker
+              open={open}
+              value={selectedhealthFund}
+              items={items}
+              setOpen={(val) => {
+                setOpen(val);
+                handleGlobalClick();
+              }}
+              setValue={setSelectedhealthFund}
+              setItems={setItems}
+              textStyle={styles.input}
+              placeholder="בחר קופת חולים..."
+              style={styles.dropdown}
+              dropDownContainerStyle={styles.dropdownContainer}
+            />
           </View>
 
           {/* Account Number Input */}
           <View style={styles.inputContainer}>
             <TouchableOpacity onPress={() => handleIconPress("account")}>
-              <Animatable.View animation={iconAnimation} style={styles.iconContainer}>
+              <Animatable.View
+                animation={iconAnimation}
+                style={styles.iconContainer}
+              >
                 <Entypo name="light-bulb" size={40} color="yellow" />
               </Animatable.View>
             </TouchableOpacity>
@@ -145,8 +154,8 @@ const SetUp4 = ({ navigation,handleGlobalClick }) => {
               onChangeText={(text) => {
                 const numericText = text.replace(/[^0-9]/g, "");
                 sethealthFundAccountNumber(numericText);
-                handleGlobalClick();
               }}
+              onPress={() => handleGlobalClick()}
               keyboardType="numeric"
             />
           </View>
@@ -154,7 +163,10 @@ const SetUp4 = ({ navigation,handleGlobalClick }) => {
           {/* Branch Number Input */}
           <View style={styles.inputContainer}>
             <TouchableOpacity onPress={() => handleIconPress("phone")}>
-              <Animatable.View animation={iconAnimation} style={styles.iconContainer}>
+              <Animatable.View
+                animation={iconAnimation}
+                style={styles.iconContainer}
+              >
                 <Entypo name="light-bulb" size={40} color="yellow" />
               </Animatable.View>
             </TouchableOpacity>
@@ -165,18 +177,24 @@ const SetUp4 = ({ navigation,handleGlobalClick }) => {
               onChangeText={(text) => {
                 const numericText = text.replace(/[^0-9]/g, "");
                 setEmergencyPhone(numericText);
-                handleGlobalClick();
               }}
+              onPress={() => handleGlobalClick()}
               keyboardType="numeric"
             />
           </View>
 
           {/* Buttons */}
           <View style={styles.buttonRow}>
-            <TouchableOpacity style={[styles.button, styles.forwardBtn]} onPress={handleMoveForward}>
+            <TouchableOpacity
+              style={[styles.button, styles.forwardBtn]}
+              onPress={handleMoveForward}
+            >
               <Text style={styles.buttonText}>המשך</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.button, styles.backBtn]} onPress={handleGoBack}>
+            <TouchableOpacity
+              style={[styles.button, styles.backBtn]}
+              onPress={handleGoBack}
+            >
               <Text style={styles.buttonText}>חזור</Text>
             </TouchableOpacity>
           </View>
@@ -192,7 +210,10 @@ const SetUp4 = ({ navigation,handleGlobalClick }) => {
               style={styles.modalContent}
             >
               <Text style={styles.fontex}>{explanation}</Text>
-              <TouchableOpacity style={[styles.button, styles.closeBtn]} onPress={closeModal}>
+              <TouchableOpacity
+                style={[styles.button, styles.closeBtn]}
+                onPress={closeModal}
+              >
                 <Text style={styles.buttonText}>סגור</Text>
               </TouchableOpacity>
             </Animatable.View>
@@ -222,7 +243,7 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     shadowOffset: { width: 0, height: 2 },
     elevation: 5,
-    marginBottom:110
+    marginBottom: 110,
   },
   title: {
     fontSize: 24,
@@ -270,22 +291,19 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: "48%",
   },
-  forwardBtn:
-  {
-    backgroundColor:'green'
+  forwardBtn: {
+    backgroundColor: "green",
   },
-  backBtn:
-  {
-    backgroundColor:'orange'
+  backBtn: {
+    backgroundColor: "orange",
   },
-  closeBtn:
-  {
-    backgroundColor:'red'
+  closeBtn: {
+    backgroundColor: "red",
   },
   buttonText: {
     fontSize: 18,
     color: "#fff",
-    fontWeight:'bold'
+    fontWeight: "bold",
   },
   modalContainer: {
     flex: 1,
@@ -298,15 +316,15 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 10,
     alignItems: "center",
-    backgroundColor:"whitesmoke",
-    borderEndColor:'black',
-    borderBottomEndRadius:'2'
+    backgroundColor: "whitesmoke",
+    borderEndColor: "black",
+    borderBottomEndRadius: "2",
   },
   fontex: {
     fontSize: 20,
     marginBottom: 15,
-    fontWeight:'bold',
-    color:'black'
+    fontWeight: "bold",
+    color: "black",
   },
   buttonRow: {
     flexDirection: "row",
@@ -318,11 +336,10 @@ const styles = StyleSheet.create({
     borderColor: "gray",
     borderRadius: 5,
   },
-  
+
   dropdownContainer: {
     width: 595,
     borderColor: "gray",
-    
   },
 });
 
@@ -336,20 +353,20 @@ const pickerSelectStyles = {
     borderRadius: 5,
     color: "black",
     marginBottom: 15,
-    width:595,
-    textAlign:'center'
+    width: 595,
+    textAlign: "center",
   },
   inputAndroid: {
     fontSize: 16,
     paddingVertical: 10,
-    textAlign:'center',
+    textAlign: "center",
     paddingHorizontal: 10,
     borderWidth: 1,
     borderColor: "gray",
     borderRadius: 5,
     color: "black",
     marginBottom: 15,
-    width:595,
+    width: 595,
   },
 };
 

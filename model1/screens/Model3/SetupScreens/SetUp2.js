@@ -82,6 +82,7 @@ const SetUp23 = ({ navigation, handleGlobalClick }) => {
 
   // Updated to handle audio playback
   const handleLottiePress = async () => {
+    handleGlobalClick();
     if (sound && isPlaying) {
       // If playing, pause the audio
       await sound.pauseAsync();
@@ -189,8 +190,8 @@ const SetUp23 = ({ navigation, handleGlobalClick }) => {
               value={street}
               onChangeText={(value) => {
                 setStreet(value);
-                handleGlobalClick();
               }}
+              onPress={() => handleGlobalClick()}
             />
           </View>
 
@@ -212,8 +213,8 @@ const SetUp23 = ({ navigation, handleGlobalClick }) => {
               value={number}
               onChangeText={(value) => {
                 setNumber(value);
-                handleGlobalClick();
               }}
+              onPress={() => handleGlobalClick()}
               keyboardType="numeric"
             />
           </View>
@@ -234,8 +235,8 @@ const SetUp23 = ({ navigation, handleGlobalClick }) => {
               value={city}
               onChangeText={(value) => {
                 setCity(value);
-                handleGlobalClick();
               }}
+              onPress={() => handleGlobalClick()}
             />
           </View>
 
@@ -255,8 +256,8 @@ const SetUp23 = ({ navigation, handleGlobalClick }) => {
               value={country}
               onChangeText={(value) => {
                 setCountry(value);
-                handleGlobalClick();
               }}
+              onPress={() => handleGlobalClick()}
             />
           </View>
 

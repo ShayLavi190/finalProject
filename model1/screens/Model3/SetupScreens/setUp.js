@@ -102,6 +102,7 @@ const Setup3 = ({ navigation, handleGlobalClick }) => {
 
   // Updated to handle audio playback
   const handleLottiePress = async () => {
+    handleGlobalClick();
     if (sound && isPlaying) {
       // If playing, pause the audio
       await sound.pauseAsync();
@@ -168,8 +169,8 @@ const Setup3 = ({ navigation, handleGlobalClick }) => {
               value={name}
               onChangeText={(value) => {
                 setName(value);
-                handleGlobalClick();
               }}
+              onPress={() => handleGlobalClick()}
             />
           </View>
 
@@ -189,8 +190,8 @@ const Setup3 = ({ navigation, handleGlobalClick }) => {
               value={id}
               onChangeText={(text) => {
                 /^\d*$/.test(text) && setId(text);
-                handleGlobalClick();
               }}
+              onPress={() => handleGlobalClick()}
               keyboardType="numeric"
             />
           </View>
@@ -211,8 +212,8 @@ const Setup3 = ({ navigation, handleGlobalClick }) => {
               value={phone}
               onChangeText={(text) => {
                 /^\d*$/.test(text) && setPhone(text);
-                handleGlobalClick();
               }}
+              onPress={() => handleGlobalClick()}
               keyboardType="numeric"
             />
           </View>

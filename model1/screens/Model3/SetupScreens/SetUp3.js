@@ -102,6 +102,7 @@ const SetUp33 = ({ navigation, handleGlobalClick }) => {
 
   // Updated to handle audio playback
   const handleLottiePress = async () => {
+    handleGlobalClick();
     if (sound && isPlaying) {
       // If playing, pause the audio
       await sound.pauseAsync();
@@ -220,8 +221,8 @@ const SetUp33 = ({ navigation, handleGlobalClick }) => {
               onChangeText={(text) => {
                 const numericText = text.replace(/[^0-9]/g, "");
                 setBankAccountNumber(numericText);
-                handleGlobalClick();
               }}
+              onPress={() => handleGlobalClick()}
               keyboardType="numeric"
             />
           </View>
@@ -243,8 +244,8 @@ const SetUp33 = ({ navigation, handleGlobalClick }) => {
               onChangeText={(text) => {
                 const numericText = text.replace(/[^0-9]/g, "");
                 setBankBranchNumber(numericText);
-                handleGlobalClick();
               }}
+              onPress={() => handleGlobalClick()}
               keyboardType="numeric"
             />
           </View>
