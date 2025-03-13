@@ -1,4 +1,4 @@
-import React, { useState,useRef } from 'react';
+import React, { useState, useRef, useEffect } from "react";
 import {
   View,
   Text,
@@ -6,45 +6,70 @@ import {
   StyleSheet,
   ScrollView,
   ActivityIndicator,
-  Alert
-} from 'react-native';
-import { WebView } from 'react-native-webview';
+  Alert,
+} from "react-native";
+import { WebView } from "react-native-webview";
 import * as Animatable from "react-native-animatable";
 import LottieView from "lottie-react-native";
+import { Audio } from "expo-av"; // Import audio module
 
 const channels = [
-  { id: '1', name: 'ערוץ 12 - חדשות',backgroundColor:'#ffe59b', link: 'https://www.mako.co.il/mako-vod-live-tv/VOD-6540b8dcb64fd31006.htm' },
-  { id: '2', name: 'ערוץ 13 - רשת',backgroundColor:'#c9272e', link: 'https://13tv.co.il/live/' },
-  { id: '3', name: 'ערוץ 11 - כאן' ,backgroundColor:'#d0c0a9', link: 'https://www.kan.org.il/live/tv.aspx?stationId=2' },
-  { id: '4', name: 'ערוץ 14 - עכשיו 14',backgroundColor:'#27496d', link: 'https://now14.co.il/live/' },
+  {
+    id: "1",
+    name: "ערוץ 12 - חדשות",
+    backgroundColor: "#ffe59b",
+    link: "https://www.mako.co.il/mako-vod-live-tv/VOD-6540b8dcb64fd31006.htm",
+  },
+  {
+    id: "2",
+    name: "ערוץ 13 - רשת",
+    backgroundColor: "#c9272e",
+    link: "https://13tv.co.il/live/",
+  },
+  {
+    id: "3",
+    name: "ערוץ 11 - כאן",
+    backgroundColor: "#d0c0a9",
+    link: "https://www.kan.org.il/live/tv.aspx?stationId=2",
+  },
+  {
+    id: "4",
+    name: "ערוץ 14 - עכשיו 14",
+    backgroundColor: "#27496d",
+    link: "https://now14.co.il/live/",
+  },
 ];
 
-const NewsChannels3 = ({ handleGlobalClick,navigation }) => {
-  const [currentUrl, setCurrentUrl] = useState('');
+const NewsChannels3 = ({ handleGlobalClick, navigation }) => {
+  const [currentUrl, setCurrentUrl] = useState("");
   const [isWebViewVisible, setWebViewVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const animatableRef = useRef(null);
   const modalRef = useRef(null);
+  const [sound, setSound] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   const openWebView = (url) => {
-    setCurrentUrl(url);
-    setWebViewVisible(true);
-    handleGlobalClick('Opened WebView for: ' + url);
-  };
-  const closeWebView = () => {
-    modalRef.current
-      .animate("fadeOut", 300) 
-      .then(() => {
-        setWebViewVisible(false); 
-        setCurrentUrl('');
-        handleGlobalClick('Closed WebView');
-      });
+    stopAudio(); // Add this line to stop audio when opening a news channel
+    if (currentUrl !== url) {
+      setCurrentUrl(url);
+      setWebViewVisible(true);
+      handleGlobalClick("Opened WebView for: " + url);
+    }
   };
 
-  const handleLottiePress = () => {
-      Alert.alert("play video")
+  const closeWebView = async () => {
+    stopAudio(); // Add this line to stop audio when closing a news channel
+    if (modalRef.current) {
+      await modalRef.current.animate("fadeOut", 300);
     }
+    setWebViewVisible(false);
+    setCurrentUrl("");
+    handleGlobalClick("Closed WebView");
+  };
+
   const handleNavigate = (route, direction) => {
+    stopAudio(); // Ensure audio stops before navigating
     if (direction === "forward") {
       animatableRef.current
         .animate("fadeOutLeft", 500)
@@ -56,72 +81,133 @@ const NewsChannels3 = ({ handleGlobalClick,navigation }) => {
     }
   };
 
+  const handleLottiePress = async () => {
+    if (sound && isPlaying) {
+      await sound.pauseAsync();
+      setIsPlaying(false);
+    } else if (sound) {
+      await sound.playAsync();
+      setIsPlaying(true);
+    } else {
+      const { sound: newSound } = await Audio.Sound.createAsync(
+        require("../../../assets/Recordings/newsChannels.mp3"), // Ensure the file exists
+        { shouldPlay: true }
+      );
+      setSound(newSound);
+      setIsPlaying(true);
+    }
+  };
+
+  const stopAudio = async () => {
+    if (sound) {
+      await sound.stopAsync();
+      await sound.unloadAsync();
+      setSound(null);
+      setIsPlaying(false);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      stopAudio(); // Cleanup audio when unmounting
+    };
+  }, []);
+
   return (
-    <Animatable.View ref={animatableRef} style={{ flex: 1 }} animation="fadeInDown" duration={2000}>
-    <View style={styles.container}>
-      {isWebViewVisible ? (
-          <Animatable.View ref={modalRef} style={{ flex: 1 , zIndex:10 }} animation="fadeIn" duration={1000}>
+    <Animatable.View
+      ref={animatableRef}
+      style={{ flex: 1 }}
+      animation="fadeInDown"
+      duration={2000}
+    >
+      <View style={styles.container}>
+        {isWebViewVisible ? (
+          <Animatable.View
+            ref={modalRef}
+            style={{ flex: 1, zIndex: 10 }}
+            animation="fadeIn"
+            duration={1000}
+          >
             <View style={styles.webviewContainer}>
-                <TouchableOpacity style={styles.closeButton} onPress={closeWebView}>
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={closeWebView}
+              >
                 <Text style={styles.closeButtonText}>סגור</Text>
-                </TouchableOpacity>
-                {loading && (
+              </TouchableOpacity>
+              {loading && (
                 <ActivityIndicator
-                    size="large"
-                    color="#0000ff"
-                    style={styles.loader}
+                  size="large"
+                  color="#0000ff"
+                  style={styles.loader}
                 />
-                )}
-                <WebView
+              )}
+              <WebView
                 source={{ uri: currentUrl }}
                 style={styles.webview}
                 onLoadStart={() => setLoading(true)}
                 onLoadEnd={() => setLoading(false)}
-                />
+              />
             </View>
-        </Animatable.View>
-      ) : (
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
-          <Text style={styles.title}>ערוצי חדשות</Text>
-          <Text style={styles.subtitle}>על מנת לצפות בערוצי החדשות לחץ על ערוץ שברצונך לצפות</Text>
-          <View style={styles.buttonRowContainer}>
-            {channels.map((channel) => (
+          </Animatable.View>
+        ) : (
+          <ScrollView contentContainerStyle={styles.scrollContainer}>
+            <Text style={styles.title}>ערוצי חדשות</Text>
+            <Text style={styles.subtitle}>
+              על מנת לצפות בערוצי החדשות לחץ על ערוץ שברצונך לצפות
+            </Text>
+            <View style={styles.buttonRowContainer}>
+              {channels.map((channel) => (
+                <TouchableOpacity
+                  key={channel.id}
+                  style={[
+                    styles.card,
+                    { backgroundColor: channel.backgroundColor },
+                  ]}
+                  onPress={() => openWebView(channel.link)}
+                >
+                  <Text style={styles.cardTitle}>{channel.name}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+            <View style={styles.buttonRow}>
               <TouchableOpacity
-                key={channel.id}
-                style={[styles.card,{backgroundColor:channel.backgroundColor}]}
-                onPress={() => openWebView(channel.link)}
+                style={[
+                  styles.button,
+                  styles.forwardButton,
+                  { backgroundColor: "green" },
+                ]}
+                onPress={() => handleNavigate("Home13", "back")}
               >
-                <Text style={styles.cardTitle}>{channel.name}</Text>
+                <Text style={styles.forwardButtonText}>מסך בית</Text>
               </TouchableOpacity>
-            ))}
-          </View>
-        <View style={styles.buttonRow}>
-          <TouchableOpacity
-            style={[styles.button, styles.forwardButton,{backgroundColor:'green'}]}
-            onPress={() => handleNavigate("Home13", "back")}
-          >
-            <Text style={styles.forwardButtonText}>מסך בית</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.button, styles.forwardButton,{backgroundColor:'orange'}]}
-            onPress={() => handleNavigate("Entertainment3", "back")}
-          >
-            <Text style={styles.forwardButtonText}>שירותי בידור</Text>
-          </TouchableOpacity>
-        </View>
-        </ScrollView>
-      )}
-    </View>
-        <View>
-          <TouchableOpacity style={styles.lottieButton} onPress={handleLottiePress}>
-            <LottieView
-              source={require("/Users/shaylavi/Desktop/final_project/m1/model1/screens/Model3/SetupScreens/robot.json")}
-              autoPlay
-              loop
-              style={styles.lottie}
-            />
-          </TouchableOpacity>
-        </View>
+              <TouchableOpacity
+                style={[
+                  styles.button,
+                  styles.forwardButton,
+                  { backgroundColor: "orange" },
+                ]}
+                onPress={() => handleNavigate("Entertainment3", "back")}
+              >
+                <Text style={styles.forwardButtonText}>שירותי בידור</Text>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
+        )}
+      </View>
+      <View>
+        <TouchableOpacity
+          style={styles.lottieButton}
+          onPress={handleLottiePress}
+        >
+          <LottieView
+            source={require("../SetupScreens/robot.json")}
+            autoPlay
+            loop
+            style={styles.lottie}
+          />
+        </TouchableOpacity>
+      </View>
     </Animatable.View>
   );
 };
@@ -129,88 +215,88 @@ const NewsChannels3 = ({ handleGlobalClick,navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f2f2f2',
+    backgroundColor: "#f2f2f2",
   },
   scrollContainer: {
     flexGrow: 1,
-    alignItems: 'center',
+    alignItems: "center",
     padding: 20,
   },
   title: {
     fontSize: 28,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 40,
-    textAlign: 'center',
-    marginTop:80
+    textAlign: "center",
+    marginTop: 80,
   },
   buttonRowContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    width: '100%',
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    width: "100%",
   },
   card: {
-    width: '48%',
+    width: "48%",
     padding: 30,
     marginTop: 30,
     borderRadius: 10,
     marginBottom: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     shadowColor: "black",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
-    shadowRadius: 2
+    shadowRadius: 2,
   },
   cardTitle: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 18,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
   },
   webviewContainer: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   closeButton: {
-    position: 'absolute',
+    position: "absolute",
     top: 40,
     right: 20,
     zIndex: 1,
     padding: 10,
-    backgroundColor: 'red',
+    backgroundColor: "red",
     borderRadius: 5,
-    width:80
+    width: 80,
   },
   closeButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign:'center'
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
   },
   webview: {
     flex: 1,
     marginTop: 80,
   },
   loader: {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
+    position: "absolute",
+    top: "50%",
+    left: "50%",
     transform: [{ translateX: -25 }, { translateY: -25 }],
-  },  
+  },
   subtitle: {
     fontSize: 28,
     color: "#555",
     textAlign: "center",
     marginTop: 20,
     fontWeight: "bold",
-    marginBottom:50,
-    marginTop:50
+    marginBottom: 50,
+    marginTop: 50,
   },
   buttonRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     width: "100%",
-    marginTop: 150
+    marginTop: 150,
   },
   forwardButton: {
     paddingVertical: 15,
@@ -220,7 +306,7 @@ const styles = StyleSheet.create({
     shadowColor: "black",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
-    shadowRadius: 2
+    shadowRadius: 2,
   },
   forwardButtonText: {
     color: "#fff",
@@ -237,12 +323,12 @@ const styles = StyleSheet.create({
     shadowColor: "black",
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.3,
-    shadowRadius: 2
+    shadowRadius: 2,
   },
   lottie: {
     width: "100%",
     height: "100%",
-  }
+  },
 });
 
 export default NewsChannels3;

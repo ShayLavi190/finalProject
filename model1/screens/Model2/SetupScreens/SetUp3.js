@@ -14,7 +14,7 @@ import * as Animatable from "react-native-animatable";
 import DropDownPicker from "react-native-dropdown-picker";
 import { useUser } from "../userContext";
 
-const SetUp3 = ({ navigation,handleGlobalClick }) => {
+const SetUp3 = ({ navigation, handleGlobalClick }) => {
   const { user, updateUser } = useUser();
   const [selectedBank, setSelectedBank] = useState("");
   const [bankAccountNumber, setBankAccountNumber] = useState("");
@@ -35,9 +35,9 @@ const SetUp3 = ({ navigation,handleGlobalClick }) => {
     { label: "Citibank N.A", value: "22" },
     { label: "מזרחי טפחות", value: "20" },
     { label: "HSBC Bank plc", value: "23" },
-    { label: "יובנק בע\"מ", value: "26" },
+    { label: 'יובנק בע"מ', value: "26" },
     { label: "Barclays Bank PLC", value: "27" },
-    { label: "בנק למסחר בע\"מ", value: "30" },
+    { label: 'בנק למסחר בע"מ', value: "30" },
     { label: "הבינלאומי הראשון לישראל", value: "31" },
     { label: "SBI State Bank of India", value: "39" },
     { label: "מסד", value: "46" },
@@ -46,7 +46,7 @@ const SetUp3 = ({ navigation,handleGlobalClick }) => {
     { label: "חסך קופת חסכון לחינוך", value: "65" },
     { label: "בנק ישראל", value: "99" },
   ]);
-  const animatableRef = useRef(null); 
+  const animatableRef = useRef(null);
   const modalRef = useRef(null);
   const pickerRef = useRef(null);
 
@@ -67,33 +67,29 @@ const SetUp3 = ({ navigation,handleGlobalClick }) => {
     setModalVisible(true);
     handleGlobalClick();
   };
-  
+
   const handleMoveForward = () => {
-    animatableRef.current
-      .animate("fadeOutLeft", 500)
-      .then(() => {
-        updateUser({
-          ...user,
-          selectedBank,
-          bankAccountNumber,
-          bankBranchNumber,
-        });
-        navigation.navigate("SetUp4");
+    animatableRef.current.animate("fadeOutLeft", 500).then(() => {
+      updateUser({
+        ...user,
+        selectedBank,
+        bankAccountNumber,
+        bankBranchNumber,
       });
+      navigation.navigate("SetUp4");
+    });
   };
 
   const handleGoBack = () => {
-    animatableRef.current
-      .animate("fadeOutRight", 500)
-      .then(() => {
-        updateUser({
-          ...user,
-          selectedBank,
-          bankAccountNumber,
-          bankBranchNumber,
-        });
-        navigation.navigate("SetUp2");
+    animatableRef.current.animate("fadeOutRight", 500).then(() => {
+      updateUser({
+        ...user,
+        selectedBank,
+        bankAccountNumber,
+        bankBranchNumber,
       });
+      navigation.navigate("SetUp2");
+    });
   };
 
   const closeModal = () => {
@@ -118,34 +114,45 @@ const SetUp3 = ({ navigation,handleGlobalClick }) => {
         <View style={styles.card}>
           <Text style={styles.title}>הגדרת פרטי חשבון בנק</Text>
           <Text style={styles.subtitle}>
-            .כדי שהרובוט המטפל יוכל להפעיל את שירותיו לטובך, נצטרך את פרטי הבנק שלך. קיימת אפשרות לא להזין את פרטי חשבונך אך לא תוכל להשתמש בשירותי הבנק. המידע נשמר בצורה מאובטחת.
+            .כדי שהרובוט המטפל יוכל להפעיל את שירותיו לטובך, נצטרך את פרטי הבנק
+            שלך. קיימת אפשרות לא להזין את פרטי חשבונך אך לא תוכל להשתמש בשירותי
+            הבנק. המידע נשמר בצורה מאובטחת.
           </Text>
           {/* Bank Picker */}
           <View style={styles.inputContainer}>
             {/* Icon and Label */}
             <TouchableOpacity onPress={() => pickerRef.current?.togglePicker()}>
-              <Animatable.View animation={iconAnimation} style={styles.iconContainer}>
+              <Animatable.View
+                animation={iconAnimation}
+                style={styles.iconContainer}
+              >
                 <Entypo name="light-bulb" size={40} color="yellow" />
               </Animatable.View>
             </TouchableOpacity>
-                <DropDownPicker
-                  open={open}
-                  value={selectedBank}
-                  items={items}
-                  setOpen={(val)=>{setOpen(val);handleGlobalClick();}}
-                  setValue={setSelectedBank}
-                  setItems={setItems}
-                  textStyle={styles.input}
-                  placeholder="בחר בנק..."
-                  style={styles.dropdown}
-                  dropDownContainerStyle={styles.dropdownContainer}
-                />
+            <DropDownPicker
+              open={open}
+              value={selectedBank}
+              items={items}
+              setOpen={(val) => {
+                setOpen(val);
+                handleGlobalClick();
+              }}
+              setValue={setSelectedBank}
+              setItems={setItems}
+              textStyle={styles.input}
+              placeholder="בחר בנק..."
+              style={styles.dropdown}
+              dropDownContainerStyle={styles.dropdownContainer}
+            />
           </View>
 
           {/* Account Number Input */}
           <View style={styles.inputContainer}>
             <TouchableOpacity onPress={() => handleIconPress("account")}>
-              <Animatable.View animation={iconAnimation} style={styles.iconContainer}>
+              <Animatable.View
+                animation={iconAnimation}
+                style={styles.iconContainer}
+              >
                 <Entypo name="light-bulb" size={40} color="yellow" />
               </Animatable.View>
             </TouchableOpacity>
@@ -154,10 +161,10 @@ const SetUp3 = ({ navigation,handleGlobalClick }) => {
               placeholder="מספר חשבון בנק"
               value={bankAccountNumber}
               onChangeText={(text) => {
-                const numericText = text.replace(/[^0-9]/g, ""); 
-                setBankAccountNumber(numericText); 
-                handleGlobalClick();
+                const numericText = text.replace(/[^0-9]/g, "");
+                setBankAccountNumber(numericText);
               }}
+              onPress={() => handleGlobalClick()}
               keyboardType="numeric"
             />
           </View>
@@ -165,7 +172,10 @@ const SetUp3 = ({ navigation,handleGlobalClick }) => {
           {/* Branch Number Input */}
           <View style={styles.inputContainer}>
             <TouchableOpacity onPress={() => handleIconPress("branch")}>
-              <Animatable.View animation={iconAnimation} style={styles.iconContainer}>
+              <Animatable.View
+                animation={iconAnimation}
+                style={styles.iconContainer}
+              >
                 <Entypo name="light-bulb" size={40} color="yellow" />
               </Animatable.View>
             </TouchableOpacity>
@@ -176,18 +186,24 @@ const SetUp3 = ({ navigation,handleGlobalClick }) => {
               onChangeText={(text) => {
                 const numericText = text.replace(/[^0-9]/g, "");
                 setBankBranchNumber(numericText);
-                handleGlobalClick();
               }}
+              onPress={() => handleGlobalClick()}
               keyboardType="numeric"
             />
           </View>
 
           {/* Buttons */}
           <View style={styles.buttonRow}>
-            <TouchableOpacity style={[styles.button, styles.forwardBtn]} onPress={handleMoveForward}>
+            <TouchableOpacity
+              style={[styles.button, styles.forwardBtn]}
+              onPress={handleMoveForward}
+            >
               <Text style={styles.buttonText}>המשך</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.button, styles.backBtn]} onPress={handleGoBack}>
+            <TouchableOpacity
+              style={[styles.button, styles.backBtn]}
+              onPress={handleGoBack}
+            >
               <Text style={styles.buttonText}>חזור</Text>
             </TouchableOpacity>
           </View>
@@ -203,7 +219,10 @@ const SetUp3 = ({ navigation,handleGlobalClick }) => {
               style={styles.modalContent}
             >
               <Text style={styles.fontex}>{explanation}</Text>
-              <TouchableOpacity style={[styles.button, styles.closeBtn]} onPress={closeModal}>
+              <TouchableOpacity
+                style={[styles.button, styles.closeBtn]}
+                onPress={closeModal}
+              >
                 <Text style={styles.buttonText}>סגור</Text>
               </TouchableOpacity>
             </Animatable.View>
@@ -233,7 +252,7 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     shadowOffset: { width: 0, height: 2 },
     elevation: 5,
-    marginBottom:110
+    marginBottom: 110,
   },
   title: {
     fontSize: 24,
@@ -281,22 +300,19 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: "48%",
   },
-  forwardBtn:
-  {
-    backgroundColor:'green'
+  forwardBtn: {
+    backgroundColor: "green",
   },
-  backBtn:
-  {
-    backgroundColor:'orange'
+  backBtn: {
+    backgroundColor: "orange",
   },
-  closeBtn:
-  {
-    backgroundColor:'red'
+  closeBtn: {
+    backgroundColor: "red",
   },
   buttonText: {
     fontSize: 18,
     color: "#fff",
-    fontWeight:'bold'
+    fontWeight: "bold",
   },
   modalContainer: {
     flex: 1,
@@ -309,15 +325,15 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 10,
     alignItems: "center",
-    backgroundColor:"whitesmoke",
-    borderEndColor:'black',
-    borderBottomEndRadius:'2'
+    backgroundColor: "whitesmoke",
+    borderEndColor: "black",
+    borderBottomEndRadius: "2",
   },
   fontex: {
     fontSize: 20,
     marginBottom: 15,
-    fontWeight:'bold',
-    color:'black'
+    fontWeight: "bold",
+    color: "black",
   },
   buttonRow: {
     flexDirection: "row",
@@ -329,11 +345,10 @@ const styles = StyleSheet.create({
     borderColor: "gray",
     borderRadius: 5,
   },
-  
+
   dropdownContainer: {
     width: 595,
     borderColor: "gray",
-    
   },
 });
 

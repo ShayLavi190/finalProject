@@ -1,5 +1,9 @@
 const express = require("express");
-const { saveOrUpdateUser, savePermissions,saveProformance } = require("./userController.js");
+const {
+  saveOrUpdateUser,
+  savePermissions,
+  resetPerformance,
+} = require("./userController.js");
 
 const router = express.Router();
 
