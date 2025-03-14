@@ -1,20 +1,23 @@
-import React from "react";
+import axios from "axios";
+import React, { useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
   ScrollView,
   Dimensions,
-  Alert,
   Button,
 } from "react-native";
 import { LineChart, BarChart } from "react-native-chart-kit";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { collection, doc, setDoc } from "firebase/firestore";
-import { db } from "../../server/firebase";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useUser } from "../Model2/userContext";
+import Toast from "react-native-toast-message";
+import { db } from "../../server/firebase"; // יבוא Firebase
+import { collection, doc, getDoc, setDoc } from "firebase/firestore";
 
 const PerformanceGraphs = ({ globalTasks = [], setGlobalTasks }) => {
+  const { user } = useUser(); 
+  const [isResetting, setIsResetting] = useState(false);
   const calculateGraphData = () => {
     const taskLabels = [];
     const pagesChanged = [];
@@ -33,11 +36,8 @@ const PerformanceGraphs = ({ globalTasks = [], setGlobalTasks }) => {
       pagesChanged.push(pages || 0);
       durations.push(duration || 0);
       clicks.push(taskClicks || 0);
-
-      const pageThreshold = 3;
-      const clickThreshold = 6;
-      const pageRatio = pages / taskOptimalModel1[index].pagesChanges || 0;
-      const clickRatio = taskClicks / taskOptimalModel1[index].clicks || 0;
+      const pageRatio = pages / (taskOptimalModel1[index]?.pagesChanges || 1);
+      const clickRatio = taskClicks / (taskOptimalModel1[index]?.clicks || 1);
       indicators.push((pageRatio + clickRatio) / 2);
     });
 
@@ -46,38 +46,69 @@ const PerformanceGraphs = ({ globalTasks = [], setGlobalTasks }) => {
 
   const { taskLabels, pagesChanged, durations, clicks, indicators } =
     calculateGraphData();
-
-  const resetPerformance = async () => {
-    try {
-      const userId = await AsyncStorage.getItem("currentUserId");
-      if (!userId) throw new Error("User ID not found.");
-
-      const performanceData = globalTasks.map((task, index) => ({
-        ...task,
-        name: `Task ${index + 1}`,
-        timestamp: task.timestamp || new Date().toISOString(),
-      }));
-
-      const performanceRef = doc(collection(db, "performance"), userId);
-      await setDoc(performanceRef, { tasks: performanceData });
-
-      setGlobalTasks([]);
-      Alert.alert("Success", "Performance data saved and tasks reset.");
-    } catch (error) {
-      console.error("Error resetting performance:", error);
-      Alert.alert("Error", "Failed to save performance data.");
-    }
-  };
-
+  
+    const resetPerformance = async () => {
+      if (!user?.id) {
+        Toast.show({ type: "error", text1: "Error", text2: "User ID not found." });
+        return;
+      }
+  
+      if (isResetting) return;
+      setIsResetting(true);
+  
+      try {
+        console.log("🔹 Resetting performance data in Firebase...");
+  
+        const performanceCollection = collection(db, "performance");
+        let newUserId = user.id;
+        let counter = 1;
+  
+        // בדיקת כפילות userId כמו שהיה בשרת
+        while (true) {
+          const existingDoc = await getDoc(doc(performanceCollection, newUserId));
+          if (!existingDoc.exists()) {
+            break;
+          }
+          counter++;
+          newUserId = `${user.id}_${counter}`;
+        }
+  
+        console.log("💾 Storing performance data under userId:", newUserId);
+  
+        const performanceRef = doc(performanceCollection, newUserId);
+        await setDoc(performanceRef, {
+          tasks: globalTasks,
+          timestamp: new Date().toISOString(),
+        });
+  
+        setGlobalTasks([]); // ניקוי המידע בקונטקסט
+  
+        Toast.show({
+          type: "success",
+          text1: "Success",
+          text2: `Performance data saved as ${newUserId}`,
+        });
+  
+      } catch (error) {
+        console.error("❌ Error resetting performance data:", error);
+        Toast.show({
+          type: "error",
+          text1: "Error",
+          text2: "Failed to reset performance data.",
+        });
+      } finally {
+        setIsResetting(false);
+      }
+    };
+  
   const handleReset = () => {
-    Alert.alert(
-      "Reset Data",
-      "Are you sure you want to reset performance data?",
-      [
-        { text: "Cancel", style: "cancel" },
-        { text: "Reset", onPress: () => resetPerformance() },
-      ]
-    );
+    Toast.show({
+      type: "info",
+      text1: "Warning",
+      text2: "Are you sure you want to reset performance data?",
+      autoHide: false,
+      onPress: () => resetPerformance(),
+    });
   };
 
   return (
@@ -92,82 +123,53 @@ const PerformanceGraphs = ({ globalTasks = [], setGlobalTasks }) => {
 
         {taskLabels.length > 0 ? (
           <>
-            <View style={styles.graphContainer}>
-              <Text style={styles.graphDescription}>
-                Number of Page Changes
-              </Text>
-              <BarChart
-                data={{
-                  labels: taskLabels,
-                  datasets: [{ data: pagesChanged }],
-                }}
-                width={Dimensions.get("window").width - 40}
-                height={170}
-                chartConfig={chartConfig}
-                style={styles.graphStyle}
-              />
-            </View>
-
-            <View style={styles.graphContainer}>
-              <Text style={styles.graphDescription}>Number of Clicks</Text>
-              <BarChart
-                data={{
-                  labels: taskLabels,
-                  datasets: [{ data: clicks }],
-                }}
-                width={Dimensions.get("window").width - 40}
-                height={170}
-                chartConfig={chartConfig}
-                style={styles.graphStyle}
-              />
-            </View>
-
-            <View style={styles.graphContainer}>
-              <Text style={styles.graphDescription}>
-                Task Duration (seconds)
-              </Text>
-              <LineChart
-                data={{
-                  labels: taskLabels,
-                  datasets: [{ data: durations }],
-                }}
-                width={Dimensions.get("window").width - 40}
-                height={170}
-                chartConfig={chartConfig}
-                style={styles.graphStyle}
-              />
-            </View>
-
-            <View style={styles.graphContainer}>
-              <Text style={styles.graphDescription}>Performance Indicator</Text>
-              <BarChart
-                data={{
-                  labels: taskLabels,
-                  datasets: [{ data: indicators }],
-                }}
-                width={Dimensions.get("window").width - 40}
-                height={170}
-                chartConfig={chartConfig}
-                style={styles.graphStyle}
-              />
-            </View>
+            <Graph title="Number of Page Changes" labels={taskLabels} data={pagesChanged} />
+            <Graph title="Number of Clicks" labels={taskLabels} data={clicks} />
+            <Graph title="Task Duration (seconds)" labels={taskLabels} data={durations} type="line" />
+            <Graph title="Performance Indicator" labels={taskLabels} data={indicators} />
           </>
         ) : (
           <View style={styles.noDataContainer}>
-            <Text style={styles.noDataText}>
-              No performance data available.
-            </Text>
+            <Text style={styles.noDataText}>No performance data available.</Text>
           </View>
         )}
 
         <View style={styles.resetButtonContainer}>
-          <Button title="Reset Data" onPress={handleReset} color="#f4511e" />
+          <Button title="Reset Data" onPress={handleReset} color="#f4511e" disabled={isResetting} />
         </View>
       </ScrollView>
+
+      {/* 🔹 Toast Component */}
+      <Toast />
     </SafeAreaView>
   );
 };
 
+/** 🔹 Reusable Graph Component */
+const Graph = ({ title, labels, data, type = "bar" }) => (
+  <View style={styles.graphContainer}>
+    <Text style={styles.graphDescription}>{title}</Text>
+    {type === "bar" ? (
+      <BarChart
+        data={{ labels, datasets: [{ data }] }}
+        width={Dimensions.get("window").width - 40}
+        height={170}
+        chartConfig={chartConfig}
+        style={styles.graphStyle}
+      />
+    ) : (
+      <LineChart
+        data={{ labels, datasets: [{ data }] }}
+        width={Dimensions.get("window").width - 40}
+        height={170}
+        chartConfig={chartConfig}
+        style={styles.graphStyle}
+      />
+    )}
+  </View>
+);
+
+/** 🔹 Chart Config */
 const chartConfig = {
   backgroundColor: "#e26a00",
   backgroundGradientFrom: "#fb8c00",
@@ -179,6 +181,7 @@ const chartConfig = {
   propsForDots: { r: "6", strokeWidth: "2", stroke: "#ffa726" },
 };
 
+/** 🔹 Styles */
 const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,

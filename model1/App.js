@@ -55,9 +55,7 @@ import Premissions23 from "./screens/Model3/PermissionsScreens/Premissions2";
 import Premissions33 from "./screens/Model3/PermissionsScreens/Premissions3";
 import Home13 from "./screens/Model3/HomeScreens/Home1";
 import Home23 from "./screens/Model3/HomeScreens/Home2";
-import BankPage3 from "./screens/Model3/Bank/BankScreen";
 import Bank3 from "./screens/Model3/Bank/BankScreen";
-import ContactBankerScreen3 from "./screens/Model3/Bank/ContactBankerScreen";
 import ContactBanker3 from "./screens/Model3/Bank/ContactBankerScreen";
 import Transaction3 from "./screens/Model3/Bank/TransferScreen";
 import Emergency3 from "./screens/Model3/EmergencyScreens/Emergency";
@@ -77,8 +75,8 @@ const Stack = createStackNavigator();
 export default function App() {
   const [globalTasks, setGlobalTasks] = useState([]);
   const [currentRoute, setCurrentRoute] = useState("");
-  const [isTracking, setIsTracking] = useState(false); // Track whether tracking is active
-
+  const [isTracking, setIsTracking] = useState(false); 
+  
   useEffect(() => {
     const clearStorage = async () => {
       try {
@@ -230,7 +228,7 @@ export default function App() {
                 />
               )}
             </Stack.Screen>
-            <Stack.Screen name="SuperMarket" options={{ headerShown: false }}>
+            <Stack.Screen name="SuperMarket" options={{ headerShown: true }}>
               {(props) => (
                 <SuperMarketPage
                   {...props}
@@ -238,12 +236,12 @@ export default function App() {
                 />
               )}
             </Stack.Screen>
-            <Stack.Screen name="EditCart" options={{ headerShown: false }}>
+            <Stack.Screen name="EditCart" options={{ headerShown: true }}>
               {(props) => (
                 <EditCart {...props} handleGlobalClick={handleGlobalClick} />
               )}
             </Stack.Screen>
-            <Stack.Screen name="Entertainment" options={{ headerShown: false }}>
+            <Stack.Screen name="Entertainment" options={{ headerShown: true }}>
               {(props) => (
                 <EntertainmentPage
                   {...props}
