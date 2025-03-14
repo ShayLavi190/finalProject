@@ -39,6 +39,7 @@ const Entertainment3 = ({ navigation, handleGlobalClick }) => {
 
   // Play / Pause Audio
   const handleLottiePress = async () => {
+    handleGlobalClick();
     if (sound && isPlaying) {
       await sound.pauseAsync();
       setIsPlaying(false);

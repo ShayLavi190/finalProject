@@ -88,8 +88,9 @@ const NewsPapers3 = ({ handleGlobalClick, navigation }) => {
     }
   };
 
-  // Handle Audio Play/Pause
+  // Handle Audio Play/Pause //todo: check in this function if the lottie and the newspapers themselves play the correct audio
   const handleAudioPress = async () => {
+    handleGlobalClick();
     if (sound && isPlaying) {
       await sound.pauseAsync();
       setIsPlaying(false);
