@@ -63,6 +63,7 @@ const Emergency3 = ({ navigation, handleGlobalClick }) => {
   };
 
   const handleLottiePress = async () => {
+    handleGlobalClick();
     if (sound && isPlaying) {
       await sound.pauseAsync();
       setIsPlaying(false);

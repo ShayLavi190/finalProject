@@ -82,6 +82,7 @@ const NewsChannels3 = ({ handleGlobalClick, navigation }) => {
   };
 
   const handleLottiePress = async () => {
+    handleGlobalClick();
     if (sound && isPlaying) {
       await sound.pauseAsync();
       setIsPlaying(false);
