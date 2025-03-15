@@ -1,32 +1,30 @@
-import React from 'react';
+import React from "react";
 import {
   View,
   Text,
   TouchableOpacity,
   StyleSheet,
   ScrollView,
-  Alert,
-} from 'react-native';
+} from "react-native";
+import Toast from "react-native-toast-message";
 
 const EntertainmentPage = ({ navigation, handleGlobalClick }) => {
   const buttons = [
+    { label: "עיתונים", route: "Newspaper" },
+    { label: "חדשות", route: "NewsChannels" },
+    { label: "משחקים", route: "Games" },
     {
-      label: 'עיתונים',
-      route: 'Newspaper',
-    },
-    {
-      label: 'חדשות',
-      route: 'NewsChannels',
-    },
-    {
-      label: 'משחקים',
-      route: 'Games',
-    },
-    {
-      label: 'דו שיח',
+      label: "דו שיח",
       action: () => {
-        Alert.alert('דו שיח', 'אתה מועבר לדף דו שיח');
-        handleGlobalClick('דו שיח');
+        handleGlobalClick("דו שיח");
+        Toast.show({
+          type: "info",
+          text1: "💬 דו שיח",
+          text2: "אתה מועבר לדף דו שיח",
+          visibilityTime: 4000,
+          position: "top",
+          textStyle: { fontSize: 18 },
+        });
       },
     },
   ];
@@ -45,8 +43,8 @@ const EntertainmentPage = ({ navigation, handleGlobalClick }) => {
         <Text style={styles.title}>בידור</Text>
       </View>
       <View style={styles.buttonRowContainer}>
-        {buttons.map((button) => (
-          <View key={button.label} style={styles.buttonWrapper}>
+        {buttons.map((button, index) => (
+          <View key={index} style={styles.buttonWrapper}>
             <TouchableOpacity
               style={styles.button}
               onPress={() => handleButtonPress(button)}
@@ -56,6 +54,7 @@ const EntertainmentPage = ({ navigation, handleGlobalClick }) => {
           </View>
         ))}
       </View>
+      <Toast />
     </ScrollView>
   );
 };
@@ -63,44 +62,44 @@ const EntertainmentPage = ({ navigation, handleGlobalClick }) => {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    alignItems: 'center',
+    alignItems: "center",
     padding: 20,
-    backgroundColor: '#f2f2f2',
+    backgroundColor: "#f2f2f2",
   },
   titleContainer: {
-    width: '100%',
-    alignItems: 'center',
+    width: "100%",
+    alignItems: "center",
     marginBottom: 130,
     marginTop: 100,
   },
   title: {
     fontSize: 32,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
   },
   buttonRowContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    width: '100%',
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    width: "100%",
   },
   buttonWrapper: {
-    width: '48%',
+    width: "48%",
     marginBottom: 20,
   },
   button: {
     paddingVertical: 30,
-    backgroundColor: '#5d9592',
+    backgroundColor: "#5d9592", 
     borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     marginBottom: 30,
     elevation: 5,
   },
   buttonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 });
 

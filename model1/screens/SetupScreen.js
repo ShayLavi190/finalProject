@@ -23,7 +23,6 @@ const SetupScreen = ({ navigation, handleGlobalClick }) => {
   const [bankBranchNumber, setBankBranchNumber] = useState(user.bankBranchNumber || "");
   const [healthFundAccountNumber, setHealthFundAccountNumber] = useState(user.healthFundAccountNumber || "");
 
-  // 🔹 DropDown עבור הבנקים
   const [bankOpen, setBankOpen] = useState(false);
   const [selectedBank, setSelectedBank] = useState(user.selectedBank || "");
   const [bankItems, setBankItems] = useState([
@@ -33,7 +32,6 @@ const SetupScreen = ({ navigation, handleGlobalClick }) => {
     { label: "מזרחי טפחות", value: "20" },
   ]);
 
-  // 🔹 DropDown עבור קופות חולים
   const [healthOpen, setHealthOpen] = useState(false);
   const [selectedhealthFund, setSelectedhealthFund] = useState(user.selectedhealthFund || "");
   const [healthItems, setHealthItems] = useState([
@@ -78,6 +76,7 @@ const SetupScreen = ({ navigation, handleGlobalClick }) => {
   };
 
   const handleSave = () => {
+    handleGlobalClick();
     if (!validateInputs()) return;
     updateUser({
       name,
@@ -94,7 +93,7 @@ const SetupScreen = ({ navigation, handleGlobalClick }) => {
 
     Toast.show({
       type: "success",
-      text1: "✅ הצלחה",
+      text1: "הצלחה",
       text2: "הפרטים נשמרו בהצלחה!",
       visibilityTime: 5000,
       textStyle: { fontSize: 18 },
@@ -109,42 +108,57 @@ const SetupScreen = ({ navigation, handleGlobalClick }) => {
         <Text style={styles.title}>הגדרה ראשונית</Text>
 
         <TextInput style={styles.input} placeholder="שם מלא" value={name} onChangeText={setName} />
-        <TextInput style={styles.input} placeholder="תעודת זהות" value={id} onChangeText={(text) => /^\d*$/.test(text) && setId(text)} keyboardType="numeric" />
+        <TextInput style={styles.input} placeholder="תעודת זהות" value={id} onChangeText={(text) => /^\d*$/.test(text) && setId(text)} keyboardType="numeric" onPress={()=>handleGlobalClick}/>
         <TextInput style={styles.input} placeholder="כתובת מגורים" value={address} onChangeText={setAddress} />
-        <TextInput style={styles.input} placeholder="מספר טלפון" value={phone} onChangeText={(text) => /^\d*$/.test(text) && setPhone(text)} keyboardType="numeric" />
-        <TextInput style={styles.input} placeholder="טלפון חירום" value={emergencyPhone} onChangeText={(text) => /^\d*$/.test(text) && setEmergencyPhone(text)} keyboardType="numeric" />
+        <TextInput style={styles.input} placeholder="מספר טלפון" value={phone} onChangeText={(text) => /^\d*$/.test(text) && setPhone(text)} keyboardType="numeric" onPress={()=>handleGlobalClick}/>
+        <TextInput style={styles.input} placeholder="טלפון חירום" value={emergencyPhone} onChangeText={(text) => /^\d*$/.test(text) && setEmergencyPhone(text)} keyboardType="numeric" onPress={()=>handleGlobalClick}/>
 
         <DropDownPicker
           open={bankOpen}
           value={selectedBank}
           items={bankItems}
-          setOpen={setBankOpen}
-          setValue={setSelectedBank}
+          setOpen={(open) => {
+            setBankOpen(open);
+          }}
+          setValue={(callback) => {
+            setSelectedBank(callback);
+            handleGlobalClick();
+            handleGlobalClick();
+          }}
           setItems={setBankItems}
           placeholder="בחר בנק..."
           style={styles.dropdown}
           textStyle={styles.dropdownText}
         />
 
-        <TextInput style={styles.input} placeholder="מספר חשבון בנק" value={bankAccountNumber} onChangeText={setBankAccountNumber} />
-        <TextInput style={styles.input} placeholder="מספר סניף בנק" value={bankBranchNumber} onChangeText={setBankBranchNumber} />
+
+        <TextInput style={styles.input} placeholder="מספר חשבון בנק" value={bankAccountNumber} onChangeText={setBankAccountNumber} onPress={()=>handleGlobalClick}/>
+        <TextInput style={styles.input} placeholder="מספר סניף בנק" value={bankBranchNumber} onChangeText={setBankBranchNumber} onPress={()=>handleGlobalClick}/>
 
         <DropDownPicker
           open={healthOpen}
           value={selectedhealthFund}
           items={healthItems}
           setOpen={setHealthOpen}
-          setValue={setSelectedhealthFund}
+          setValue={(callback) => {
+            setSelectedhealthFund(callback);
+            handleGlobalClick();
+            handleGlobalClick();
+          }}
           setItems={setHealthItems}
           placeholder="בחר קופת חולים..."
           style={styles.dropdown}
           textStyle={styles.dropdownText}
+          onPress={()=>handleGlobalClick}
         />
 
-        <TextInput style={styles.input} placeholder="מספר חשבון קופת חולים" value={healthFundAccountNumber} onChangeText={setHealthFundAccountNumber} />
+        <TextInput style={styles.input} placeholder="מספר חשבון קופת חולים" value={healthFundAccountNumber} onChangeText={setHealthFundAccountNumber} onPress={()=>handleGlobalClick} />
 
         <View style={styles.buttonContainer}>
           <Button title="שמירה" onPress={handleSave} />
+        </View>
+        <View style={styles.buttonContainer}>
+          <Button title="שמירה" onPress={()=>{navigation.navigate("Home");}} />
         </View>
       </View>
 

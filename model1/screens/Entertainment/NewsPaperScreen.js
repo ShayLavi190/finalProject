@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -6,73 +6,90 @@ import {
   StyleSheet,
   ScrollView,
   ActivityIndicator,
-} from 'react-native';
-import { WebView } from 'react-native-webview';
+  Modal,
+  Platform,
+  Linking,
+} from "react-native";
+import { WebView } from "react-native-webview";
+import Toast from "react-native-toast-message";
 
 const newspapers = [
-  { id: '1', name: 'הארץ', link: 'https://www.haaretz.co.il/' },
-  { id: '2', name: 'ידיעות אחרונות', link: 'https://www.yediot.co.il/' },
-  { id: '3', name: 'מעריב', link: 'https://www.maariv.co.il/' },
-  { id: '4', name: 'The Marker', link: 'https://www.themarker.com/' },
-  { id: '5', name: 'גלובס', link: 'https://www.globes.co.il/' },
+  { id: "1", name: "הארץ", link: "https://www.haaretz.co.il/" },
+  { id: "2", name: "ידיעות אחרונות", link: "https://www.yediot.co.il/" },
+  { id: "3", name: "מעריב", link: "https://www.maariv.co.il/" },
+  { id: "4", name: "The Marker", link: "https://www.themarker.com/" },
+  { id: "5", name: "גלובס", link: "https://www.globes.co.il/" },
 ];
 
 const NewspapersPage = ({ handleGlobalClick }) => {
-  const [currentUrl, setCurrentUrl] = useState('');
-  const [isWebViewVisible, setWebViewVisible] = useState(false);
+  const [currentUrl, setCurrentUrl] = useState("");
+  const [isModalVisible, setModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const openWebView = (url) => {
-    setCurrentUrl(url);
-    setWebViewVisible(true);
-    handleGlobalClick?.(`Opened WebView for: ${url}`);
+  const openNewspaper = (url) => {
+    handleGlobalClick(`פתיחת עיתון: ${url}`);
+
+    if (Platform.OS === "web") {
+      Linking.openURL(url);
+    } else {
+      setCurrentUrl(url);
+      setModalVisible(true);
+    }
   };
 
-  const closeWebView = () => {
-    setCurrentUrl('');
-    setWebViewVisible(false);
-    handleGlobalClick?.('Closed WebView');
+  const closeModal = () => {
+    handleGlobalClick("סגירת עיתון");
+    setModalVisible(false);
+    setCurrentUrl("");
+
+    Toast.show({
+      type: "success",
+      text1: "סגירת עיתון",
+      text2: "העיתון נסגר בהצלחה",
+      visibilityTime: 2000,
+      position: "top",
+    });
   };
 
   return (
     <View style={styles.container}>
-      {isWebViewVisible ? (
-        <View style={styles.webviewContainer}>
-          <TouchableOpacity style={styles.closeButton} onPress={closeWebView}>
-            <Text style={styles.closeButtonText}>סגור</Text>
-          </TouchableOpacity>
-          {loading && (
-            <ActivityIndicator
-              size="large"
-              color="#0000ff"
-              style={styles.loader}
-            />
-          )}
-          <WebView
-            source={{ uri: currentUrl }}
-            style={styles.webview}
-            onLoadStart={() => setLoading(true)}
-            onLoadEnd={() => setLoading(false)}
-          />
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <Text style={styles.title}>עיתונים</Text>
+        <View style={styles.buttonRowContainer}>
+          {newspapers.map((item) => (
+            <TouchableOpacity
+              key={item.id}
+              style={styles.card}
+              onPress={() => openNewspaper(item.link)}
+              accessible={true}
+              accessibilityLabel={`פתח ${item.name}`}
+            >
+              <Text style={styles.cardTitle}>{item.name}</Text>
+            </TouchableOpacity>
+          ))}
         </View>
-      ) : (
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
-          <Text style={styles.title}>עיתונים</Text>
-          <View style={styles.buttonRowContainer}>
-            {newspapers.map((item) => (
-              <TouchableOpacity
-                key={item.id}
-                style={styles.card}
-                onPress={() => openWebView(item.link)}
-                accessible={true}
-                accessibilityLabel={`פתח ${item.name}`}
-              >
-                <Text style={styles.cardTitle}>{item.name}</Text>
-              </TouchableOpacity>
-            ))}
+      </ScrollView>
+
+      {Platform.OS !== "web" && (
+        <Modal visible={isModalVisible} transparent={false} animationType="slide">
+          <View style={styles.modalContainer}>
+            <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
+              <Text style={styles.closeButtonText}>סגור</Text>
+            </TouchableOpacity>
+            {loading && (
+              <ActivityIndicator size="large" color="#0000ff" style={styles.loader} />
+            )}
+            <WebView
+              source={{ uri: currentUrl }}
+              style={styles.webview}
+              onLoadStart={() => setLoading(true)}
+              onLoadEnd={() => setLoading(false)}
+            />
           </View>
-        </ScrollView>
+        </Modal>
       )}
+
+      <Toast />
     </View>
   );
 };
@@ -80,69 +97,69 @@ const NewspapersPage = ({ handleGlobalClick }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f2f2f2',
+    backgroundColor: "#f2f2f2",
   },
   scrollContainer: {
     flexGrow: 1,
-    alignItems: 'center',
+    alignItems: "center",
     padding: 20,
   },
   title: {
     fontSize: 28,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 40,
-    textAlign: 'center',
+    textAlign: "center",
   },
   buttonRowContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    width: '100%',
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    width: "100%",
   },
   card: {
-    width: '48%', 
-    backgroundColor: '#5d9592',
+    width: "48%",
+    backgroundColor: "#5d9592",
     padding: 30,
     borderRadius: 10,
     marginBottom: 20,
     marginTop: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     elevation: 5,
   },
   cardTitle: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 18,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
   },
-  webviewContainer: {
+  modalContainer: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   closeButton: {
-    position: 'absolute',
+    position: "absolute",
     top: 40,
     right: 20,
     zIndex: 1,
     padding: 10,
-    backgroundColor: '#D9D4D0',
+    backgroundColor: "#D9D4D0",
     borderRadius: 5,
     elevation: 5,
   },
   closeButtonText: {
-    color: 'black',
-    fontWeight: 'bold',
+    color: "black",
+    fontWeight: "bold",
     fontSize: 16,
   },
   webview: {
     flex: 1,
-    marginTop: 100, 
+    marginTop: 100,
   },
   loader: {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
+    position: "absolute",
+    top: "50%",
+    left: "50%",
     transform: [{ translateX: -25 }, { translateY: -25 }],
   },
 });

@@ -12,7 +12,7 @@ import { LineChart, BarChart } from "react-native-chart-kit";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useUser } from "../Model2/userContext";
 import Toast from "react-native-toast-message";
-import { db } from "../../server/firebase"; // יבוא Firebase
+import { db } from "../../server/firebase";
 import { collection, doc, getDoc, setDoc } from "firebase/firestore";
 
 const PerformanceGraphs = ({ globalTasks = [], setGlobalTasks }) => {
@@ -63,7 +63,6 @@ const PerformanceGraphs = ({ globalTasks = [], setGlobalTasks }) => {
         let newUserId = user.id;
         let counter = 1;
   
-        // בדיקת כפילות userId כמו שהיה בשרת
         while (true) {
           const existingDoc = await getDoc(doc(performanceCollection, newUserId));
           if (!existingDoc.exists()) {
@@ -81,7 +80,7 @@ const PerformanceGraphs = ({ globalTasks = [], setGlobalTasks }) => {
           timestamp: new Date().toISOString(),
         });
   
-        setGlobalTasks([]); // ניקוי המידע בקונטקסט
+        setGlobalTasks([]); 
   
         Toast.show({
           type: "success",
@@ -139,13 +138,11 @@ const PerformanceGraphs = ({ globalTasks = [], setGlobalTasks }) => {
         </View>
       </ScrollView>
 
-      {/* 🔹 Toast Component */}
       <Toast />
     </SafeAreaView>
   );
 };
 
-/** 🔹 Reusable Graph Component */
 const Graph = ({ title, labels, data, type = "bar" }) => (
   <View style={styles.graphContainer}>
     <Text style={styles.graphDescription}>{title}</Text>
@@ -169,7 +166,6 @@ const Graph = ({ title, labels, data, type = "bar" }) => (
   </View>
 );
 
-/** 🔹 Chart Config */
 const chartConfig = {
   backgroundColor: "#e26a00",
   backgroundGradientFrom: "#fb8c00",
@@ -181,7 +177,6 @@ const chartConfig = {
   propsForDots: { r: "6", strokeWidth: "2", stroke: "#ffa726" },
 };
 
-/** 🔹 Styles */
 const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
