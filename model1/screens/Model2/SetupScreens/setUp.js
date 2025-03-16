@@ -3,17 +3,16 @@ import {
   View,
   Text,
   TextInput,
-  Button,
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
-  Alert,
   Modal,
   TouchableOpacity,
 } from "react-native";
-import Entypo from "react-native-vector-icons/Entypo";
+import { Entypo } from "@expo/vector-icons";
 import * as Animatable from "react-native-animatable";
 import { useUser } from "../userContext";
+import Toast from "react-native-toast-message";
 
 const SetUp = ({ navigation, handleGlobalClick }) => {
   const { user, updateUser } = useUser();
@@ -52,7 +51,19 @@ const SetUp = ({ navigation, handleGlobalClick }) => {
     if (!phone.trim() || phone.length !== 10)
       errors.push("מספר טלפון חייב להיות באורך 10 ספרות.");
     if (errors.length > 0) {
-      Alert.alert("שגיאה", errors.join("\n"));
+      errors.forEach((error, index) => {
+        setTimeout(() => {
+          Toast.show({
+            type: "error",
+            text1: "שגיאה",
+            text2: error,
+            visibilityTime: 4000,
+            position: "top",
+            textStyle: { fontSize: 18, textAlign: "right" }, 
+            style: { width: "90%", backgroundColor: "#ff4d4d", borderRadius: 10, alignSelf: "flex-end" },
+          });
+        }, index * 800); 
+      });
       return false;
     }
     return true;
@@ -90,6 +101,7 @@ const SetUp = ({ navigation, handleGlobalClick }) => {
         style={styles.container}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
+        <Toast/>
         <View style={styles.card}>
           <Text style={styles.title}>הגדרת פרטים אישיים</Text>
           <Text style={styles.subtitle}>

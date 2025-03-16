@@ -8,16 +8,57 @@ import {
   Alert
 } from 'react-native';
 import * as Animatable from "react-native-animatable";
+import Toast from "react-native-toast-message";
 
 const Emergency = ({ navigation,handleGlobalClick }) => {
-    const animatableRef = useRef(null);
-
+  const animatableRef = useRef(null);
   const buttons = [
-    { label: 'חיוג למשטרה',backgroundColor:'#1f5eff', action: () => {Alert.alert('חירום', 'מחייג למשטרה'); handleGlobalClick();}},
-    { label: 'חיוג מכבי אש',backgroundColor:'#ffd900', action: () => {Alert.alert('חירום', 'מחייג למכבי אש'); handleGlobalClick();}},
-    { label: 'חיוג למגן דוד אדום',backgroundColor:'#f44336', action: () => {Alert.alert('חירום', 'מחייג למגן דוד אדום'); handleGlobalClick();}},
-    { label: 'חיוג לאיש קשר',backgroundColor:'#6aa84f', action: () => {Alert.alert('חירום', 'מחייג לאיש קשר'); handleGlobalClick();}}
+    { 
+      label: 'חיוג למשטרה',
+      backgroundColor: '#1f5eff',
+      action: () => {
+        makeToast('חירום', 'מחייג למשטרה');
+        handleGlobalClick();
+      }
+    },
+    { 
+      label: 'חיוג מכבי אש',
+      backgroundColor: '#ffd900',
+      action: () => {
+        makeToast('חירום', 'מחייג למכבי אש'); 
+        handleGlobalClick();
+      }
+    },
+    { 
+      label: 'חיוג למגן דוד אדום',
+      backgroundColor: '#f44336',
+      action: () => {
+        makeToast('חירום', 'מחייג למגן דוד אדום'); 
+        handleGlobalClick();
+      }
+    },
+    { 
+      label: 'חיוג לאיש קשר',
+      backgroundColor: '#6aa84f',
+      action: () => {
+        makeToast('חירום', 'מחייג לאיש קשר');
+        handleGlobalClick();
+      }
+    }
   ];
+  
+  const makeToast = (title, text) => {
+    Toast.show({
+      type: "success",
+      text1: title,
+      text2: text,
+      visibilityTime: 4000,
+      position: "top",
+      textStyle: { fontSize: 18, textAlign: "right" }, 
+      style: { width: "90%", backgroundColor: "#ff4d4d", borderRadius: 10, alignSelf: "flex-end" },
+    });
+  };  
+
   const handleNavigate = (route) => {
     animatableRef.current
       .animate("fadeOutRight", 500)
@@ -26,6 +67,7 @@ const Emergency = ({ navigation,handleGlobalClick }) => {
   return (
     <Animatable.View ref={animatableRef} style={{ flex: 1 }} animation="fadeInDown" duration={2000} >
         <ScrollView contentContainerStyle={styles.container}>
+        <Toast/>
         <View style={styles.titleContainer}>
             <Text style={styles.title}>חירום</Text>
             <Text style={styles.subtitle}>דף זה מאפשר לך להתקשר לגופי ביטחון והצלה ובנוסף לאיש קשר למקרה חירום שהזנת במערכת. כדי להתקשר לחץ על הכפתור המתאים</Text>

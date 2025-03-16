@@ -1,34 +1,38 @@
-import React, { useRef } from "react";
+import React, { useState, useRef } from "react";
 import {
   View,
   Text,
   StyleSheet,
   ScrollView,
   Dimensions,
-  Alert,
   Button,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import { LineChart, BarChart } from "react-native-chart-kit";
-import { collection, doc, setDoc } from "firebase/firestore";
+import { collection, doc, setDoc, getDoc } from "firebase/firestore";
 import { db } from "../../../server/firebase";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as Animatable from "react-native-animatable";
 import { useUser } from "../userContext";
+import Toast from "react-native-toast-message";
 
 const PerformanceM2 = ({ globalTasks = [], setGlobalTasks, navigation }) => {
-  const { user, updateUser } = useUser();
+  const { user } = useUser();
+  const [isResetting, setIsResetting] = useState(false);
+  const animatableRef = useRef(null);
+
   const calculateGraphData = () => {
-    console.log("golbaltasks: ", globalTasks);
     const taskLabels = [];
     const pagesChanged = [];
     const durations = [];
     const clicks = [];
     const indicators = [];
-    const taskOptimalModel2 = [
-      { clicks: 36, pagesChanges: 7 },
-      { clicks: 10, pagesChanges: 9 },
-      { clicks: 6, pagesChanges: 5 },
+
+    const taskOptimalModel1 = [
+      { clicks: 26, pagesChanges: 2 },
+      { clicks: 4, pagesChanges: 2 },
+      { clicks: 3, pagesChanges: 2 },
     ];
 
     globalTasks.forEach((task, index) => {
@@ -37,11 +41,8 @@ const PerformanceM2 = ({ globalTasks = [], setGlobalTasks, navigation }) => {
       pagesChanged.push(pages || 0);
       durations.push(duration || 0);
       clicks.push(taskClicks || 0);
-
-      const pageThreshold = 3;
-      const clickThreshold = 6;
-      const pageRatio = pages / taskOptimalModel2[index].pagesChanges || 0;
-      const clickRatio = taskClicks / taskOptimalModel2[index].clicks || 0;
+      const pageRatio = pages / (taskOptimalModel1[index]?.pagesChanges || 1);
+      const clickRatio = taskClicks / (taskOptimalModel1[index]?.clicks || 1);
       indicators.push((pageRatio + clickRatio) / 2);
     });
 
@@ -52,167 +53,146 @@ const PerformanceM2 = ({ globalTasks = [], setGlobalTasks, navigation }) => {
     calculateGraphData();
 
   const resetPerformance = async () => {
+    if (!user?.id) {
+      Toast.show({ type: "error", text1: "Error", text2: "User ID not found." });
+      return;
+    }
+
+    if (isResetting) return;
+    setIsResetting(true);
+
     try {
-      const userId = user.id;
-      if (!userId) throw new Error("User ID not found.");
+      console.log("🔹 Resetting performance data in Firebase...");
 
-      const performanceData = globalTasks.map((task, index) => ({
-        ...task,
-        name: `Task ${index + 1}`,
-        timestamp: task.timestamp || new Date().toISOString(),
-      }));
+      const performanceCollection = collection(db, "performance");
+      let newUserId = user.id;
+      let counter = 1;
 
-      const performanceRef = doc(collection(db, "performance"), userId);
-      await setDoc(performanceRef, { tasks: performanceData });
+      while (true) {
+        const existingDoc = await getDoc(doc(performanceCollection, newUserId));
+        if (!existingDoc.exists()) {
+          break;
+        }
+        counter++;
+        newUserId = `${user.id}_${counter}`;
+      }
+
+      console.log("💾 Storing performance data under userId:", newUserId);
+
+      const performanceRef = doc(performanceCollection, newUserId);
+      await setDoc(performanceRef, {
+        tasks: globalTasks,
+        timestamp: new Date().toISOString(),
+      });
 
       setGlobalTasks([]);
-      Alert.alert("Success", "Performance data saved and tasks reset.");
+
+      Toast.show({
+        type: "success",
+        text1: "Success",
+        text2: `Performance data saved as ${newUserId}`,
+      });
+
     } catch (error) {
-      console.error("Error resetting performance:", error);
-      Alert.alert("Error", "Failed to save performance data.");
+      console.error("❌ Error resetting performance data:", error);
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Failed to reset performance data.",
+      });
+    } finally {
+      setIsResetting(false);
     }
   };
 
   const handleReset = () => {
     Alert.alert(
-      "Reset Data",
+      "Warning",
       "Are you sure you want to reset performance data?",
       [
         { text: "Cancel", style: "cancel" },
-        { text: "Reset", onPress: () => resetPerformance() },
+        { text: "Reset", onPress: resetPerformance },
       ]
     );
   };
+
   const handleNavigate = (route) => {
     if (!navigation) {
-      console.error(
-        "Navigation prop is missing. Ensure the component is wrapped in a navigator."
-      );
+      console.error("Navigation prop is missing.");
       return;
     }
 
     if (animatableRef.current) {
       animatableRef.current
         .animate("fadeOutRight", 500)
-        .then(() => {
-          navigation.navigate(route);
-        })
+        .then(() => navigation.navigate(route))
         .catch((error) => {
           console.error("Animation error:", error);
-          navigation.navigate(route); // Fallback navigation
+          navigation.navigate(route);
         });
     } else {
-      console.warn(
-        "Animation reference is null. Navigating without animation."
-      );
       navigation.navigate(route);
     }
   };
 
-  const animatableRef = useRef(null);
-
   return (
-    <Animatable.View
-      ref={animatableRef}
-      style={{ flex: 1 }}
-      animation="fadeInDown"
-      duration={2000}
-    >
+    <Animatable.View ref={animatableRef} style={{ flex: 1 }} animation="fadeInDown" duration={2000}>
       <SafeAreaView style={{ flex: 1, backgroundColor: "#f2f2f2" }}>
-        <ScrollView
-          contentContainerStyle={styles.scrollContainer}
-          showsVerticalScrollIndicator
-        >
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
           <View style={styles.titleContainer}>
             <Text style={styles.title}>Performance Metrics</Text>
           </View>
 
           {taskLabels.length > 0 ? (
             <>
-              <View style={styles.graphContainer}>
-                <Text style={styles.graphDescription}>
-                  Number of Page Changes
-                </Text>
-                <BarChart
-                  data={{
-                    labels: taskLabels,
-                    datasets: [{ data: pagesChanged }],
-                  }}
-                  width={Dimensions.get("window").width - 40}
-                  height={170}
-                  chartConfig={chartConfig}
-                  style={styles.graphStyle}
-                />
-              </View>
-
-              <View style={styles.graphContainer}>
-                <Text style={styles.graphDescription}>Number of Clicks</Text>
-                <BarChart
-                  data={{
-                    labels: taskLabels,
-                    datasets: [{ data: clicks }],
-                  }}
-                  width={Dimensions.get("window").width - 40}
-                  height={170}
-                  chartConfig={chartConfig}
-                  style={styles.graphStyle}
-                />
-              </View>
-
-              <View style={styles.graphContainer}>
-                <Text style={styles.graphDescription}>
-                  Task Duration (seconds)
-                </Text>
-                <LineChart
-                  data={{
-                    labels: taskLabels,
-                    datasets: [{ data: durations }],
-                  }}
-                  width={Dimensions.get("window").width - 40}
-                  height={170}
-                  chartConfig={chartConfig}
-                  style={styles.graphStyle}
-                />
-              </View>
-
-              <View style={styles.graphContainer}>
-                <Text style={styles.graphDescription}>
-                  Performance Indicator
-                </Text>
-                <BarChart
-                  data={{
-                    labels: taskLabels,
-                    datasets: [{ data: indicators }],
-                  }}
-                  width={Dimensions.get("window").width - 40}
-                  height={170}
-                  chartConfig={chartConfig}
-                  style={styles.graphStyle}
-                />
-              </View>
+              <Graph title="Number of Page Changes" labels={taskLabels} data={pagesChanged} />
+              <Graph title="Number of Clicks" labels={taskLabels} data={clicks} />
+              <Graph title="Task Duration (seconds)" labels={taskLabels} data={durations} type="line" />
+              <Graph title="Performance Indicator" labels={taskLabels} data={indicators} />
             </>
           ) : (
             <View style={styles.noDataContainer}>
-              <Text style={styles.noDataText}>
-                No performance data available.
-              </Text>
+              <Text style={styles.noDataText}>No performance data available.</Text>
             </View>
           )}
 
           <View style={styles.resetButtonContainer}>
-            <Button title="Reset Data" onPress={handleReset} color="#f4511e" />
+            <Button title="Reset Data" onPress={handleReset} color="#f4511e" disabled={isResetting} />
           </View>
-          <TouchableOpacity
-            style={styles.forwardButton}
-            onPress={() => handleNavigate("Home1")}
-          >
-            <Text style={styles.forwardButtonText}>חזור</Text>
-          </TouchableOpacity>
+          <View style={styles.forwardButtonContainer}>
+            <TouchableOpacity style={styles.forwardButton} onPress={() => handleNavigate("Home1")}>
+              <Text style={styles.forwardButtonText}>חזור</Text>
+            </TouchableOpacity>
+          </View>
         </ScrollView>
+        <Toast />
       </SafeAreaView>
     </Animatable.View>
   );
 };
+
+const Graph = ({ title, labels, data, type = "bar" }) => (
+  <View style={styles.graphContainer}>
+    <Text style={styles.graphDescription}>{title}</Text>
+    {type === "bar" ? (
+      <BarChart
+        data={{ labels, datasets: [{ data }] }}
+        width={Dimensions.get("window").width - 40}
+        height={170}
+        chartConfig={chartConfig}
+        style={styles.graphStyle}
+      />
+    ) : (
+      <LineChart
+        data={{ labels, datasets: [{ data }] }}
+        width={Dimensions.get("window").width - 40}
+        height={170}
+        chartConfig={chartConfig}
+        style={styles.graphStyle}
+      />
+    )}
+  </View>
+);
 
 const chartConfig = {
   backgroundColor: "#e26a00",
@@ -233,27 +213,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#f2f2f2",
   },
   titleContainer: {
-    marginBottom: 2,
     alignItems: "center",
   },
   title: {
     fontSize: 24,
     fontWeight: "bold",
-  },
-  graphContainer: {
-    marginBottom: 2,
-    alignItems: "center",
-    height: 200,
-  },
-  graphDescription: {
-    fontSize: 16,
-    fontWeight: "bold",
-    marginBottom: 2,
-    marginTop: 3,
-  },
-  graphStyle: {
-    borderRadius: 16,
-    marginVertical: 10,
   },
   noDataContainer: {
     marginVertical: 50,
@@ -264,23 +228,26 @@ const styles = StyleSheet.create({
     color: "#555",
   },
   resetButtonContainer: {
-    marginTop: 1,
+    marginTop: 20,
     alignItems: "center",
   },
   forwardButton: {
-    marginTop: 30,
     backgroundColor: "orange",
-    paddingVertical: 15,
-    paddingHorizontal: 30,
+    padding: 15,
     borderRadius: 10,
-    width: 300,
-    marginTop: 50,
-  },
+    width: 200,
+    marginTop: 20,
+    alignItems: "center",
+},
+
   forwardButtonText: {
     color: "#fff",
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: "bold",
-    textAlign: "center",
+  },
+  forwardButtonContainer: {
+    alignItems:"flex-start",
+    marginTop: 20,
   },
 });
 

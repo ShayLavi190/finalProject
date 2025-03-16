@@ -117,7 +117,7 @@ const Transaction = ({ navigation,handleGlobalClick }) => {
       ref={animatableRef}
       animation="fadeInDown"
       duration={2000}
-      style={{ flex: 1 }}
+      style={{ flex: 1}}
     >
       <KeyboardAvoidingView
         style={styles.container}
@@ -128,8 +128,6 @@ const Transaction = ({ navigation,handleGlobalClick }) => {
           <Text style={styles.subtitle}>
             המידע נשמר בצורה מאובטחת. מלא את כלל הפרטים כדי לבצע העברה.
           </Text>
-
-          {/* Bank Picker */}
           <View style={styles.inputContainer}>
           <TouchableOpacity onPress={() => handleIconPress("bank")}>
             <Animatable.View
@@ -146,14 +144,13 @@ const Transaction = ({ navigation,handleGlobalClick }) => {
               setOpen={(value) => {setOpen(value); handleGlobalClick();}}
               setValue={setSelectedBank}
               setItems={setItems}
-              textStyle={styles.input}
               placeholder="בחר בנק..."
-              style={styles.dropdown}
-              dropDownContainerStyle={styles.dropdownContainer}
+              style={[styles.dropdown, { zIndex: 3000 }]}
+              dropDownContainerStyle={{ zIndex: 3000 }}
+              textStyle={styles.dropdownText}
+              dropDownDirection="BOTTOM"
             />
           </View>
-
-          {/* Account Number Input */}
           <View style={styles.inputContainer}>
             <TouchableOpacity onPress={() => handleIconPress("account")}>
               <Animatable.View animation={iconAnimation} style={styles.iconContainer}>
@@ -172,8 +169,6 @@ const Transaction = ({ navigation,handleGlobalClick }) => {
               keyboardType="numeric"
             />
           </View>
-
-          {/* Branch Number Input */}
           <View style={styles.inputContainer}>
             <TouchableOpacity onPress={() => handleIconPress("branch")}>
               <Animatable.View animation={iconAnimation} style={styles.iconContainer}>
@@ -191,8 +186,7 @@ const Transaction = ({ navigation,handleGlobalClick }) => {
               }
               keyboardType="numeric"
             />
-          </View>
-          {/* Bank Picker */}
+          </View >
           <View style={styles.inputContainer}>
             <TouchableOpacity onPress={() => handleIconPress("bank")}>
               <Animatable.View
@@ -209,14 +203,11 @@ const Transaction = ({ navigation,handleGlobalClick }) => {
               setOpen={(value) => {setOpen2(value); handleGlobalClick();}}
               setValue={setSelectedBankReciver}
               setItems={setItems}
-              textStyle={styles.input}
               placeholder="בחר בנק של המקבל..."
               style={styles.dropdown}
-              dropDownContainerStyle={styles.dropdownContainer}
+              textStyle={styles.dropdownText}
             />
           </View>
-
-          {/* Account Number Input */}
           <View style={styles.inputContainer}>
             <TouchableOpacity onPress={() => handleIconPress("account")}>
               <Animatable.View animation={iconAnimation} style={styles.iconContainer}>
@@ -236,8 +227,6 @@ const Transaction = ({ navigation,handleGlobalClick }) => {
               keyboardType="numeric"
             />
           </View>
-
-          {/* Branch Number Input */}
           <View style={styles.inputContainer}>
             <TouchableOpacity onPress={() => handleIconPress("branch")}>
               <Animatable.View animation={iconAnimation} style={styles.iconContainer}>
@@ -256,7 +245,6 @@ const Transaction = ({ navigation,handleGlobalClick }) => {
               keyboardType="numeric"
             />
           </View>
-          {/* Reason and Money Inputs */}
           <View style={styles.inputContainer}>
             <TouchableOpacity onPress={() => handleIconPress("reason")}>
               <Animatable.View animation={iconAnimation} style={styles.iconContainer}>
@@ -337,6 +325,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 20,
+    zIndex:1
   },
   card: {
     width: "90%",
@@ -349,7 +338,8 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     shadowOffset: { width: 0, height: 2 },
     elevation: 5,
-    marginBottom:140
+    marginBottom:140,
+    zIndex:1
   },
   title: {
     fontSize: 24,
@@ -370,6 +360,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     padding: 10,
     fontSize: 16,
+    zIndex:1 
   },
   iconContainer: {
     width: 50,
@@ -382,6 +373,7 @@ const styles = StyleSheet.create({
     shadowColor: "yellow",
     shadowRadius: 3,
     shadowOpacity: 1,
+    zIndex:1 
   },
   subtitle: {
     fontSize: 16,
@@ -396,6 +388,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     width: "48%",
+    zIndex:1 
   },
   forwardBtn:
   {
@@ -439,17 +432,19 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     marginTop: 20,
+    zIndex:1 
   },
   dropdown: {
-    width: 595,
-    borderColor: "gray",
-    borderRadius: 5,
+    marginBottom: 15,
+    borderColor: "#ccc",
+    height: 50,
+    width: "90%",
+    zIndex:1000
   },
-  
-  dropdownContainer: {
-    width: 595,
-    borderColor: "gray",
-    
+  dropdownText: {
+    textAlign: "center",
+    fontSize: 16,
+    zIndex:1000
   },
   sendBtn:
   {

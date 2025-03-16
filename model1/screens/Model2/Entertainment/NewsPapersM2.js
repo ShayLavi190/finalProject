@@ -1,45 +1,29 @@
-import React, { useState,useRef } from 'react';
+import React, { useRef } from 'react';
 import {
   View,
   Text,
   TouchableOpacity,
   StyleSheet,
   ScrollView,
-  ActivityIndicator,
+  Linking,
 } from 'react-native';
-import { WebView } from 'react-native-webview';
 import * as Animatable from "react-native-animatable";
 
 const newspapers = [
-    { id: '1', name: 'הארץ',backgroundColor:'#00315c', link: 'https://www.haaretz.co.il/' },
-    { id: '2', name: 'ידיעות אחרונות',backgroundColor:'#b2e1d6', link: 'https://www.yediot.co.il/' },
-    { id: '3', name: 'מעריב',backgroundColor:'#5486b4', link: 'https://www.maariv.co.il/' },
-    { id: '4', name: 'The Marker',backgroundColor:'#ded0ab', link: 'https://www.themarker.com/' },
-    { id: '5', name: 'גלובס',backgroundColor:'#ff8c00', link: 'https://www.globes.co.il/' },
-  ];
+    { id: '1', name: 'הארץ', backgroundColor: '#00315c', link: 'https://www.haaretz.co.il/' },
+    { id: '2', name: 'ידיעות אחרונות', backgroundColor: '#b2e1d6', link: 'https://www.yediot.co.il/' },
+    { id: '3', name: 'מעריב', backgroundColor: '#5486b4', link: 'https://www.maariv.co.il/' },
+    { id: '4', name: 'The Marker', backgroundColor: '#ded0ab', link: 'https://www.themarker.com/' },
+    { id: '5', name: 'גלובס', backgroundColor: '#ff8c00', link: 'https://www.globes.co.il/' },
+];
 
 const NewsPapersM2 = ({ handleGlobalClick, navigation }) => {
-  const [currentUrl, setCurrentUrl] = useState('');
-  const [isWebViewVisible, setWebViewVisible] = useState(false);
-  const [loading, setLoading] = useState(false);
   const animatableRef = useRef(null);
-  const modalRef = useRef(null);
 
-  const openWebView = (url) => {
-    setCurrentUrl(url);
-    setWebViewVisible(true);
-    handleGlobalClick('Opened WebView for: ' + url);
+  const openBrowser = (url) => {
+    Linking.openURL(url).catch(err => console.error("Failed to open URL:", err));
+    handleGlobalClick('Opened external browser for: ' + url);
   };
-  const closeWebView = () => {
-    modalRef.current
-      .animate("fadeOut", 300) 
-      .then(() => {
-        setWebViewVisible(false); 
-        setCurrentUrl('');
-        handleGlobalClick('Closed WebView');
-      });
-  };
-
 
   const handleNavigate = (route, direction) => {
     if (direction === "forward") {
@@ -55,29 +39,7 @@ const NewsPapersM2 = ({ handleGlobalClick, navigation }) => {
 
   return (
     <Animatable.View ref={animatableRef} style={{ flex: 1 }} animation="fadeInDown" duration={2000}>
-    <View style={styles.container}>
-      {isWebViewVisible ? (
-          <Animatable.View ref={modalRef} style={{ flex: 1 }} animation="fadeIn" duration={1000}>
-            <View style={styles.webviewContainer}>
-                <TouchableOpacity style={styles.closeButton} onPress={closeWebView}>
-                <Text style={styles.closeButtonText}>סגור</Text>
-                </TouchableOpacity>
-                {loading && (
-                <ActivityIndicator
-                    size="large"
-                    color="#0000ff"
-                    style={styles.loader}
-                />
-                )}
-                <WebView
-                source={{ uri: currentUrl }}
-                style={styles.webview}
-                onLoadStart={() => setLoading(true)}
-                onLoadEnd={() => setLoading(false)}
-                />
-            </View>
-        </Animatable.View>
-      ) : (
+      <View style={styles.container}>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <Text style={styles.title}>עיתונים</Text>
           <Text style={styles.subtitle}>על מנת לקרוא עיתונים לחץ על העיתון לקרוא. כדי לעבור לשאר המסכים לחץ על לחצן משחקים</Text>
@@ -85,30 +47,29 @@ const NewsPapersM2 = ({ handleGlobalClick, navigation }) => {
             {newspapers.map((paper) => (
               <TouchableOpacity
                 key={paper.id}
-                style={[styles.card,{backgroundColor:paper.backgroundColor}]}
-                onPress={() => openWebView(paper.link)}
+                style={[styles.card, { backgroundColor: paper.backgroundColor }]}
+                onPress={() => openBrowser(paper.link)}
               >
                 <Text style={styles.cardTitle}>{paper.name}</Text>
               </TouchableOpacity>
             ))}
           </View>
-        <View style={styles.buttonRow}>
-         <TouchableOpacity
-            style={[styles.button, styles.forwardButton,{backgroundColor:'orange'}]}
-            onPress={() => handleNavigate("GamesM2", "forward")}
-          >
-            <Text style={styles.forwardButtonText}>משחקים</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.button, styles.forwardButton,{backgroundColor:'green'}]}
-            onPress={() => handleNavigate("NewsChannelsM2", "back")}
-          >
-            <Text style={styles.forwardButtonText}>חדשות</Text>
-          </TouchableOpacity>
-        </View>
+          <View style={styles.buttonRow}>
+            <TouchableOpacity
+              style={[styles.button, styles.forwardButton, { backgroundColor: 'orange' }]}
+              onPress={() => handleNavigate("GamesM2", "forward")}
+            >
+              <Text style={styles.forwardButtonText}>משחקים</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.button, styles.forwardButton, { backgroundColor: 'green' }]}
+              onPress={() => handleNavigate("NewsChannelsM2", "back")}
+            >
+              <Text style={styles.forwardButtonText}>חדשות</Text>
+            </TouchableOpacity>
+          </View>
         </ScrollView>
-      )}
-    </View>
+      </View>
     </Animatable.View>
   );
 };
@@ -128,7 +89,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 40,
     textAlign: 'center',
-    marginTop:80
+    marginTop: 30,
   },
   buttonRowContainer: {
     flexDirection: 'row',
@@ -151,43 +112,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
   },
-  webviewContainer: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  closeButton: {
-    position: 'absolute',
-    top: 40,
-    right: 20,
-    zIndex: 1,
-    padding: 10,
-    backgroundColor: 'red',
-    borderRadius: 5,
-    width:80
-  },
-  closeButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign:'center'
-  },
-  webview: {
-    flex: 1,
-    marginTop: 80,
-  },
-  loader: {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: [{ translateX: -25 }, { translateY: -25 }],
-  },  
   subtitle: {
     fontSize: 28,
     color: "#555",
     textAlign: "center",
-    marginTop: 20,
     fontWeight: "bold",
-    marginBottom:50,
-    marginTop:50
+    marginBottom: 50,
+    marginTop: 50,
   },
   buttonRow: {
     flexDirection: "row",
@@ -206,7 +137,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     textAlign: "center",
-  }
+  },
 });
 
 export default NewsPapersM2;

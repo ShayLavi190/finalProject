@@ -69,6 +69,7 @@ import Entertainment3 from "./screens/Model3/Entertainment/Entertainment3";
 import Games3 from "./screens/Model3/Entertainment/Games3";
 import NewsChannels3 from "./screens/Model3/Entertainment/NewsChannels3";
 import NewsPapers3 from "./screens/Model3/Entertainment/NewsPapers3";
+import Toast from "react-native-toast-message";
 
 const Stack = createStackNavigator();
 
@@ -127,6 +128,7 @@ export default function App() {
 
   return (
     <UserProvider>
+      <Toast/>
       <NavigationContainer onStateChange={handleStateChange}>
         <View
           style={styles.wrapper}

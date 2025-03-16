@@ -13,6 +13,7 @@ import {
 import Entypo from "react-native-vector-icons/Entypo";
 import * as Animatable from "react-native-animatable";
 import { useUser } from "../userContext";
+import Toast from "react-native-toast-message";
 
 const SetUp2 = ({ navigation, handleGlobalClick }) => {
   const { user, updateUser } = useUser();
@@ -57,7 +58,19 @@ const SetUp2 = ({ navigation, handleGlobalClick }) => {
     if (!country.trim())
       errors.push("נא להזין את המדינה בה אתם גרים. שדה זה חובה");
     if (errors.length > 0) {
-      Alert.alert("שגיאה", errors.join("\n"));
+            errors.forEach((error, index) => {
+              setTimeout(() => {
+                Toast.show({
+                  type: "error",
+                  text1: "שגיאה",
+                  text2: error,
+                  visibilityTime: 4000,
+                  position: "top",
+                  textStyle: { fontSize: 18, textAlign: "right" }, 
+                  style: { width: "90%", backgroundColor: "#ff4d4d", borderRadius: 10, alignSelf: "flex-end" },
+                });
+              }, index * 800); 
+            });
       return false;
     }
     return true;
@@ -110,6 +123,7 @@ const SetUp2 = ({ navigation, handleGlobalClick }) => {
         style={styles.container}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
+        <Toast/>
         <View style={styles.card}>
           <Text style={styles.title}> הגדרת כתובת לקוח</Text>
           <Text style={styles.subtitle}>
