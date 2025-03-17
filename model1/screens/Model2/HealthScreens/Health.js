@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { useUser } from "../userContext";
 import * as Animatable from "react-native-animatable";
+import Toast from "react-native-toast-message";
 
 const Health = ({ navigation,handleGlobalClick }) => {
   const { user } = useUser();
@@ -26,7 +27,19 @@ const Health = ({ navigation,handleGlobalClick }) => {
     }
   };
   const handelBuy = () => {
-    Alert.alert("התרופות הוזמנו");
+    Toast.show({
+      type: "success",
+      text1: "התרופות הוזמנו",
+      visibilityTime: 4000,
+      position: "top",
+      textStyle: { fontSize: 18, textAlign: "right" }, 
+      style: { 
+        width: "90%", 
+        backgroundColor: "#ff4d4d", 
+        borderRadius: 10, 
+        alignSelf: "flex-end",
+        zIndex: 9999 
+      },});
     handleGlobalClick();
     }
   return (
@@ -37,6 +50,7 @@ const Health = ({ navigation,handleGlobalClick }) => {
       duration={2000}
     >
       <ScrollView contentContainerStyle={styles.container}>
+        <Toast/>
         <View style={styles.titleContainer}>
           <Text style={styles.title}>ברוך הבא לשירותי קופת חולים</Text>
         </View>
@@ -87,6 +101,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
     color: "#333",
+    marginTop: 30,
   },
   buttonRow: {
     flexDirection: "row",
@@ -120,6 +135,7 @@ const styles = StyleSheet.create({
     color: "#555",
     textAlign: "center",
     marginTop: 20,
+    marginBottom: 80,
     fontWeight: "bold",
   },
 });

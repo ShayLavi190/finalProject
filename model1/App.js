@@ -128,7 +128,7 @@ export default function App() {
 
   return (
     <UserProvider>
-      <Toast/>
+      <Toast ref={(ref) => Toast.setRef(ref)} />
       <NavigationContainer onStateChange={handleStateChange}>
         <View
           style={styles.wrapper}

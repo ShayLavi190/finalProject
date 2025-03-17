@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -6,28 +6,71 @@ import {
   TouchableOpacity,
   TextInput,
   StyleSheet,
-  Alert,
 } from 'react-native';
 import products from '../../SuperMarket/products';
 import * as Animatable from 'react-native-animatable';
 import DropDownPicker from "react-native-dropdown-picker";
+import Toast from "react-native-toast-message";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const EditCartM2 = ({ navigation,handleGlobalClick }) => {
+const EditCartM2 = ({ navigation, handleGlobalClick }) => {
   const animatableRef = useRef(null);
-  const [cartItems, setCartItems] = useState([
-    { id: '1', name: 'חלב', quantity: 1 },
-    { id: '2', name: 'לחם', quantity: 2 },
-    { id: '3', name: 'ביצים', quantity: 1 },
-  ]);
+  const [cartItems, setCartItems] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState('');
   const [productQuantity, setProductQuantity] = useState(1);
   const [open, setOpen] = useState(false);
+  const [items, setItems] = useState(products);
+  
+  const DEFAULT_CART = [
+    { id: '1', name: 'חלב', quantity: 1 },
+    { id: '2', name: 'לחם', quantity: 2 },
+    { id: '3', name: 'ביצים', quantity: 1 },
+  ];
+
+  const showToast = (type, title, message) => {
+    // First, hide any currently showing Toast
+    Toast.hide();
+    
+    // Use setTimeout to ensure the Toast appears after UI updates
+    setTimeout(() => {
+      Toast.show({
+        type: type,
+        position: 'bottom',
+        text1: title,
+        text2: message,
+        visibilityTime: 4000,
+        autoHide: true,
+      });
+    }, 100);
+  };
+
+  const loadCartFromStorage = async () => {
+    try {
+      const storedCart = await AsyncStorage.getItem('cart');
+      if (storedCart) {
+        setCartItems(JSON.parse(storedCart));
+        showToast('success', 'הצלחה', 'עגלה נטענה בהצלחה!');
+      } else {
+        setCartItems(DEFAULT_CART);
+        showToast('info', 'מידע', 'אין נתונים שמורים, נטען ברירת מחדל.');
+      }
+    } catch (error) {
+      console.error('שגיאה בטעינת העגלה:', error);
+      setCartItems(DEFAULT_CART); // fallback במקרה של שגיאה
+      showToast('error', 'שגיאה', 'שגיאה בטעינת העגלה.');
+    }
+  };
+
+  useEffect(() => {
+    loadCartFromStorage();
+  }, []);
 
   const handleQuantityChange = (id, newQuantity) => {
     if (newQuantity < 1) {
-      Alert.alert('שגיאה', 'הכמות חייבת להיות לפחות 1.');
+      showToast('error', 'שגיאה', 'הכמות חייבת להיות לפחות 1.');
       return;
     }
+    
     setCartItems((prevItems) =>
       prevItems.map((item) =>
         item.id === id ? { ...item, quantity: newQuantity } : item
@@ -39,17 +82,19 @@ const EditCartM2 = ({ navigation,handleGlobalClick }) => {
   const handleRemoveItem = (id) => {
     setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
     handleGlobalClick(`הסרת פריט ${id}`);
+    showToast('success', 'הצלחה', 'המוצר הוסר מהעגלה');
   };
 
   const handleAddItem = () => {
     if (!selectedProduct) {
-      Alert.alert('שגיאה', 'אנא בחר מוצר.');
+      showToast('error', 'שגיאה', 'אנא בחר מוצר.');
       return;
     }
     if (productQuantity < 1) {
-      Alert.alert('שגיאה', 'אנא בחר כמות גדולה מ-1.');
+      showToast('error', 'שגיאה', 'אנא בחר כמות גדולה מ-1.');
       return;
     }
+    
     setCartItems((prevItems) => [
       ...prevItems,
       {
@@ -61,13 +106,25 @@ const EditCartM2 = ({ navigation,handleGlobalClick }) => {
     setSelectedProduct('');
     setProductQuantity(1);
     handleGlobalClick(`הוספת פריט ${selectedProduct}`);
+    showToast('success', 'הצלחה', 'המוצר נוסף לעגלה');
   };
 
-  const handleCheckout = () => {
-    Alert.alert('הצלחה', 'העגלה נשלחה לתשלום!');
-    setCartItems([]);
-    handleGlobalClick('תשלום בוצע');
+  const saveCartToStorage = async () => {
+    try {
+      await AsyncStorage.setItem('cart', JSON.stringify(cartItems));
+      showToast('success', 'הצלחה', 'העגלה נשמרה בהצלחה!');
+    } catch (error) {
+      console.error('שגיאה בשמירת העגלה:', error);
+      showToast('error', 'שגיאה', 'שגיאה בשמירת העגלה.');
+    }
   };
+
+  const handleCheckout = async () => {
+    await saveCartToStorage();
+    navigation.navigate('Supermarket');
+    handleGlobalClick('שמירה');
+  };
+  
   const handleNavigate = (route) => {
     animatableRef.current
       .animate('fadeOutRight', 500)
@@ -105,66 +162,77 @@ const EditCartM2 = ({ navigation,handleGlobalClick }) => {
 
   return (
     <Animatable.View
-  ref={animatableRef}
-  animation="fadeInDown"
-  duration={2000}
-  style={{ flex: 1 }}
->
-  <View style={styles.container}>
-    <View style={styles.header}>
-      <Text style={styles.title}>עגלת הקניות שלך</Text>
-      <Text style={styles.subtitle}>
-        ניתן לראות את רשימת המוצרים בסל. הוספת מוצר היא דרך לחיצה על בחירות מוצר, בחירת כמו ואז לחיצה על הוספת מוצר. כדי להסידר מוצר יש ללחות על כפתור הסר. לתשלום לוחצים על הכפתור היעודי
-      </Text>
-    </View>
-    <View style={styles.row}>
-      <TextInput
-        style={styles.quantityInput}
-        keyboardType="numeric"
-        placeholder="כמות"
-        value={String(productQuantity)}
-        onChangeText={(text) => setProductQuantity(parseInt(text) || '')}
-      />
-      <DropDownPicker
-        open={open}
-        value={selectedProduct}
-        items={products}
-        setOpen={(value) => {setOpen(value); handleGlobalClick();}}
-        setValue={setSelectedProduct}
-        placeholder="בחר מוצר"
-        textStyle={{ textAlign: 'center', fontSize: 16 }}
-        style={styles.dropdown}
-        dropDownContainerStyle={styles.dropdownContainer}
-      />
-    </View>
-    <TouchableOpacity style={styles.addButton} onPress={handleAddItem}>
-      <Text style={styles.addButtonText}>הוסף מוצר</Text>
-    </TouchableOpacity>
-    <View style={{ flex: 1 }}>
-  <FlatList
-    data={cartItems}
-    keyExtractor={(item) => item.id}
-    renderItem={renderItem}
-    ListEmptyComponent={<Text style={styles.emptyCart}>העגלה ריקה</Text>}
-    contentContainerStyle={styles.listContainer}
-  />
+      ref={animatableRef}
+      animation="fadeInDown"
+      duration={2000}
+      style={{ flex: 1 }}
+    >
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.title}>עגלת הקניות שלך</Text>
+          <Text style={styles.subtitle}>
+            ניתן לראות את רשימת המוצרים בסל. הוספת מוצר היא דרך לחיצה על בחירות מוצר, בחירת כמו ואז לחיצה על הוספת מוצר. כדי להסידר מוצר יש ללחות על כפתור הסר. לשמירה לוחצים על הכפתור היעודי
+          </Text>
+        </View>
+        <View style={[styles.row, { zIndex: 3000 }]}>
+          <View style={styles.quantityWrapper}>
+            <TextInput
+              style={styles.quantityInput}
+              keyboardType="numeric"
+              placeholder="1"
+              value={String(productQuantity)}
+              onChangeText={(text) => setProductQuantity(parseInt(text) || 1)}
+            />
+          </View>
+          <View style={styles.dropdownWrapper}>
+            <DropDownPicker
+              open={open}
+              value={selectedProduct}
+              items={items}
+              setOpen={(value) => {setOpen(value); handleGlobalClick();}}
+              setValue={setSelectedProduct}
+              setItems={setItems}
+              placeholder="בחר מוצר"
+              textStyle={{ textAlign: 'center', fontSize: 16 }}
+              style={styles.dropdown}
+              dropDownContainerStyle={styles.dropdownContainer}
+              zIndex={3000}
+              zIndexInverse={1000}
+            />
+          </View>
+        </View>
+        <TouchableOpacity 
+          style={[styles.addButton, { zIndex: open ? 1 : 10 }]} 
+          onPress={handleAddItem}
+        >
+          <Text style={styles.addButtonText}>הוסף מוצר</Text>
+        </TouchableOpacity>
+        <View style={[{ flex: 1 }, { zIndex: open ? 1 : 10 }]}>
+          <FlatList
+            data={cartItems}
+            keyExtractor={(item) => item.id}
+            renderItem={renderItem}
+            ListEmptyComponent={<Text style={styles.emptyCart}>העגלה ריקה</Text>}
+            contentContainerStyle={styles.listContainer}
+          />
 
-  {cartItems.length > 0 && (
-    <TouchableOpacity style={styles.checkoutButton} onPress={handleCheckout}>
-      <Text style={styles.checkoutButtonText}>לתשלום</Text>
-    </TouchableOpacity>
-  )}
+          {cartItems.length > 0 && (
+            <TouchableOpacity style={styles.checkoutButton} onPress={handleCheckout}>
+              <Text style={styles.checkoutButtonText}>שמור</Text>
+            </TouchableOpacity>
+          )}
 
-  <View style={styles.buttonRow}>
-    <TouchableOpacity style={styles.forwardButton} onPress={() => handleNavigate('Home1')}>
-      <Text style={styles.forwardButtonText}>הבא</Text>
-    </TouchableOpacity>
-  </View>
-</View>
+          <View style={styles.buttonRow}>
+            <TouchableOpacity style={styles.forwardButton} onPress={() => handleNavigate('Supermarket')}>
+              <Text style={styles.forwardButtonText}>חזור</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
 
-  </View>
-</Animatable.View>
-
+        {/* Toast component */}
+        <Toast />
+      </View>
+    </Animatable.View>
   );
 };
 
@@ -189,18 +257,31 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     marginBottom: 15,
+    position: "relative",
+    paddingHorizontal: 5,
   },
-  pickerContainer: {
-    marginRight: 10,
+  quantityWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '25%',
+  },
+  dropdownWrapper: {
+    width: '70%',
+  },
+  quantityLabel: {
+    marginRight: 5,
+    fontSize: 16,
+    fontWeight: 'bold',
   },
   dropdown: {
-    width:'85%',
+    width: '100%',
     borderColor: 'gray',
     borderRadius: 5,
   },
   dropdownContainer: {
-    width: '70%',
+    width: '100%',
     borderColor: 'gray',
   },
   input: {
@@ -218,9 +299,9 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     borderRadius: 5,
     textAlign: 'center',
-    backgroundColor:'white',
-    width:'10%',
-    marginRight: 30,
+    backgroundColor: 'white',
+    width: '60%',
+    fontSize: 16,
   },
   addButton: {
     backgroundColor: '#007bff',
@@ -266,6 +347,8 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     backgroundColor: '#f2f2f2',
+    position: 'relative',
+    zIndex: 1,
   },
   listContainer: {
     paddingBottom: 200, 
@@ -309,5 +392,4 @@ const styles = StyleSheet.create({
   },
 });
 
-  
 export default EditCartM2;

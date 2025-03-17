@@ -14,8 +14,9 @@ import Entypo from "react-native-vector-icons/Entypo";
 import * as Animatable from "react-native-animatable";
 import DropDownPicker from "react-native-dropdown-picker";
 import { useUser } from "../userContext";
+import Toast from "react-native-toast-message";
 
-const Transaction = ({ navigation,handleGlobalClick }) => {
+const Transaction = ({ navigation, handleGlobalClick }) => {
   const { user, updateUser } = useUser();
   const [selectedBank, setSelectedBank] = useState("");
   const [bankAccountNumber, setBankAccountNumber] = useState("");
@@ -90,17 +91,50 @@ const Transaction = ({ navigation,handleGlobalClick }) => {
 
   const handelSend = () => {
     handleGlobalClick();
-    if ( reason !== "" && selectedBank !== "" && money !== "" && bankBranchNumber !== "" && bankAccountNumber !== "" && selectedBankReciver !== "" && bankAccountNumberReciver !== "" && bankBranchNumberReciver !== "") 
-    {
-      Alert.alert("העברה בוצעה בהצלחה");
+    
+    if (
+      reason !== "" &&
+      selectedBank !== "" &&
+      money !== "" &&
+      bankBranchNumber !== "" &&
+      bankAccountNumber !== "" &&
+      selectedBankReciver !== "" &&
+      bankAccountNumberReciver !== "" &&
+      bankBranchNumberReciver !== ""
+    ) {
+      // First, hide any currently showing Toast
+      Toast.hide();
+      
+      // Use setTimeout to ensure the Toast appears after UI updates
+      setTimeout(() => {
+        Toast.show({
+          type: 'success',
+          position: 'bottom',
+          text1: 'הצלחה',
+          text2: 'העברה בוצעה בהצלחה',
+          visibilityTime: 4000,
+        });
+      }, 100);
+      
+      // Reset fields
       setBankAccountNumberReciver("");
       setBankBranchNumberReciver("");
       setReason("");
       setMoney("");
-    } 
-    else 
-    {
-      Alert.alert("לא כל השדות מולאו. מלא/י את כלל השדות");
+    } else {
+      // First, hide any currently showing Toast
+      Toast.hide();
+      
+      // Use setTimeout to ensure the Toast appears after UI updates
+      setTimeout(() => {
+        Toast.show({
+          type: 'error',
+          position: 'bottom',
+          text1: 'שגיאה',
+          text2: 'לא כל השדות מולאו. מלא/י את כלל השדות',
+          visibilityTime: 4000,
+        });
+      }, 100);
     }
   };
 
@@ -117,20 +151,24 @@ const Transaction = ({ navigation,handleGlobalClick }) => {
       ref={animatableRef}
       animation="fadeInDown"
       duration={2000}
-      style={{ flex: 1}}
+      style={{ flex: 1 }}
     >
       <KeyboardAvoidingView
         style={styles.container}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        <View style={styles.card}>
+        {/* Toast moved to the end of the component */}
+        
+        <View style={[styles.card, open || open2 ? { zIndex: 100 } : {}]}>
           <Text style={styles.title}>ביצוע העברה בנקאית</Text>
           <Text style={styles.subtitle}>
             המידע נשמר בצורה מאובטחת. מלא את כלל הפרטים כדי לבצע העברה.
           </Text>
-          <View style={styles.inputContainer}>
-          <TouchableOpacity onPress={() => handleIconPress("bank")}>
-            <Animatable.View
+
+          {/* Sender's bank section */}
+          <View style={[styles.inputContainer, { zIndex: 3000 }]}>
+            <TouchableOpacity onPress={() => handleIconPress("bank")}>
+              <Animatable.View
                 animation={iconAnimation}
                 style={styles.iconContainer}
               >
@@ -141,17 +179,24 @@ const Transaction = ({ navigation,handleGlobalClick }) => {
               open={open}
               value={selectedBank}
               items={items}
-              setOpen={(value) => {setOpen(value); handleGlobalClick();}}
+              setOpen={(value) => {
+                setOpen(value);
+                if (value) setOpen2(false); // Close the other dropdown if opening this one
+                handleGlobalClick();
+              }}
               setValue={setSelectedBank}
               setItems={setItems}
               placeholder="בחר בנק..."
-              style={[styles.dropdown, { zIndex: 3000 }]}
-              dropDownContainerStyle={{ zIndex: 3000 }}
+              style={styles.dropdown}
               textStyle={styles.dropdownText}
               dropDownDirection="BOTTOM"
+              zIndex={3000}
+              zIndexInverse={1000}
             />
           </View>
-          <View style={styles.inputContainer}>
+
+          {/* These fields should have lower z-index when dropdowns are open */}
+          <View style={[styles.inputContainer, { zIndex: open || open2 ? 1 : 10 }]}>
             <TouchableOpacity onPress={() => handleIconPress("account")}>
               <Animatable.View animation={iconAnimation} style={styles.iconContainer}>
                 <Entypo name="light-bulb" size={40} color="yellow" />
@@ -162,14 +207,15 @@ const Transaction = ({ navigation,handleGlobalClick }) => {
               placeholder="מספר חשבון בנק"
               value={bankAccountNumber}
               onPress={handleGlobalClick}
-              onChangeText={(text) =>{
+              onChangeText={(text) => {
                 setBankAccountNumber(text.replace(/[^0-9]/g, ""));
-                handleGlobalClick();}
-              }
+                handleGlobalClick();
+              }}
               keyboardType="numeric"
             />
           </View>
-          <View style={styles.inputContainer}>
+
+          <View style={[styles.inputContainer, { zIndex: open || open2 ? 1 : 10 }]}>
             <TouchableOpacity onPress={() => handleIconPress("branch")}>
               <Animatable.View animation={iconAnimation} style={styles.iconContainer}>
                 <Entypo name="light-bulb" size={40} color="yellow" />
@@ -180,14 +226,16 @@ const Transaction = ({ navigation,handleGlobalClick }) => {
               placeholder="מספר סניף בנק"
               value={bankBranchNumber}
               onPress={handleGlobalClick}
-              onChangeText={(text) =>{
+              onChangeText={(text) => {
                 setBankBranchNumber(text.replace(/[^0-9]/g, ""));
-                handleGlobalClick();}
-              }
+                handleGlobalClick();
+              }}
               keyboardType="numeric"
             />
-          </View >
-          <View style={styles.inputContainer}>
+          </View>
+
+          {/* Receiver's bank section */}
+          <View style={[styles.inputContainer, { zIndex: 2000 }]}>
             <TouchableOpacity onPress={() => handleIconPress("bank")}>
               <Animatable.View
                 animation={iconAnimation}
@@ -200,15 +248,22 @@ const Transaction = ({ navigation,handleGlobalClick }) => {
               open={open2}
               value={selectedBankReciver}
               items={items}
-              setOpen={(value) => {setOpen2(value); handleGlobalClick();}}
+              setOpen={(value) => {
+                setOpen2(value);
+                if (value) setOpen(false); // Close the other dropdown if opening this one
+                handleGlobalClick();
+              }}
               setValue={setSelectedBankReciver}
               setItems={setItems}
               placeholder="בחר בנק של המקבל..."
               style={styles.dropdown}
               textStyle={styles.dropdownText}
+              zIndex={2000}
+              zIndexInverse={2000}
             />
           </View>
-          <View style={styles.inputContainer}>
+
+          <View style={[styles.inputContainer, { zIndex: open || open2 ? 1 : 10 }]}>
             <TouchableOpacity onPress={() => handleIconPress("account")}>
               <Animatable.View animation={iconAnimation} style={styles.iconContainer}>
                 <Entypo name="light-bulb" size={40} color="yellow" />
@@ -219,15 +274,15 @@ const Transaction = ({ navigation,handleGlobalClick }) => {
               placeholder="מספר חשבון בנק של המקבל"
               value={bankAccountNumberReciver}
               onPress={handleGlobalClick}
-              onChangeText={(text) =>{
-                setBankAccountNumberReciver(text.replace(/[^0-9]/g, ""))
+              onChangeText={(text) => {
+                setBankAccountNumberReciver(text.replace(/[^0-9]/g, ""));
                 handleGlobalClick();
-              }
-              }
+              }}
               keyboardType="numeric"
             />
           </View>
-          <View style={styles.inputContainer}>
+
+          <View style={[styles.inputContainer, { zIndex: open || open2 ? 1 : 10 }]}>
             <TouchableOpacity onPress={() => handleIconPress("branch")}>
               <Animatable.View animation={iconAnimation} style={styles.iconContainer}>
                 <Entypo name="light-bulb" size={40} color="yellow" />
@@ -238,14 +293,15 @@ const Transaction = ({ navigation,handleGlobalClick }) => {
               placeholder="מספר סניף בנק של המקבל"
               value={bankBranchNumberReciver}
               onPress={handleGlobalClick}
-              onChangeText={(text) =>{
+              onChangeText={(text) => {
                 setBankBranchNumberReciver(text.replace(/[^0-9]/g, ""));
                 handleGlobalClick();
               }}
               keyboardType="numeric"
             />
           </View>
-          <View style={styles.inputContainer}>
+
+          <View style={[styles.inputContainer, { zIndex: open || open2 ? 1 : 10 }]}>
             <TouchableOpacity onPress={() => handleIconPress("reason")}>
               <Animatable.View animation={iconAnimation} style={styles.iconContainer}>
                 <Entypo name="light-bulb" size={40} color="yellow" />
@@ -256,10 +312,14 @@ const Transaction = ({ navigation,handleGlobalClick }) => {
               placeholder="סיבת העברה"
               value={reason}
               onPress={handleGlobalClick}
-              onChangeText={(val)=>{setReason(val);handleGlobalClick();}}
+              onChangeText={(val) => {
+                setReason(val);
+                handleGlobalClick();
+              }}
             />
           </View>
-          <View style={styles.inputContainer}>
+
+          <View style={[styles.inputContainer, { zIndex: open || open2 ? 1 : 10 }]}>
             <TouchableOpacity onPress={() => handleIconPress("money")}>
               <Animatable.View animation={iconAnimation} style={styles.iconContainer}>
                 <Entypo name="light-bulb" size={40} color="yellow" />
@@ -270,20 +330,27 @@ const Transaction = ({ navigation,handleGlobalClick }) => {
               placeholder="סכום העברה"
               value={money}
               onPress={handleGlobalClick}
-              onChangeText={(text) => {setMoney(text.replace(/[^0-9]/g, ""));handleGlobalClick();}}
+              onChangeText={(text) => {
+                setMoney(text.replace(/[^0-9]/g, ""));
+                handleGlobalClick();
+              }}
               keyboardType="numeric"
             />
           </View>
-          <View style={{alignItems:'center',marginBottom:20,marginTop:10}}>
+
+          <View style={[
+            { alignItems: "center", marginBottom: 20, marginTop: 10, zIndex: open || open2 ? 1 : 10 }
+          ]}>
             <TouchableOpacity
-                style={[styles.button, styles.sendBtn]}
-                onPress={handelSend}
-                >
-                <Text style={styles.buttonText}>ביצוע העברה</Text>
-                </TouchableOpacity>
+              style={[styles.button, styles.sendBtn]}
+              onPress={handelSend}
+            >
+              <Text style={styles.buttonText}>ביצוע העברה</Text>
+            </TouchableOpacity>
           </View>
+
           {/* Buttons */}
-          <View style={styles.buttonRow}>
+          <View style={[styles.buttonRow, { zIndex: open || open2 ? 1 : 10 }]}>
             <TouchableOpacity
               style={[styles.button, styles.forwardBtn]}
               onPress={() => handleNavigate("ContactBankerM2", "forward")}
@@ -298,6 +365,7 @@ const Transaction = ({ navigation,handleGlobalClick }) => {
             </TouchableOpacity>
           </View>
         </View>
+
         <Modal visible={modalVisible} transparent animationType="none">
           <View style={styles.modalContainer}>
             <Animatable.View
@@ -307,12 +375,18 @@ const Transaction = ({ navigation,handleGlobalClick }) => {
               style={styles.modalContent}
             >
               <Text style={styles.fontex}>{explanation}</Text>
-              <TouchableOpacity style={[styles.button, styles.closeBtn]} onPress={closeModal}>
+              <TouchableOpacity
+                style={[styles.button, styles.closeBtn]}
+                onPress={closeModal}
+              >
                 <Text style={styles.buttonText}>סגור</Text>
               </TouchableOpacity>
             </Animatable.View>
           </View>
         </Modal>
+        
+        {/* Toast component positioned at the end of KeyboardAvoidingView */}
+        <Toast />
       </KeyboardAvoidingView>
     </Animatable.View>
   );
@@ -325,7 +399,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 20,
-    zIndex:1
+    position: "relative",
+    zIndex: 1, // Reduced from 20 to avoid conflicts with Toast
   },
   card: {
     width: "90%",
@@ -338,8 +413,9 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     shadowOffset: { width: 0, height: 2 },
     elevation: 5,
-    marginBottom:140,
-    zIndex:1
+    marginBottom: 140,
+    zIndex: 1,
+    position: "relative",
   },
   title: {
     fontSize: 24,
@@ -351,6 +427,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 15,
+    position: "relative",
   },
   input: {
     flex: 1,
@@ -360,7 +437,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     padding: 10,
     fontSize: 16,
-    zIndex:1 
   },
   iconContainer: {
     width: 50,
@@ -373,7 +449,6 @@ const styles = StyleSheet.create({
     shadowColor: "yellow",
     shadowRadius: 3,
     shadowOpacity: 1,
-    zIndex:1 
   },
   subtitle: {
     fontSize: 16,
@@ -388,68 +463,62 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     width: "48%",
-    zIndex:1 
   },
-  forwardBtn:
-  {
-    backgroundColor:'green'
+  forwardBtn: {
+    backgroundColor: "green",
   },
-  backBtn:
-  {
-    backgroundColor:'orange'
+  backBtn: {
+    backgroundColor: "orange",
   },
-  closeBtn:
-  {
-    backgroundColor:'red'
+  closeBtn: {
+    backgroundColor: "red",
   },
   buttonText: {
     fontSize: 18,
     color: "#fff",
-    fontWeight:'bold'
+    fontWeight: "bold",
   },
   modalContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "transperent",
+    backgroundColor: "transparent",
+    zIndex: 1000, // Reduced from 9900 to avoid conflicts
   },
   modalContent: {
     backgroundColor: "#fff",
     padding: 20,
     borderRadius: 10,
     alignItems: "center",
-    backgroundColor:"whitesmoke",
-    borderEndColor:'black',
-    borderBottomEndRadius:'2'
+    backgroundColor: "whitesmoke",
+    borderEndColor: "black",
+    borderBottomEndRadius: 2,
   },
   fontex: {
     fontSize: 20,
     marginBottom: 15,
-    fontWeight:'bold',
-    color:'black'
+    fontWeight: "bold",
+    color: "black",
   },
   buttonRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     marginTop: 20,
-    zIndex:1 
   },
   dropdown: {
-    marginBottom: 15,
+    flex: 1,
     borderColor: "#ccc",
-    height: 50,
-    width: "90%",
-    zIndex:1000
+    height: 30,
+    width: "92%",
   },
   dropdownText: {
     textAlign: "center",
     fontSize: 16,
-    zIndex:1000
   },
-  sendBtn:
-  {
-    backgroundColor:'#52bfbf'
-  }
+  sendBtn: {
+    backgroundColor: "#52bfbf",
+    width: "60%",
+  },
 });
 
 export default Transaction;

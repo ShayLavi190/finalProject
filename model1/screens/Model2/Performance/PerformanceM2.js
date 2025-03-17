@@ -7,7 +7,6 @@ import {
   Dimensions,
   Button,
   TouchableOpacity,
-  Alert,
 } from "react-native";
 import { LineChart, BarChart } from "react-native-chart-kit";
 import { collection, doc, setDoc, getDoc } from "firebase/firestore";
@@ -54,7 +53,20 @@ const PerformanceM2 = ({ globalTasks = [], setGlobalTasks, navigation }) => {
 
   const resetPerformance = async () => {
     if (!user?.id) {
-      Toast.show({ type: "error", text1: "Error", text2: "User ID not found." });
+      // First, hide any currently showing Toast
+      Toast.hide();
+      
+      // Use setTimeout to ensure the Toast appears after UI updates
+      setTimeout(() => {
+        Toast.show({
+          type: "error",
+          position: "bottom",
+          text1: "שגיאה",
+          text2: "מזהה משתמש לא נמצא",
+          visibilityTime: 4000,
+          autoHide: true,
+        });
+      }, 100);
       return;
     }
 
@@ -87,33 +99,55 @@ const PerformanceM2 = ({ globalTasks = [], setGlobalTasks, navigation }) => {
 
       setGlobalTasks([]);
 
-      Toast.show({
-        type: "success",
-        text1: "Success",
-        text2: `Performance data saved as ${newUserId}`,
-      });
+      // Use Toast for success message
+      Toast.hide();
+      setTimeout(() => {
+        Toast.show({
+          type: "success",
+          position: "bottom",
+          text1: "הצלחה",
+          text2: `נתוני הביצועים נשמרו בהצלחה כ-${newUserId}`,
+          visibilityTime: 4000,
+          autoHide: true,
+        });
+      }, 100);
 
     } catch (error) {
       console.error("❌ Error resetting performance data:", error);
-      Toast.show({
-        type: "error",
-        text1: "Error",
-        text2: "Failed to reset performance data.",
-      });
+      
+      // Use Toast for error message
+      Toast.hide();
+      setTimeout(() => {
+        Toast.show({
+          type: "error",
+          position: "bottom",
+          text1: "שגיאה",
+          text2: "אירעה שגיאה באיפוס נתוני הביצועים",
+          visibilityTime: 4000,
+          autoHide: true,
+        });
+      }, 100);
     } finally {
       setIsResetting(false);
     }
   };
 
   const handleReset = () => {
-    Alert.alert(
-      "Warning",
-      "Are you sure you want to reset performance data?",
-      [
-        { text: "Cancel", style: "cancel" },
-        { text: "Reset", onPress: resetPerformance },
-      ]
-    );
+    Toast.hide();
+    setTimeout(() => {
+      Toast.show({
+        type: "info",
+        position: "bottom",
+        text1: "אזהרה",
+        text2: "האם אתה בטוח שברצונך לאפס את נתוני הביצועים?",
+        visibilityTime: 4000,
+        autoHide: false,
+        onPress: () => {
+          Toast.hide();
+          resetPerformance();
+        }
+      });
+    }, 100);
   };
 
   const handleNavigate = (route) => {
@@ -138,7 +172,7 @@ const PerformanceM2 = ({ globalTasks = [], setGlobalTasks, navigation }) => {
   return (
     <Animatable.View ref={animatableRef} style={{ flex: 1 }} animation="fadeInDown" duration={2000}>
       <SafeAreaView style={{ flex: 1, backgroundColor: "#f2f2f2" }}>
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator>
           <View style={styles.titleContainer}>
             <Text style={styles.title}>Performance Metrics</Text>
           </View>
@@ -213,11 +247,25 @@ const styles = StyleSheet.create({
     backgroundColor: "#f2f2f2",
   },
   titleContainer: {
+    marginBottom: 2,
     alignItems: "center",
   },
   title: {
     fontSize: 24,
     fontWeight: "bold",
+  },
+  graphContainer: {
+    marginBottom: 2,
+    alignItems: "center",
+  },
+  graphDescription: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 5,
+  },
+  graphStyle: {
+    borderRadius: 16,
+    marginVertical: 10,
   },
   noDataContainer: {
     marginVertical: 50,
@@ -228,7 +276,7 @@ const styles = StyleSheet.create({
     color: "#555",
   },
   resetButtonContainer: {
-    marginTop: 20,
+    marginTop: 1,
     alignItems: "center",
   },
   forwardButton: {
@@ -238,15 +286,14 @@ const styles = StyleSheet.create({
     width: 200,
     marginTop: 20,
     alignItems: "center",
-},
-
+  },
   forwardButtonText: {
     color: "#fff",
     fontSize: 18,
     fontWeight: "bold",
   },
   forwardButtonContainer: {
-    alignItems:"flex-start",
+    alignItems: "flex-start",
     marginTop: 20,
   },
 });
