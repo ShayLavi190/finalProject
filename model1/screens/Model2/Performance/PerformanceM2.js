@@ -7,6 +7,8 @@ import {
   Dimensions,
   Button,
   TouchableOpacity,
+  Modal,
+  Pressable,
 } from "react-native";
 import { LineChart, BarChart } from "react-native-chart-kit";
 import { collection, doc, setDoc, getDoc } from "firebase/firestore";
@@ -19,6 +21,7 @@ import Toast from "react-native-toast-message";
 const PerformanceM2 = ({ globalTasks = [], setGlobalTasks, navigation }) => {
   const { user } = useUser();
   const [isResetting, setIsResetting] = useState(false);
+  const [confirmModalVisible, setConfirmModalVisible] = useState(false);
   const animatableRef = useRef(null);
 
   const calculateGraphData = () => {
@@ -53,20 +56,18 @@ const PerformanceM2 = ({ globalTasks = [], setGlobalTasks, navigation }) => {
 
   const resetPerformance = async () => {
     if (!user?.id) {
-      // First, hide any currently showing Toast
-      Toast.hide();
+      // Close modal first
+      setConfirmModalVisible(false);
       
-      // Use setTimeout to ensure the Toast appears after UI updates
-      setTimeout(() => {
-        Toast.show({
-          type: "error",
-          position: "bottom",
-          text1: "שגיאה",
-          text2: "מזהה משתמש לא נמצא",
-          visibilityTime: 4000,
-          autoHide: true,
-        });
-      }, 100);
+      // Show error toast
+      Toast.show({
+        type: "error",
+        position: "bottom",
+        text1: "שגיאה",
+        text2: "מזהה משתמש לא נמצא",
+        visibilityTime: 4000,
+        autoHide: true,
+      });
       return;
     }
 
@@ -98,56 +99,38 @@ const PerformanceM2 = ({ globalTasks = [], setGlobalTasks, navigation }) => {
       });
 
       setGlobalTasks([]);
+      setConfirmModalVisible(false);
 
-      // Use Toast for success message
-      Toast.hide();
-      setTimeout(() => {
-        Toast.show({
-          type: "success",
-          position: "bottom",
-          text1: "הצלחה",
-          text2: `נתוני הביצועים נשמרו בהצלחה כ-${newUserId}`,
-          visibilityTime: 4000,
-          autoHide: true,
-        });
-      }, 100);
+      // Show success toast
+      Toast.show({
+        type: "success",
+        position: "bottom",
+        text1: "הצלחה",
+        text2: `נתוני הביצועים נשמרו בהצלחה כ-${newUserId}`,
+        visibilityTime: 4000,
+        autoHide: true,
+      });
 
     } catch (error) {
       console.error("❌ Error resetting performance data:", error);
+      setConfirmModalVisible(false);
       
-      // Use Toast for error message
-      Toast.hide();
-      setTimeout(() => {
-        Toast.show({
-          type: "error",
-          position: "bottom",
-          text1: "שגיאה",
-          text2: "אירעה שגיאה באיפוס נתוני הביצועים",
-          visibilityTime: 4000,
-          autoHide: true,
-        });
-      }, 100);
+      // Show error toast
+      Toast.show({
+        type: "error",
+        position: "bottom",
+        text1: "שגיאה",
+        text2: "אירעה שגיאה באיפוס נתוני הביצועים",
+        visibilityTime: 4000,
+        autoHide: true,
+      });
     } finally {
       setIsResetting(false);
     }
   };
 
   const handleReset = () => {
-    Toast.hide();
-    setTimeout(() => {
-      Toast.show({
-        type: "info",
-        position: "bottom",
-        text1: "אזהרה",
-        text2: "האם אתה בטוח שברצונך לאפס את נתוני הביצועים?",
-        visibilityTime: 4000,
-        autoHide: false,
-        onPress: () => {
-          Toast.hide();
-          resetPerformance();
-        }
-      });
-    }, 100);
+    setConfirmModalVisible(true);
   };
 
   const handleNavigate = (route) => {
@@ -199,6 +182,37 @@ const PerformanceM2 = ({ globalTasks = [], setGlobalTasks, navigation }) => {
             </TouchableOpacity>
           </View>
         </ScrollView>
+        
+        {/* Confirmation Modal */}
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={confirmModalVisible}
+          onRequestClose={() => setConfirmModalVisible(false)}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Text style={styles.modalTitle}>אזהרה</Text>
+              <Text style={styles.modalText}>האם אתה בטוח שברצונך לאפס את נתוני הביצועים?</Text>
+              <View style={styles.modalButtons}>
+                <Pressable
+                  style={[styles.button, styles.buttonCancel]}
+                  onPress={() => setConfirmModalVisible(false)}
+                >
+                  <Text style={styles.textStyle}>ביטול</Text>
+                </Pressable>
+                <Pressable
+                  style={[styles.button, styles.buttonConfirm]}
+                  onPress={resetPerformance}
+                  disabled={isResetting}
+                >
+                  <Text style={styles.textStyle}>אפס</Text>
+                </Pressable>
+              </View>
+            </View>
+          </View>
+        </Modal>
+        
         <Toast />
       </SafeAreaView>
     </Animatable.View>
@@ -295,6 +309,62 @@ const styles = StyleSheet.create({
   forwardButtonContainer: {
     alignItems: "flex-start",
     marginTop: 20,
+  },
+  // Modal styles
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 25,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    width: "80%",
+  },
+  modalTitle: {
+    marginBottom: 15,
+    textAlign: "center",
+    fontWeight: "bold",
+    fontSize: 18,
+  },
+  modalText: {
+    marginBottom: 20,
+    textAlign: "center",
+    fontSize: 16,
+  },
+  modalButtons: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
+  },
+  button: {
+    borderRadius: 10,
+    padding: 10,
+    elevation: 2,
+    minWidth: 100,
+  },
+  buttonCancel: {
+    backgroundColor: "#9e9e9e",
+  },
+  buttonConfirm: {
+    backgroundColor: "#f4511e",
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
   },
 });
 

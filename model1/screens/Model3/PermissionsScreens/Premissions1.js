@@ -15,7 +15,9 @@ import * as Animatable from "react-native-animatable";
 import { useUser } from "../../Model2/userContext";
 import LottieView from "lottie-react-native";
 import { Audio } from "expo-av"; // Added Audio import
+import robotAnimation from "../SetupScreens/robot.json";
 
+const AUDIO_URL = "https://raw.githubusercontent.com/ShayLavi190/finalProject/main/model1/assets/Recordings/permissions1.mp3";
 const Premissions13 = ({ navigation, handleGlobalClick }) => {
   const { user, updateUser } = useUser();
   const [publicServices, setPublicServices] = useState(false);
@@ -100,7 +102,7 @@ const Premissions13 = ({ navigation, handleGlobalClick }) => {
       // Load and play new sound
       try {
         const { sound: newSound } = await Audio.Sound.createAsync(
-          require("../../../assets/Recordings/permissions1.mp3"), // Make sure this file exists
+          { uri: AUDIO_URL },
           { shouldPlay: true }
         );
         setSound(newSound);
@@ -166,7 +168,6 @@ const Premissions13 = ({ navigation, handleGlobalClick }) => {
               ios_backgroundColor="#3e3e3e"
               onValueChange={() => {
                 setPublicServices((prevState) => !prevState);
-                handleGlobalClick();
               }}
               value={publicServices}
             />
@@ -189,7 +190,6 @@ const Premissions13 = ({ navigation, handleGlobalClick }) => {
               width="200"
               ios_backgroundColor="#3e3e3e"
               onValueChange={() => {
-                handleGlobalClick();
                 setHealthMonitoring((prevState) => !prevState);
               }}
               value={healthMonitoring}
@@ -213,7 +213,6 @@ const Premissions13 = ({ navigation, handleGlobalClick }) => {
               width="200"
               ios_backgroundColor="#3e3e3e"
               onValueChange={() => {
-                handleGlobalClick();
                 setEmergencyContacts((prevState) => !prevState);
               }}
               value={emergencyContacts}
@@ -237,7 +236,6 @@ const Premissions13 = ({ navigation, handleGlobalClick }) => {
               width="200"
               ios_backgroundColor="#3e3e3e"
               onValueChange={() => {
-                handleGlobalClick();
                 setShareHealthInfo((prevState) => !prevState);
               }}
               value={shareHealthInfo}
@@ -277,7 +275,7 @@ const Premissions13 = ({ navigation, handleGlobalClick }) => {
             onPress={handleLottiePress}
           >
             <LottieView
-              source={require("../SetupScreens/robot.json")}
+              source={robotAnimation}
               autoPlay
               loop
               style={styles.lottie}
@@ -296,7 +294,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 20,
-    marginBottom: 90,
+    marginBottom: 200,
   },
   card: {
     width: "90%",
@@ -390,10 +388,6 @@ const styles = StyleSheet.create({
     right: 110,
     width: 300,
     height: 300,
-    shadowColor: "black",
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.3,
-    shadowRadius: 2,
   },
   lottie: {
     width: "100%",

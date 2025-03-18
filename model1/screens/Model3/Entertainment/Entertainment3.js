@@ -11,6 +11,9 @@ import { useUser } from "../../Model2/userContext";
 import * as Animatable from "react-native-animatable";
 import LottieView from "lottie-react-native";
 import { Audio } from "expo-av";
+import Toast from "react-native-toast-message";
+import robotAnimation from "../SetupScreens/robot.json";
+const AUDIO_URL = "https://raw.githubusercontent.com/ShayLavi190/finalProject/main/model1/assets/Recordings/entertainment.mp3";
 
 const Entertainment3 = ({ navigation, handleGlobalClick }) => {
   const { user } = useUser();
@@ -33,8 +36,15 @@ const Entertainment3 = ({ navigation, handleGlobalClick }) => {
 
   const handelConversation = () => {
     stopAudio(); // Add this line to stop audio when starting conversation
-    Alert.alert("דוח שיח התחיל");
-    handleGlobalClick();
+        Toast.show({
+          type: "info",
+          text1: "💬 דו שיח",
+          text2: "אתה מועבר לדף דו שיח",
+          visibilityTime: 4000,
+          position: "bottom",
+          textStyle: { fontSize: 18 },
+        });    
+        handleGlobalClick();
   };
 
   // Play / Pause Audio
@@ -48,7 +58,7 @@ const Entertainment3 = ({ navigation, handleGlobalClick }) => {
       setIsPlaying(true);
     } else {
       const { sound: newSound } = await Audio.Sound.createAsync(
-        require("../../../assets/Recordings/entertainment.mp3"), // Ensure the file exists
+        { uri: AUDIO_URL },
         { shouldPlay: true }
       );
       setSound(newSound);
@@ -79,6 +89,7 @@ const Entertainment3 = ({ navigation, handleGlobalClick }) => {
       duration={2000}
     >
       <ScrollView contentContainerStyle={styles.container}>
+        <Toast />
         <View style={styles.titleContainer}>
           <Text style={styles.title}>ברוך הבא לשירותי הבידור</Text>
         </View>
@@ -148,7 +159,7 @@ const Entertainment3 = ({ navigation, handleGlobalClick }) => {
             onPress={handleLottiePress}
           >
             <LottieView
-              source={require("../SetupScreens/robot.json")}
+              source={robotAnimation}
               autoPlay
               loop
               style={styles.lottie}
@@ -166,7 +177,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 20,
     backgroundColor: "#f2f2f2",
-    marginTop: 50,
+    marginTop: 20,
   },
   titleContainer: {
     width: "100%",
@@ -222,6 +233,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 20,
     fontWeight: "bold",
+    marginBottom: 80,
   },
   lottieButton: {
     position: "absolute",
@@ -229,10 +241,6 @@ const styles = StyleSheet.create({
     right: 110,
     width: 300,
     height: 300,
-    shadowColor: "black",
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.3,
-    shadowRadius: 2,
   },
   lottie: {
     width: "100%",
