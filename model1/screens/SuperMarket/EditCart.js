@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import {
   View,
   Text,
@@ -6,24 +6,43 @@ import {
   TouchableOpacity,
   TextInput,
   StyleSheet,
-  Alert,
 } from 'react-native';
-import RNPickerSelect from 'react-native-picker-select';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import DropDownPicker from 'react-native-dropdown-picker';
+import AsyncStorage from '@react-native-async-storage/async-storage'; // ✅ ייבוא AsyncStorage
 import products from './products';
 
-const EditCart = ({ handleGlobalClick }) => {
-  const [cartItems, setCartItems] = useState([
+const EditCart = ({ handleGlobalClick,navigation }) => {
+  const [cartItems, setCartItems] = useState([ ]);
+  const [selectedProduct, setSelectedProduct] = useState('');
+  const [productQuantity, setProductQuantity] = useState(1);
+  const [open, setOpen] = useState(false);
+  const [items, setItems] = useState(products);
+  const DEFAULT_CART = [
     { id: '1', name: 'חלב', quantity: 1 },
     { id: '2', name: 'לחם', quantity: 2 },
     { id: '3', name: 'ביצים', quantity: 1 },
-  ]);
-  const [selectedProduct, setSelectedProduct] = useState('');
-  const [productQuantity, setProductQuantity] = useState(1);
+  ];
+  const loadCartFromStorage = async () => {
+    try {
+      const storedCart = await AsyncStorage.getItem('cart');
+      if (storedCart) {
+        setCartItems(JSON.parse(storedCart));
+        console.log('🛒 עגלה נטענה בהצלחה!', JSON.parse(storedCart));
+      } else {
+        setCartItems(DEFAULT_CART);
+        console.log('🔄 אין נתונים שמורים, נטען ברירת מחדל.');
+      }
+    } catch (error) {
+      console.error('❌ שגיאה בטעינת העגלה:', error);
+      setCartItems(DEFAULT_CART); // fallback במקרה של שגיאה
+    }
+  };
 
+  useEffect(() => {
+    loadCartFromStorage();
+  }, []);
   const handleQuantityChange = (id, newQuantity) => {
     if (newQuantity < 1) {
-      Alert.alert('שגיאה', 'הכמות חייבת להיות לפחות 1.');
       return;
     }
     setCartItems((prevItems) =>
@@ -41,11 +60,9 @@ const EditCart = ({ handleGlobalClick }) => {
 
   const handleAddItem = () => {
     if (!selectedProduct) {
-      Alert.alert('שגיאה', 'אנא בחר מוצר.');
       return;
     }
     if (productQuantity < 1) {
-      Alert.alert('שגיאה', 'אנא בחר כמות גדולה מ-1.');
       return;
     }
     setCartItems((prevItems) => [
@@ -61,10 +78,17 @@ const EditCart = ({ handleGlobalClick }) => {
     handleGlobalClick(`הוספת פריט ${selectedProduct}`);
   };
 
-  const handleCheckout = () => {
-    Alert.alert('הצלחה', 'העגלה נשלחה לתשלום!');
-    setCartItems([]);
-    handleGlobalClick('תשלום בוצע');
+  const saveCartToStorage = async () => {
+    try {
+      await AsyncStorage.setItem('cart', JSON.stringify(cartItems));
+    } catch (error) {
+    }
+  };
+
+  const handleCheckout = async () => {
+    await saveCartToStorage(); 
+    navigation.navigate('SuperMarket')
+    handleGlobalClick('שמירה');
   };
 
   const renderItem = ({ item }) => (
@@ -73,22 +97,14 @@ const EditCart = ({ handleGlobalClick }) => {
       <TextInput
         style={styles.input}
         keyboardType="numeric"
-        value={item.quantity === '' ? '' : String(item.quantity)}
+        value={String(item.quantity)}
         onChangeText={(text) => {
-          if (parseInt(text)<1){ Alert.alert('שגיאה', 'הכמות חייבת להיות מספר גדול מ-1.'); return;}
-          if(parseInt(text)!==NaN){
-          const newQuantity = text === '' ? '' : parseInt(text);
-          setCartItems((prevItems) =>
-            prevItems.map((cartItem) =>
-              cartItem.id === item.id
-                ? { ...cartItem, quantity: newQuantity === '' ? '' : newQuantity }
-                : cartItem
-            )
-          );
-          if (text !== '') {
-            handleGlobalClick(`שינוי כמות עבור פריט ${item.name}`);
+          const newQuantity = parseInt(text);
+          if (isNaN(newQuantity) || newQuantity < 1) {
+            return;
           }
-        }}}
+          handleQuantityChange(item.id, newQuantity);
+        }}
       />
       <TouchableOpacity
         style={styles.removeButton}
@@ -98,7 +114,6 @@ const EditCart = ({ handleGlobalClick }) => {
       </TouchableOpacity>
     </View>
   );
-  
 
   return (
     <View style={styles.container}>
@@ -106,12 +121,20 @@ const EditCart = ({ handleGlobalClick }) => {
 
       <View style={styles.row}>
         <View style={styles.pickerContainer}>
-          <RNPickerSelect
-            style={pickerSelectStyles}
-            placeholder={{ label: 'בחר מוצר...', value: '' }}
-            onValueChange={(value) => {setSelectedProduct(value);handleGlobalClick();}}
-            items={products}
-            Icon={() => <Icon name="arrow-drop-down" size={24} color="gray" />}
+          <DropDownPicker
+            open={open}
+            value={selectedProduct}
+            items={items}
+            setOpen={setOpen}
+            setValue={(callback) => {
+              setSelectedProduct(callback);
+              handleGlobalClick();
+              handleGlobalClick();
+            }}
+            setItems={setItems}
+            placeholder="בחר מוצר..."
+            style={styles.dropdown}
+            dropDownContainerStyle={styles.dropdownContainer}
           />
         </View>
         <TextInput
@@ -119,7 +142,7 @@ const EditCart = ({ handleGlobalClick }) => {
           keyboardType="numeric"
           placeholder="כמות"
           value={String(productQuantity)}
-          onChangeText={(text) => setProductQuantity(parseInt(text) || '')}
+          onChangeText={(text) => setProductQuantity(parseInt(text) || 1)}
         />
       </View>
 
@@ -136,34 +159,12 @@ const EditCart = ({ handleGlobalClick }) => {
 
       {cartItems.length > 0 && (
         <TouchableOpacity style={styles.checkoutButton} onPress={handleCheckout}>
-          <Text style={styles.checkoutButtonText}>לתשלום</Text>
+          <Text style={styles.checkoutButtonText}>שמור</Text>
         </TouchableOpacity>
       )}
     </View>
   );
 };
-
-const pickerSelectStyles = StyleSheet.create({
-  inputIOS: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
-    padding: 10,
-    textAlign: 'center',
-    fontSize: 16,
-    marginBottom: 15,
-    backgroundColor: '#fff',
-  },
-  inputAndroid: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
-    padding: 10,
-    fontSize: 16,
-    marginBottom: 15,
-    backgroundColor: '#fff',
-  },
-});
 
 const styles = StyleSheet.create({
   container: {
@@ -208,10 +209,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-start',
     marginBottom: 15,
+    zIndex: 1000,
   },
   pickerContainer: {
     flex: 1,
     marginRight: 10,
+    zIndex: 1000, 
   },
   quantityInput: {
     width: 60,
@@ -255,6 +258,14 @@ const styles = StyleSheet.create({
     marginTop: 20,
     fontSize: 16,
     color: '#555',
+  },
+  dropdown: {
+    backgroundColor: '#fff',
+    borderColor: '#ccc',
+  },
+  dropdownContainer: {
+    backgroundColor: '#fff',
+    zIndex: 1000, 
   },
 });
 

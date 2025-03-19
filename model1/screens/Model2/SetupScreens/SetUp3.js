@@ -118,39 +118,44 @@ const SetUp3 = ({ navigation, handleGlobalClick }) => {
             שלך. קיימת אפשרות לא להזין את פרטי חשבונך אך לא תוכל להשתמש בשירותי
             הבנק. המידע נשמר בצורה מאובטחת.
           </Text>
-          {/* Bank Picker */}
-          <View style={styles.inputContainer}>
-            {/* Icon and Label */}
-            <TouchableOpacity onPress={() => pickerRef.current?.togglePicker()}>
-              <Animatable.View
-                animation={iconAnimation}
-                style={styles.iconContainer}
-              >
-                <Entypo name="light-bulb" size={40} color="yellow" />
-              </Animatable.View>
-            </TouchableOpacity>
-            <DropDownPicker
-              open={open}
-              value={selectedBank}
-              items={items}
-              setOpen={(val) => {
-                setOpen(val);
-                handleGlobalClick();
-              }}
-              setValue={setSelectedBank}
-              setItems={setItems}
-              textStyle={styles.input}
-              placeholder="בחר בנק..."
-              style={styles.dropdown}
-              dropDownContainerStyle={styles.dropdownContainer}
-            />
+          
+          <View style={styles.dropdownSection}>
+            <View style={styles.inputContainer}>
+              <TouchableOpacity onPress={() => handleIconPress("bank")}>
+                <Animatable.View
+                  animation={iconAnimation === "bank" ? iconAnimation : ""}
+                  style={styles.iconContainer}
+                >
+                  <Entypo name="light-bulb" size={40} color="yellow" />
+                </Animatable.View>
+              </TouchableOpacity>
+              <View style={styles.dropdownWrapper}>
+                <DropDownPicker
+                  open={open}
+                  value={selectedBank}
+                  items={items}
+                  setOpen={(val) => {
+                    setOpen(val);
+                    handleGlobalClick();
+                  }}
+                  setValue={setSelectedBank}
+                  setItems={setItems}
+                  textStyle={styles.dropdownText}
+                  placeholder="בחר בנק..."
+                  style={styles.dropdown}
+                  dropDownContainerStyle={styles.dropdownContainer}
+                  zIndex={3000}
+                  zIndexInverse={1000}
+                />
+              </View>
+            </View>
           </View>
 
           {/* Account Number Input */}
-          <View style={styles.inputContainer}>
+          <View style={[styles.inputContainer, { zIndex: open ? -1 : 1 }]}>
             <TouchableOpacity onPress={() => handleIconPress("account")}>
               <Animatable.View
-                animation={iconAnimation}
+                animation={iconAnimation === "account" ? iconAnimation : ""}
                 style={styles.iconContainer}
               >
                 <Entypo name="light-bulb" size={40} color="yellow" />
@@ -164,16 +169,16 @@ const SetUp3 = ({ navigation, handleGlobalClick }) => {
                 const numericText = text.replace(/[^0-9]/g, "");
                 setBankAccountNumber(numericText);
               }}
-              onPress={() => handleGlobalClick()}
+              onPressIn={() => handleGlobalClick()}
               keyboardType="numeric"
             />
           </View>
 
           {/* Branch Number Input */}
-          <View style={styles.inputContainer}>
+          <View style={[styles.inputContainer, { zIndex: open ? -1 : 1 }]}>
             <TouchableOpacity onPress={() => handleIconPress("branch")}>
               <Animatable.View
-                animation={iconAnimation}
+                animation={iconAnimation === "branch" ? iconAnimation : ""}
                 style={styles.iconContainer}
               >
                 <Entypo name="light-bulb" size={40} color="yellow" />
@@ -187,7 +192,7 @@ const SetUp3 = ({ navigation, handleGlobalClick }) => {
                 const numericText = text.replace(/[^0-9]/g, "");
                 setBankBranchNumber(numericText);
               }}
-              onPress={() => handleGlobalClick()}
+              onPressIn={() => handleGlobalClick()}
               keyboardType="numeric"
             />
           </View>
@@ -264,6 +269,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 15,
+    position: "relative",
   },
   input: {
     flex: 1,
@@ -308,6 +314,7 @@ const styles = StyleSheet.create({
   },
   closeBtn: {
     backgroundColor: "red",
+    width: "100%",
   },
   buttonText: {
     fontSize: 18,
@@ -318,37 +325,48 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "transperent",
+    backgroundColor: "rgba(0,0,0,0.5)",
   },
   modalContent: {
     backgroundColor: "#fff",
     padding: 20,
     borderRadius: 10,
     alignItems: "center",
-    backgroundColor: "whitesmoke",
-    borderEndColor: "black",
-    borderBottomEndRadius: "2",
+    width: "80%",
+    maxWidth: 400,
   },
   fontex: {
     fontSize: 20,
     marginBottom: 15,
     fontWeight: "bold",
     color: "black",
+    textAlign: "center",
   },
   buttonRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     marginTop: 20,
+    zIndex: -1,
+  },
+  dropdownSection: {
+    zIndex: 5000,
+    marginBottom: 15,
+  },
+  dropdownWrapper: {
+    flex: 1,
   },
   dropdown: {
-    width: 595,
-    borderColor: "gray",
+    borderColor: "#ccc",
     borderRadius: 5,
   },
-
   dropdownContainer: {
-    width: 595,
-    borderColor: "gray",
+    borderColor: "#ccc",
+    position: "absolute",
+    width: "100%",
+  },
+  dropdownText: {
+    fontSize: 16,
+    textAlign: "center",
   },
 });
 

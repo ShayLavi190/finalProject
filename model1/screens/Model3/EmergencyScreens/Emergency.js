@@ -5,11 +5,13 @@ import {
   TouchableOpacity,
   StyleSheet,
   ScrollView,
-  Alert,
 } from "react-native";
 import * as Animatable from "react-native-animatable";
 import LottieView from "lottie-react-native";
 import { Audio } from "expo-av";
+import Toast from "react-native-toast-message";
+import robotAnimation from "../SetupScreens/robot.json";
+const AUDIO_URL = "https://raw.githubusercontent.com/ShayLavi190/finalProject/main/model1/assets/Recordings/emergency.mp3";
 
 const Emergency3 = ({ navigation, handleGlobalClick }) => {
   const animatableRef = useRef(null);
@@ -22,7 +24,7 @@ const Emergency3 = ({ navigation, handleGlobalClick }) => {
       backgroundColor: "#1f5eff",
       action: () => {
         stopAudio(); // Add this line
-        Alert.alert("חירום", "מחייג למשטרה");
+        showToast("חירום", "מחייג למשטרה");
         handleGlobalClick();
       },
     },
@@ -31,7 +33,7 @@ const Emergency3 = ({ navigation, handleGlobalClick }) => {
       backgroundColor: "#ffd900",
       action: () => {
         stopAudio(); // Add this line
-        Alert.alert("חירום", "מחייג למכבי אש");
+        showToast("חירום", "מחייג למכבי אש");
         handleGlobalClick();
       },
     },
@@ -40,7 +42,7 @@ const Emergency3 = ({ navigation, handleGlobalClick }) => {
       backgroundColor: "#f44336",
       action: () => {
         stopAudio(); // Add this line
-        Alert.alert("חירום", "מחייג למגן דוד אדום");
+        showToast("חירום", "מחייג למגן דוד אדום");
         handleGlobalClick();
       },
     },
@@ -49,11 +51,24 @@ const Emergency3 = ({ navigation, handleGlobalClick }) => {
       backgroundColor: "#6aa84f",
       action: () => {
         stopAudio(); // Add this line
-        Alert.alert("חירום", "מחייג לאיש קשר");
+        showToast("חירום", "מחייג לאיש קשר");
         handleGlobalClick();
       },
     },
   ];
+
+  const showToast = (title, message) => {
+    Toast.show({
+      type: "success",
+      text1: title,
+      text2: message,
+      visibilityTime: 4000,
+      position: "bottom",
+      bottomOffset: 60,
+      textStyle: { fontSize: 18, textAlign: "right" },
+      style: { width: "90%", backgroundColor: "#4CAF50", borderRadius: 10, alignSelf: "center", zIndex: 9999 },
+    });
+  };
 
   const handleNavigate = (route) => {
     stopAudio(); // Ensure audio stops before navigating
@@ -63,6 +78,7 @@ const Emergency3 = ({ navigation, handleGlobalClick }) => {
   };
 
   const handleLottiePress = async () => {
+    handleGlobalClick();
     if (sound && isPlaying) {
       await sound.pauseAsync();
       setIsPlaying(false);
@@ -71,7 +87,7 @@ const Emergency3 = ({ navigation, handleGlobalClick }) => {
       setIsPlaying(true);
     } else {
       const { sound: newSound } = await Audio.Sound.createAsync(
-        require("../../../assets/Recordings/emergency.mp3"), // Ensure the file exists
+        { uri: AUDIO_URL },
         { shouldPlay: true }
       );
       setSound(newSound);
@@ -102,6 +118,7 @@ const Emergency3 = ({ navigation, handleGlobalClick }) => {
       duration={2000}
     >
       <ScrollView contentContainerStyle={styles.container}>
+        <Toast />
         <View style={styles.titleContainer}>
           <Text style={styles.title}>חירום</Text>
           <Text style={styles.subtitle}>
@@ -136,7 +153,7 @@ const Emergency3 = ({ navigation, handleGlobalClick }) => {
             onPress={handleLottiePress}
           >
             <LottieView
-              source={require("../SetupScreens/robot.json")}
+              source={robotAnimation}
               autoPlay
               loop
               style={styles.lottie}
@@ -159,7 +176,7 @@ const styles = StyleSheet.create({
     width: "100%",
     alignItems: "center",
     marginBottom: 130,
-    marginTop: 100,
+    marginTop: 10,
   },
   title: {
     fontSize: 32,
@@ -224,10 +241,6 @@ const styles = StyleSheet.create({
     right: 110,
     width: 300,
     height: 300,
-    shadowColor: "black",
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.3,
-    shadowRadius: 2,
   },
   lottie: {
     width: "100%",

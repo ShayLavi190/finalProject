@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   View,
   Text,
@@ -8,27 +8,40 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
-  Alert, // Added Alert import
+  Alert,
+  LogBox
 } from "react-native";
+
+// Ignore specific warnings related to DropDownPicker
+LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
 import Entypo from "react-native-vector-icons/Entypo";
 import * as Animatable from "react-native-animatable";
 import DropDownPicker from "react-native-dropdown-picker";
 import { useUser } from "../../Model2/userContext";
 import LottieView from "lottie-react-native";
-import { Audio } from "expo-av"; // Added Audio import
+import { Audio } from "expo-av";
+import robotAnimation from "./robot.json";
+
+const AUDIO_URL = "https://raw.githubusercontent.com/ShayLavi190/finalProject/main/model1/assets/Recordings/setup3.mp3";
 
 const SetUp33 = ({ navigation, handleGlobalClick }) => {
   const { user, updateUser } = useUser();
-  const [selectedBank, setSelectedBank] = useState("");
-  const [bankAccountNumber, setBankAccountNumber] = useState("");
-  const [bankBranchNumber, setBankBranchNumber] = useState("");
+
+  const [selectedBank, setSelectedBank] = useState(user.selectedBank || "");
+  const [bankAccountNumber, setBankAccountNumber] = useState(user.bankAccountNumber || "");
+  const [bankBranchNumber, setBankBranchNumber] = useState(user.bankBranchNumber || "");
+
   const [modalVisible, setModalVisible] = useState(false);
   const [explanation, setExplanation] = useState("");
+  const [openPicker, setOpenPicker] = useState(false);
   const [iconAnimation, setIconAnimation] = useState("");
-  const [open, setOpen] = useState(false);
-  // Added audio state variables
+
   const [sound, setSound] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
+
+  const animatableRef = useRef(null);
+  const modalRef = useRef(null);
+
   const [items, setItems] = useState([
     { label: "לאומי", value: "10" },
     { label: "פועלים", value: "12" },
@@ -52,43 +65,55 @@ const SetUp33 = ({ navigation, handleGlobalClick }) => {
     { label: "חסך קופת חסכון לחינוך", value: "65" },
     { label: "בנק ישראל", value: "99" },
   ]);
-  const animatableRef = useRef(null);
-  const modalRef = useRef(null);
-  const pickerRef = useRef(null);
 
-  useEffect(() => {
-    setSelectedBank(user.selectedBank || "");
-    setBankAccountNumber(user.bankAccountNumber || "");
-    setBankBranchNumber(user.bankBranchNumber || "");
-  }, [user]);
+  const explanations = {
+    bank: "אנא בחר את הבנק שלך מהרשימה.",
+    account: "אנא הזן את מספר החשבון שלך.",
+    branch: "אנא הזן את מספר סניף הבנק שלך.",
+  };
 
-  // Function to stop audio playback
-  const stopAudio = async () => {
+  const stopAudio = useCallback(async () => {
     if (sound) {
       await sound.stopAsync();
       await sound.unloadAsync();
       setSound(null);
       setIsPlaying(false);
     }
-  };
+  }, [sound]);
 
-  const handleIconPress = (field) => {
-    stopAudio(); // Stop audio when opening explanation modal
+  const handleAudioPlayback = useCallback(async () => {
+    handleGlobalClick();
+    if (sound && isPlaying) {
+      await sound.pauseAsync();
+      setIsPlaying(false);
+    } else if (sound) {
+      await sound.playAsync();
+      setIsPlaying(true);
+    } else {
+      const { sound: newSound } = await Audio.Sound.createAsync({ uri: AUDIO_URL }, { shouldPlay: true });
+      setSound(newSound);
+      setIsPlaying(true);
+    }
+  }, [sound, isPlaying]);
 
-    const fieldExplanations = {
-      bank: "אנא בחר בנק מהרשימה.",
-      account: "אנא הזן את מספר חשבון הבנק שלך.",
-      branch: "אנא הזן את מספר סניף הבנק שלך.",
-    };
-    setExplanation(fieldExplanations[field]);
+  const handleExplanationModal = (field) => {
+    stopAudio();
+    setExplanation(explanations[field]);
     setIconAnimation("pulse");
     setModalVisible(true);
     handleGlobalClick();
   };
 
-  const handleMoveForward = () => {
-    stopAudio(); // Stop audio when navigating forward
+  const closeModal = () => {
+    modalRef.current.animate("fadeOutDown", 500).then(() => {
+      setModalVisible(false);
+      setIconAnimation("");
+    });
+    handleGlobalClick();
+  };
 
+  const handleMoveForward = () => {
+    stopAudio();
     animatableRef.current.animate("fadeOutLeft", 500).then(() => {
       updateUser({
         ...user,
@@ -100,36 +125,8 @@ const SetUp33 = ({ navigation, handleGlobalClick }) => {
     });
   };
 
-  // Updated to handle audio playback
-  const handleLottiePress = async () => {
-    handleGlobalClick();
-    if (sound && isPlaying) {
-      // If playing, pause the audio
-      await sound.pauseAsync();
-      setIsPlaying(false);
-    } else if (sound) {
-      // If paused, resume playing
-      await sound.playAsync();
-      setIsPlaying(true);
-    } else {
-      // Load and play new sound
-      try {
-        const { sound: newSound } = await Audio.Sound.createAsync(
-          require("../../../assets/Recordings/setup3.mp3"), // Make sure this file exists
-          { shouldPlay: true }
-        );
-        setSound(newSound);
-        setIsPlaying(true);
-      } catch (error) {
-        console.error("Error playing audio:", error);
-        Alert.alert("שגיאה בהפעלת ההקלטה", "לא ניתן להפעיל את ההקלטה כרגע.");
-      }
-    }
-  };
-
   const handleGoBack = () => {
-    stopAudio(); // Stop audio when navigating back
-
+    stopAudio();
     animatableRef.current.animate("fadeOutRight", 500).then(() => {
       updateUser({
         ...user,
@@ -141,21 +138,8 @@ const SetUp33 = ({ navigation, handleGlobalClick }) => {
     });
   };
 
-  const closeModal = () => {
-    stopAudio(); // Stop audio when closing modal
-
-    modalRef.current
-      .animate("fadeOutDown", 500)
-      .then(() => setModalVisible(false));
-    setIconAnimation("");
-    handleGlobalClick();
-  };
-
-  // Cleanup audio on component unmount
   useEffect(() => {
-    return () => {
-      stopAudio();
-    };
+    return () => stopAudio();
   }, []);
 
   return (
@@ -171,15 +155,10 @@ const SetUp33 = ({ navigation, handleGlobalClick }) => {
       >
         <View style={styles.card}>
           <Text style={styles.title}>הגדרת פרטי חשבון בנק</Text>
-          <Text style={styles.subtitle}>
-            .כדי שהרובוט המטפל יוכל להפעיל את שירותיו לטובך, נצטרך את פרטי הבנק
-            שלך. קיימת אפשרות לא להזין את פרטי חשבונך אך לא תוכל להשתמש בשירותי
-            הבנק. המידע נשמר בצורה מאובטחת.
-          </Text>
-          {/* Bank Picker */}
-          <View style={styles.inputContainer}>
-            {/* Icon and Label */}
-            <TouchableOpacity onPress={() => handleIconPress("bank")}>
+  
+          {/* Bank Picker with Bulb Icon */}
+          <View style={[styles.inputContainer, { zIndex: 9999 }]}>
+            <TouchableOpacity onPress={() => handleExplanationModal("bank")}>
               <Animatable.View
                 animation={iconAnimation}
                 style={styles.iconContainer}
@@ -187,26 +166,27 @@ const SetUp33 = ({ navigation, handleGlobalClick }) => {
                 <Entypo name="light-bulb" size={40} color="yellow" />
               </Animatable.View>
             </TouchableOpacity>
-            <DropDownPicker
-              open={open}
-              value={selectedBank}
-              items={items}
-              setOpen={(val) => {
-                setOpen(val);
-                handleGlobalClick();
-              }}
-              setValue={setSelectedBank}
-              setItems={setItems}
-              textStyle={styles.input}
-              placeholder="בחר בנק..."
-              style={styles.dropdown}
-              dropDownContainerStyle={styles.dropdownContainer}
-            />
+            <View style={{ flex: 1, zIndex: 9999 }}>
+              <DropDownPicker
+                open={openPicker}
+                value={selectedBank}
+                items={items}
+                setOpen={setOpenPicker}
+                setValue={setSelectedBank}
+                onPress={()=>handleGlobalClick()}
+                placeholder="בחר בנק..."
+                style={styles.dropdown}
+                dropDownContainerStyle={styles.dropdownContainer}
+                zIndex={9999}
+                zIndexInverse={1000}
+                listMode="SCROLLVIEW"
+              />
+            </View>
           </View>
-
-          {/* Account Number Input */}
+  
+          {/* Account Number Input with Bulb Icon */}
           <View style={styles.inputContainer}>
-            <TouchableOpacity onPress={() => handleIconPress("account")}>
+            <TouchableOpacity onPress={() => handleExplanationModal("account")}>
               <Animatable.View
                 animation={iconAnimation}
                 style={styles.iconContainer}
@@ -215,21 +195,17 @@ const SetUp33 = ({ navigation, handleGlobalClick }) => {
               </Animatable.View>
             </TouchableOpacity>
             <TextInput
-              style={styles.input}
-              placeholder="מספר חשבון בנק"
+              placeholder="מספר חשבון"
+              keyboardType="numeric"
               value={bankAccountNumber}
-              onChangeText={(text) => {
-                const numericText = text.replace(/[^0-9]/g, "");
-                setBankAccountNumber(numericText);
-              }}
-              onPress={() => handleGlobalClick()}
-              keyboardType="numeric"
+              style={styles.input}
+              onChangeText={(t) => setBankAccountNumber(t.replace(/[^0-9]/g, ""))}
             />
           </View>
-
-          {/* Branch Number Input */}
+  
+          {/* Branch Number Input with Bulb Icon */}
           <View style={styles.inputContainer}>
-            <TouchableOpacity onPress={() => handleIconPress("branch")}>
+            <TouchableOpacity onPress={() => handleExplanationModal("branch")}>
               <Animatable.View
                 animation={iconAnimation}
                 style={styles.iconContainer}
@@ -238,49 +214,30 @@ const SetUp33 = ({ navigation, handleGlobalClick }) => {
               </Animatable.View>
             </TouchableOpacity>
             <TextInput
-              style={styles.input}
-              placeholder="מספר סניף בנק"
-              value={bankBranchNumber}
-              onChangeText={(text) => {
-                const numericText = text.replace(/[^0-9]/g, "");
-                setBankBranchNumber(numericText);
-              }}
-              onPress={() => handleGlobalClick()}
+              placeholder="מספר סניף"
               keyboardType="numeric"
+              value={bankBranchNumber}
+              style={styles.input}
+              onChangeText={(t) => setBankBranchNumber(t.replace(/[^0-9]/g, ""))}
             />
           </View>
-
+  
           {/* Buttons */}
           <View style={styles.buttonRow}>
-            <TouchableOpacity
-              style={[styles.button, styles.forwardBtn]}
-              onPress={handleMoveForward}
-            >
+            <TouchableOpacity style={[styles.button, styles.forwardBtn]} onPress={handleMoveForward}>
               <Text style={styles.buttonText}>המשך</Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.button, styles.backBtn]}
-              onPress={handleGoBack}
-            >
+            <TouchableOpacity style={[styles.button, styles.backBtn]} onPress={handleGoBack}>
               <Text style={styles.buttonText}>חזור</Text>
             </TouchableOpacity>
           </View>
         </View>
-
-        {/* Modal */}
+        {/* Modal for Explanations */}
         <Modal visible={modalVisible} transparent animationType="none">
           <View style={styles.modalContainer}>
-            <Animatable.View
-              ref={modalRef}
-              animation="fadeInUp"
-              duration={1000}
-              style={styles.modalContent}
-            >
+            <Animatable.View ref={modalRef} animation="fadeInUp" duration={500} style={styles.modalContent}>
               <Text style={styles.fontex}>{explanation}</Text>
-              <TouchableOpacity
-                style={[styles.button, styles.closeBtn]}
-                onPress={closeModal}
-              >
+              <TouchableOpacity style={[styles.button, styles.closeBtn]} onPress={closeModal}>
                 <Text style={styles.buttonText}>סגור</Text>
               </TouchableOpacity>
             </Animatable.View>
@@ -289,13 +246,17 @@ const SetUp33 = ({ navigation, handleGlobalClick }) => {
         <View>
           <TouchableOpacity
             style={styles.lottieButton}
-            onPress={handleLottiePress}
+            onPress={handleAudioPlayback}
+            accessibilityLabel="לחץ לשמיעת הדרכה קולית"
           >
             <LottieView
-              source={require("./robot.json")}
+              source={robotAnimation}
               autoPlay
               loop
               style={styles.lottie}
+              rendererSettings={{
+                preserveAspectRatio: 'xMidYMid slice'
+              }}
             />
           </TouchableOpacity>
         </View>
@@ -311,6 +272,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 20,
+    marginBottom:150,
   },
   card: {
     width: "90%",
@@ -324,6 +286,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     elevation: 5,
     marginBottom: 110,
+    zIndex: 1, // Lower z-index for card
   },
   title: {
     fontSize: 24,
@@ -379,6 +342,7 @@ const styles = StyleSheet.create({
   },
   closeBtn: {
     backgroundColor: "red",
+    width: "100%",
   },
   buttonText: {
     fontSize: 18,
@@ -389,7 +353,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "transperent",
+    backgroundColor: "transparent",
   },
   modalContent: {
     backgroundColor: "#fff",
@@ -398,28 +362,36 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "whitesmoke",
     borderEndColor: "black",
-    borderBottomEndRadius: "2",
+    borderBottomEndRadius: 2,
+    width: "80%",
+    maxWidth: 400,
   },
   fontex: {
     fontSize: 20,
     marginBottom: 15,
     fontWeight: "bold",
     color: "black",
+    textAlign: "center",
   },
   buttonRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     marginTop: 20,
+    zIndex: 1,
   },
   dropdown: {
-    width: 595,
+    flex: 1,
     borderColor: "gray",
     borderRadius: 5,
+    zIndex: 9999,
+    elevation: 9999,
   },
-
   dropdownContainer: {
-    width: 595,
     borderColor: "gray",
+    position: "absolute",
+    width: "100%",
+    zIndex: 9999,
+    elevation: 9999,
   },
   lottieButton: {
     position: "absolute",
@@ -427,10 +399,7 @@ const styles = StyleSheet.create({
     right: 110,
     width: 300,
     height: 300,
-    shadowColor: "black",
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.3,
-    shadowRadius: 2,
+    zIndex: 500,
   },
   lottie: {
     width: "100%",

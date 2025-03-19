@@ -8,13 +8,13 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
-  Alert,
 } from "react-native";
 import Entypo from "react-native-vector-icons/Entypo";
 import * as Animatable from "react-native-animatable";
 import DropDownPicker from "react-native-dropdown-picker";
+import Toast from "react-native-toast-message";
 
-const ContactBankerM2 = ({ navigation,handleGlobalClick }) => {
+const ContactBankerM2 = ({ navigation, handleGlobalClick }) => {
   const [selectedAction, setSelectedAction] = useState("");
   const [info, setInfo] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
@@ -58,15 +58,37 @@ const ContactBankerM2 = ({ navigation,handleGlobalClick }) => {
 
   const handelSend = () => {
     handleGlobalClick();
-    if ( info !== "" && selectedAction !== "")
-    {
-      Alert.alert("הבקשה הועברה לבנקאי בהצלחה");
+    if (info !== "" && selectedAction !== "") {
+      // First, hide any currently showing Toast
+      Toast.hide();
+      
+      // Use setTimeout to ensure the Toast appears after UI updates
+      setTimeout(() => {
+        Toast.show({
+          type: 'success',
+          position: 'bottom',
+          text1: 'הצלחה',
+          text2: 'הבקשה הועברה לבנקאי בהצלחה',
+          visibilityTime: 4000,
+        });
+      }, 100);
+      
       setInfo("");
       setSelectedAction("");
-    } 
-    else 
-    {
-      Alert.alert("לא כל השדות מולאו. מלא/י את כלל השדות");
+    } else {
+      // First, hide any currently showing Toast
+      Toast.hide();
+      
+      // Use setTimeout to ensure the Toast appears after UI updates
+      setTimeout(() => {
+        Toast.show({
+          type: 'error',
+          position: 'bottom',
+          text1: 'שגיאה',
+          text2: 'לא כל השדות מולאו. מלא/י את כלל השדות',
+          visibilityTime: 4000,
+        });
+      }, 100);
     }
   };
 
@@ -89,16 +111,16 @@ const ContactBankerM2 = ({ navigation,handleGlobalClick }) => {
         style={styles.container}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        <View style={styles.card}>
+        <View style={[styles.card, open ? { zIndex: 100 } : {}]}>
           <Text style={styles.title}>כתוב לבנקאי</Text>
           <Text style={styles.subtitle}>
             המידע נשמר בצורה מאובטחת. מלא את כלל הפרטים כדי לבצע העברה.
           </Text>
 
-          {/* Bank Picker */}
-          <View style={styles.inputContainer}>
-          <TouchableOpacity onPress={() => handleIconPress("action")}>
-            <Animatable.View
+          {/* Bank Picker - Updated to match Transaction component */}
+          <View style={[styles.inputContainer, { zIndex: 3000 }]}>
+            <TouchableOpacity onPress={() => handleIconPress("action")}>
+              <Animatable.View
                 animation={iconAnimation}
                 style={styles.iconContainer}
               >
@@ -109,41 +131,52 @@ const ContactBankerM2 = ({ navigation,handleGlobalClick }) => {
               open={open}
               value={selectedAction}
               items={items}
-              setOpen={(value) => {setOpen(value); handleGlobalClick();}}
+              setOpen={(value) => {
+                setOpen(value);
+                handleGlobalClick();
+              }}
               setValue={setSelectedAction}
               setItems={setItems}
-              textStyle={styles.input}
               placeholder="בחר פעולה..."
               style={styles.dropdown}
-              dropDownContainerStyle={styles.dropdownContainer}
+              textStyle={styles.dropdownText}
+              dropDownDirection="BOTTOM"
+              zIndex={3000}
+              zIndexInverse={1000}
             />
           </View>
 
-          {/* Account Number Input */}
-          <View style={styles.inputContainer}>
+          {/* Description Input */}
+          <View style={[styles.inputContainer, { zIndex: open ? 1 : 10 }]}>
             <TouchableOpacity onPress={() => handleIconPress("info")}>
               <Animatable.View animation={iconAnimation} style={styles.iconContainer}>
                 <Entypo name="light-bulb" size={40} color="yellow" />
               </Animatable.View>
             </TouchableOpacity>
             <TextInput
-              style={[styles.input,{height:200}]}
+              style={[styles.input, {height:200}]}
               placeholder="תיאור"
               value={info}
               onPress={handleGlobalClick}
               onChangeText={(text) => {setInfo(text);handleGlobalClick();}}
+              multiline={true}
+              textAlignVertical="top"
             />
           </View>
-          <View style={{alignItems:'center',marginBottom:20,marginTop:10}}>
+          
+          <View style={[
+            { alignItems: "center", marginBottom: 20, marginTop: 10, zIndex: open ? 1 : 10 }
+          ]}>
             <TouchableOpacity
-                style={[styles.button, styles.sendBtn]}
-                onPress={handelSend}
-                >
-                <Text style={styles.buttonText}>שליחת בקשה</Text>
-                </TouchableOpacity>
+              style={[styles.button, styles.sendBtn]}
+              onPress={handelSend}
+            >
+              <Text style={styles.buttonText}>שליחת בקשה</Text>
+            </TouchableOpacity>
           </View>
+
           {/* Buttons */}
-          <View style={styles.buttonRow}>
+          <View style={[styles.buttonRow, { zIndex: open ? 1 : 10 }]}>
             <TouchableOpacity
               style={[styles.button, styles.forwardBtn]}
               onPress={() => handleNavigate("Bankm2", "forward")}
@@ -158,6 +191,7 @@ const ContactBankerM2 = ({ navigation,handleGlobalClick }) => {
             </TouchableOpacity>
           </View>
         </View>
+
         <Modal visible={modalVisible} transparent animationType="none">
           <View style={styles.modalContainer}>
             <Animatable.View
@@ -173,6 +207,9 @@ const ContactBankerM2 = ({ navigation,handleGlobalClick }) => {
             </Animatable.View>
           </View>
         </Modal>
+        
+        {/* Toast component positioned at the end of KeyboardAvoidingView */}
+        <Toast />
       </KeyboardAvoidingView>
     </Animatable.View>
   );
@@ -185,6 +222,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 20,
+    position: "relative",
+    zIndex: 1,
   },
   card: {
     width: "90%",
@@ -197,7 +236,9 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     shadowOffset: { width: 0, height: 2 },
     elevation: 5,
-    marginBottom:140
+    marginBottom: 140,
+    position: "relative",
+    zIndex: 1,
   },
   title: {
     fontSize: 24,
@@ -209,6 +250,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 15,
+    position: "relative",
   },
   input: {
     flex: 1,
@@ -244,65 +286,62 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     width: "48%",
-    marginTop:20
   },
-  forwardBtn:
-  {
-    backgroundColor:'green'
+  forwardBtn: {
+    backgroundColor: 'green'
   },
-  backBtn:
-  {
-    backgroundColor:'orange'
+  backBtn: {
+    backgroundColor: 'orange'
   },
-  closeBtn:
-  {
-    backgroundColor:'red'
+  closeBtn: {
+    backgroundColor: 'red'
   },
   buttonText: {
     fontSize: 18,
     color: "#fff",
-    fontWeight:'bold'
+    fontWeight: 'bold'
   },
   modalContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "transperent",
+    backgroundColor: "transparent",
+    zIndex: 1000,
   },
   modalContent: {
     backgroundColor: "#fff",
     padding: 20,
     borderRadius: 10,
     alignItems: "center",
-    backgroundColor:"whitesmoke",
-    borderEndColor:'black',
-    borderBottomEndRadius:'2'
+    backgroundColor: "whitesmoke",
+    borderEndColor: 'black',
+    borderBottomEndRadius: 2,
   },
   fontex: {
     fontSize: 20,
     marginBottom: 15,
-    fontWeight:'bold',
-    color:'black'
+    fontWeight: 'bold',
+    color: 'black'
   },
   buttonRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 60,
+    marginTop: 20,
   },
+  // Updated dropdown styles to match Transaction component
   dropdown: {
-    width: 595,
-    borderColor: "gray",
-    borderRadius: 5,
+    flex: 1,
+    borderColor: "#ccc",
+    height: 30,
+    width: "92%",
   },
-  
-  dropdownContainer: {
-    width: 595,
-    borderColor: "gray",
-    
+  dropdownText: {
+    textAlign: "center",
+    fontSize: 16,
   },
-  sendBtn:
-  {
-    backgroundColor:'#52bfbf'
+  sendBtn: {
+    backgroundColor: '#52bfbf',
+    width: "60%",
   }
 });
 

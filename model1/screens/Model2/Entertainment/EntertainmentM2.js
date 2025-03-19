@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { useUser } from "../userContext";
 import * as Animatable from "react-native-animatable";
+import Toast from "react-native-toast-message";
 
 const Entertainment = ({ navigation,handleGlobalClick }) => {
   const { user } = useUser();
@@ -26,7 +27,15 @@ const Entertainment = ({ navigation,handleGlobalClick }) => {
     }
   };
   const handelConversation = () => {
-    Alert.alert("דוח שיח התחיל");
+    Toast.show({
+              type: "info",
+              text1: " דו שיח",
+              text2: "התחלת דו שיח...",
+              visibilityTime: 4000,
+              position: "right",
+              textStyle: { fontSize: 18, textAlign: "right" },
+              style: { width: "90%", backgroundColor: "#3498db", borderRadius: 10 },
+            });
     handleGlobalClick();
     }
   return (
@@ -63,6 +72,7 @@ const Entertainment = ({ navigation,handleGlobalClick }) => {
             <Text style={styles.forwardButtonText}>מסך בית</Text>
           </TouchableOpacity>
         </View>
+        <Toast />
       </ScrollView>
     </Animatable.View>
   );
@@ -79,7 +89,7 @@ const styles = StyleSheet.create({
   titleContainer: {
     width: "100%",
     alignItems: "center",
-    marginBottom: 170,
+    marginBottom: 200,
     marginTop: 50,
   },
   title: {
@@ -121,6 +131,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 20,
     fontWeight: "bold",
+    marginBottom: 40,
   },
 });
 

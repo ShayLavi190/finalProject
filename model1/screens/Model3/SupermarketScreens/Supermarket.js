@@ -5,12 +5,14 @@ import {
   TouchableOpacity,
   StyleSheet,
   ScrollView,
-  Alert,
 } from "react-native";
 import { useUser } from "../../Model2/userContext";
 import * as Animatable from "react-native-animatable";
 import LottieView from "lottie-react-native";
 import { Audio } from "expo-av"; // Added Audio import
+import robotAnimation from "../SetupScreens/robot.json";
+import Toast from "react-native-toast-message";
+const AUDIO_URL = "https://raw.githubusercontent.com/ShayLavi190/finalProject/main/model1/assets/Recordings/supermarket.mp3";
 
 const Supermarket3 = ({ navigation, handleGlobalClick }) => {
   const { user } = useUser();
@@ -45,13 +47,19 @@ const Supermarket3 = ({ navigation, handleGlobalClick }) => {
 
   const handelBank = () => {
     stopAudio(); // Stop audio when ordering existing basket
-
-    Alert.alert("הסל הוזמן בהצלחה");
+    Toast.show({
+      type: "success",
+      position: "bottom",
+      text1: "הסל הוזמן בהצלחה",
+      visibilityTime: 2000,
+      autoHide: true,
+    });
     handleGlobalClick();
   };
 
   // Updated to handle audio playback
   const handleLottiePress = async () => {
+    handleGlobalClick();
     if (sound && isPlaying) {
       // If playing, pause the audio
       await sound.pauseAsync();
@@ -64,14 +72,13 @@ const Supermarket3 = ({ navigation, handleGlobalClick }) => {
       // Load and play new sound
       try {
         const { sound: newSound } = await Audio.Sound.createAsync(
-          require("../../../assets/Recordings/supermarket.mp3"), // Make sure this file exists
+          { uri: AUDIO_URL },
           { shouldPlay: true }
         );
         setSound(newSound);
         setIsPlaying(true);
       } catch (error) {
         console.error("Error playing audio:", error);
-        Alert.alert("שגיאה בהפעלת ההקלטה", "לא ניתן להפעיל את ההקלטה כרגע.");
       }
     }
   };
@@ -139,13 +146,14 @@ const Supermarket3 = ({ navigation, handleGlobalClick }) => {
             onPress={handleLottiePress}
           >
             <LottieView
-              source={require("../SetupScreens/robot.json")}
+              source={robotAnimation}
               autoPlay
               loop
               style={styles.lottie}
             />
           </TouchableOpacity>
         </View>
+        <Toast />
       </ScrollView>
     </Animatable.View>
   );
@@ -157,7 +165,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 20,
     backgroundColor: "#f2f2f2",
-    marginTop: 50,
+    marginTop: 10,
   },
   titleContainer: {
     width: "100%",
@@ -207,6 +215,7 @@ const styles = StyleSheet.create({
     color: "#555",
     textAlign: "center",
     marginTop: 20,
+    marginBottom: 20,
     fontWeight: "bold",
   },
   lottieButton: {
@@ -215,10 +224,6 @@ const styles = StyleSheet.create({
     right: 110,
     width: 300,
     height: 300,
-    shadowColor: "black",
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.3,
-    shadowRadius: 2,
   },
   lottie: {
     width: "100%",

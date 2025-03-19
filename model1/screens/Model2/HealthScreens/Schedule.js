@@ -8,16 +8,15 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
-  Alert,
 } from "react-native";
 import Entypo from "react-native-vector-icons/Entypo";
 import * as Animatable from "react-native-animatable";
 import DropDownPicker from "react-native-dropdown-picker";
 import { useUser } from "../userContext";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { TouchableWithoutFeedback } from "react-native-gesture-handler";
+import Toast from "react-native-toast-message";
 
-const Schedule = ({ navigation,handleGlobalClick }) => {
+const Schedule = ({ navigation, handleGlobalClick }) => {
   const { user, updateUser } = useUser();
   const [time, setTime] = useState(new Date());
   const [date, setDate] = useState(new Date());
@@ -26,6 +25,8 @@ const Schedule = ({ navigation,handleGlobalClick }) => {
   const [explanation, setExplanation] = useState("");
   const [iconAnimation, setIconAnimation] = useState("");
   const [open, setOpen] = useState(false);
+  const [showDatePicker, setShowDatePicker] = useState(Platform.OS === 'web');
+  const [showTimePicker, setShowTimePicker] = useState(Platform.OS === 'web');
   const [items, setItems] = useState([
     { label: 'בדיקה כללית', value: 'בדיקה כללית' },
     { label: 'רופא משפחה', value: 'רופא משפחה' },
@@ -44,6 +45,15 @@ const Schedule = ({ navigation,handleGlobalClick }) => {
     setIconAnimation("pulse");
     setModalVisible(true);
     handleGlobalClick();
+
+    // On mobile, show the appropriate picker when the icon is pressed
+    if (Platform.OS !== 'web') {
+      if (field === 'date') {
+        setShowDatePicker(true);
+      } else if (field === 'time') {
+        setShowTimePicker(true);
+      }
+    }
   };
 
   const handleNavigate = (route, direction) => {
@@ -59,17 +69,41 @@ const Schedule = ({ navigation,handleGlobalClick }) => {
   };
 
   const handelSend = () => {
-    if ( time !== "" && date !== "" && type !== "" ) 
-    {
-      Alert.alert("התור נקבע בהצלחה");
-      handleGlobalClick();
+    handleGlobalClick();
+    if (time !== "" && date !== "" && type !== null) {
+      // First, hide any currently showing Toast
+      Toast.hide();
+      
+      // Use setTimeout to ensure the Toast appears after UI updates
+      setTimeout(() => {
+        Toast.show({
+          type: 'success',
+          position: 'bottom',
+          text1: 'הצלחה',
+          text2: 'התור נקבע בהצלחה',
+          visibilityTime: 4000,
+          autoHide: true,
+        });
+      }, 100);
+      
       setType("");
       setDate(new Date());
       setTime(new Date());
-    } 
-    else 
-    {
-      Alert.alert("לא כל השדות מולאו. מלא/י את כלל השדות");
+    } else {
+      // First, hide any currently showing Toast
+      Toast.hide();
+      
+      // Use setTimeout to ensure the Toast appears after UI updates
+      setTimeout(() => {
+        Toast.show({
+          type: 'error',
+          position: 'bottom',
+          text1: 'שגיאה',
+          text2: 'לא כל השדות מולאו. מלא/י את כלל השדות',
+          visibilityTime: 4000,
+          autoHide: true,
+        });
+      }, 100);
     }
   };
 
@@ -79,6 +113,130 @@ const Schedule = ({ navigation,handleGlobalClick }) => {
       .then(() => setModalVisible(false));
     setIconAnimation("");
     handleGlobalClick();
+  };
+
+  // Handle date change
+  const onDateChange = (event, selectedDate) => {
+    const currentDate = selectedDate || date;
+    if (Platform.OS !== 'web') {
+      setShowDatePicker(false);
+    }
+    setDate(currentDate);
+    handleGlobalClick();
+  };
+
+  // Handle time change
+  const onTimeChange = (event, selectedTime) => {
+    const currentTime = selectedTime || time;
+    if (Platform.OS !== 'web') {
+      setShowTimePicker(false);
+    }
+    setTime(currentTime);
+    handleGlobalClick();
+  };
+
+  // Format date for display
+  const formatDate = (date) => {
+    return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+  };
+
+  // Format time for display
+  const formatTime = (time) => {
+    return time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  };
+
+  // Render date picker according to platform
+  const renderDatePicker = () => {
+    if (Platform.OS === 'web') {
+      return (
+        <View style={styles.inputWrapper}>
+          <input
+            type="date"
+            style={{
+              ...styles.webInput,
+              textAlign: "center",
+              // The following fixes alignment issues in some browsers
+              MozAppearance: "textfield",
+              WebkitAppearance: "none",
+              margin: 0,
+              // Force text centering in various browsers
+              "-moz-text-align-last": "center",
+              "text-align-last": "center"
+            }}
+            value={date.toISOString().split('T')[0]}
+            onChange={(e) => {
+              setDate(new Date(e.target.value));
+              handleGlobalClick();
+            }}
+          />
+        </View>
+      );
+    } else {
+      return showDatePicker ? (
+        <DateTimePicker
+          value={date}
+          mode="date"
+          display="default"
+          onChange={onDateChange}
+        />
+      ) : (
+        <TouchableOpacity 
+          style={styles.dateDisplay}
+          onPress={() => setShowDatePicker(true)}
+        >
+          <Text style={styles.dateTimeText}>{formatDate(date)}</Text>
+        </TouchableOpacity>
+      );
+    }
+  };
+
+  // Render time picker according to platform
+  const renderTimePicker = () => {
+    if (Platform.OS === 'web') {
+      return (
+        <View style={styles.inputWrapper}>
+          <input
+            type="time"
+            style={{
+              ...styles.webInput,
+              textAlign: "center",
+              // The following fixes alignment issues in some browsers
+              MozAppearance: "textfield",
+              WebkitAppearance: "none",
+              margin: 0,
+              // Force text centering in various browsers
+              "-moz-text-align-last": "center",
+              "text-align-last": "center"
+            }}
+            value={`${time.getHours().toString().padStart(2, '0')}:${time.getMinutes().toString().padStart(2, '0')}`}
+            onChange={(e) => {
+              const [hours, minutes] = e.target.value.split(':');
+              const newTime = new Date();
+              newTime.setHours(parseInt(hours, 10));
+              newTime.setMinutes(parseInt(minutes, 10));
+              setTime(newTime);
+              handleGlobalClick();
+            }}
+          />
+        </View>
+      );
+    } else {
+      return showTimePicker ? (
+        <DateTimePicker
+          value={time}
+          mode="time"
+          display="default"
+          onChange={onTimeChange}
+        />
+      ) : (
+        <TouchableOpacity 
+          style={styles.dateDisplay}
+          onPress={() => setShowTimePicker(true)}
+        >
+          <Text style={styles.dateTimeText}>{formatTime(time)}</Text>
+        </TouchableOpacity>
+      );
+    }
   };
 
   return (
@@ -92,87 +250,82 @@ const Schedule = ({ navigation,handleGlobalClick }) => {
         style={styles.container}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        <View style={styles.card}>
+        <View style={[styles.card, open ? { zIndex: 100 } : {}]}>
           <Text style={styles.title}>קביעת תור</Text>
           <Text style={styles.subtitle}>
             המידע נשמר בצורה מאובטחת. מלא את כלל הפרטים כדי לקבוע את התור.
           </Text>
 
-          <View style={styles.inputContainer}>
-          <TouchableOpacity onPress={() => handleIconPress("type")}>
-            <Animatable.View
+          {/* Treatment Type Dropdown */}
+          <View style={[styles.inputContainer, { zIndex: 3000 }]}>
+            <TouchableOpacity onPress={() => handleIconPress("type")}>
+              <Animatable.View
                 animation={iconAnimation}
                 style={styles.iconContainer}
               >
                 <Entypo name="light-bulb" size={40} color="yellow" />
               </Animatable.View>
             </TouchableOpacity>
-              <DropDownPicker
-                open={open}
-                value={type}
-                items={items}
-                setOpen={(value) => {setOpen(value); handleGlobalClick();}}
-                setValue={setType}
-                setItems={setItems}
-                textStyle={styles.input}
-                placeholder="בחר סוג טיפול..."
-                style={styles.dropdown}
-                dropDownContainerStyle={styles.dropdownContainer}
-              />
+            <DropDownPicker
+              open={open}
+              value={type}
+              items={items}
+              setOpen={(value) => {setOpen(value); handleGlobalClick();}}
+              setValue={setType}
+              setItems={setItems}
+              placeholder="בחר סוג טיפול..."
+              style={styles.dropdown}
+              textStyle={styles.dropdownText}
+              dropDownDirection="BOTTOM"
+              zIndex={3000}
+              zIndexInverse={1000}
+            />
           </View>
-          <View style={styles.inputContainer}>
+
+          {/* Date Picker */}
+          <View style={[styles.inputContainer, { zIndex: open ? 1 : 10 }]}>
             <TouchableOpacity onPress={() => handleIconPress("date")}>
-                <Animatable.View
+              <Animatable.View
                 animation={iconAnimation}
                 style={styles.iconContainer}
-                >
+              >
                 <Entypo name="light-bulb" size={40} color="yellow" />
-                </Animatable.View>
+              </Animatable.View>
             </TouchableOpacity>
-                <View style={styles.datePickerContainer}>
-                    <DateTimePicker
-                    value={date}
-                    mode="date"
-                    display="inline" 
-                    onChange={(event, selectedDate) => {
-                        setDate(selectedDate || date);
-                        handleGlobalClick();
-                    }}
-                    />
-                </View>
-        </View>
-        <View style={styles.inputContainer}>
-            <TouchableOpacity onPress={() => handleIconPress("time")}>
-                <Animatable.View
-                animation={iconAnimation}
-                style={styles.iconContainer}
-                >
-                <Entypo name="light-bulb" size={40} color="yellow" />
-                </Animatable.View>
-            </TouchableOpacity>
-                <View style={styles.datePickerContainer}>
-                    <DateTimePicker
-                    value={time}
-                    mode="time"
-                    display="inline"
-                    onChange={(event, selectedTime) => {
-                        setTime(selectedTime || time);
-                        handleGlobalClick();
-                    }}
-                    style = {styles.time}
-                    />
-                </View>
-        </View>
-          <View style={{alignItems:'center',marginBottom:20,marginTop:10}}>
-            <TouchableOpacity
-                style={[styles.button, styles.sendBtn]}
-                onPress={handelSend}
-                >
-                <Text style={styles.buttonText}>קבע תור</Text>
-                </TouchableOpacity>
+            <View style={styles.datePickerContainer}>
+              {renderDatePicker()}
+            </View>
           </View>
-          {/* Buttons */}
-          <View style={styles.buttonRow}>
+
+          {/* Time Picker */}
+          <View style={[styles.inputContainer, { zIndex: open ? 1 : 10 }]}>
+            <TouchableOpacity onPress={() => handleIconPress("time")}>
+              <Animatable.View
+                animation={iconAnimation}
+                style={styles.iconContainer}
+              >
+                <Entypo name="light-bulb" size={40} color="yellow" />
+              </Animatable.View>
+            </TouchableOpacity>
+            <View style={styles.datePickerContainer}>
+              {renderTimePicker()}
+            </View>
+          </View>
+
+          {/* Send Button */}
+          <View style={[
+            { alignItems: "center", marginBottom: 20, marginTop: 10, zIndex: open ? 1 : 10 }
+          ]}>
+            <TouchableOpacity
+              style={[styles.button, styles.sendBtn]}
+              onPress={handelSend}
+            >
+              <Text style={styles.buttonText}>קבע תור</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Navigation Buttons */}
+          <View style={[styles.buttonRow, { zIndex: open ? 1 : 10 }]}>
             <TouchableOpacity
               style={[styles.button, styles.forwardBtn]}
               onPress={() => handleNavigate("Results", "forward")}
@@ -187,6 +340,8 @@ const Schedule = ({ navigation,handleGlobalClick }) => {
             </TouchableOpacity>
           </View>
         </View>
+
+        {/* Modal */}
         <Modal visible={modalVisible} transparent animationType="none">
           <View style={styles.modalContainer}>
             <Animatable.View
@@ -202,6 +357,9 @@ const Schedule = ({ navigation,handleGlobalClick }) => {
             </Animatable.View>
           </View>
         </Modal>
+        
+        {/* Toast component */}
+        <Toast />
       </KeyboardAvoidingView>
     </Animatable.View>
   );
@@ -214,6 +372,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 20,
+    position: "relative",
+    zIndex: 1,
   },
   card: {
     width: "90%",
@@ -226,7 +386,9 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     shadowOffset: { width: 0, height: 2 },
     elevation: 5,
-    marginBottom:140
+    marginBottom: 140,
+    position: "relative",
+    zIndex: 1,
   },
   title: {
     fontSize: 24,
@@ -238,6 +400,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 15,
+    position: "relative",
   },
   input: {
     flex: 1,
@@ -274,43 +437,41 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: "48%",
   },
-  forwardBtn:
-  {
-    backgroundColor:'green'
+  forwardBtn: {
+    backgroundColor: 'green'
   },
-  backBtn:
-  {
-    backgroundColor:'orange'
+  backBtn: {
+    backgroundColor: 'orange'
   },
-  closeBtn:
-  {
-    backgroundColor:'red'
+  closeBtn: {
+    backgroundColor: 'red'
   },
   buttonText: {
     fontSize: 18,
     color: "#fff",
-    fontWeight:'bold'
+    fontWeight: 'bold'
   },
   modalContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "transperent",
+    backgroundColor: "transparent",
+    zIndex: 1000,
   },
   modalContent: {
     backgroundColor: "#fff",
     padding: 20,
     borderRadius: 10,
     alignItems: "center",
-    backgroundColor:"whitesmoke",
-    borderEndColor:'black',
-    borderBottomEndRadius:'2'
+    backgroundColor: "whitesmoke",
+    borderEndColor: 'black',
+    borderBottomEndRadius: 2,
   },
   fontex: {
     fontSize: 20,
     marginBottom: 15,
-    fontWeight:'bold',
-    color:'black'
+    fontWeight: 'bold',
+    color: 'black'
   },
   buttonRow: {
     flexDirection: "row",
@@ -318,31 +479,61 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   dropdown: {
-    width: 595,
-    borderColor: "gray",
-    borderRadius: 5,
+    flex: 1,
+    borderColor: "#ccc",
+    height: 45,
+    width: "92%",
   },
-  
-  dropdownContainer: {
-    width: 595,
-    borderColor: "gray",
-    
+  dropdownText: {
+    textAlign: "center",
+    fontSize: 16,
   },
-  sendBtn:
-  {
-    backgroundColor:'#52bfbf'
+  sendBtn: {
+    backgroundColor: '#52bfbf',
+    width: "60%",
   },
   datePickerContainer: {
-    alignContent: 'center',
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    flexDirection: 'row',
-    width: '85%', 
-    padding: 10,
+    minHeight: 45,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 5,
+    textAlign: "center",
   },
-  time:
-  {
-    width:200
+  dateDisplay: {
+    flex: 1,
+    height: 45,
+    width: "100%",
+    justifyContent: 'center',
+    alignItems: 'center',
+    textAlign: "center",
+  },
+  dateTimeText: {
+    fontSize: 16,
+    textAlign: "center",
+    width: "100%",
+  },
+  webInput: {
+    width: "100%",
+    height: 45,
+    padding: 10,
+    borderRadius: 5,
+    fontSize: 16,
+    border: "none",
+    outline: "none",
+    textAlign: "center",
+  },
+  inputWrapper: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+    textAlign: "center",
+  },
+  time: {
+    width: "100%",
   }
 });
 

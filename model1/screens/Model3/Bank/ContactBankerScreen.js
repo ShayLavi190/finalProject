@@ -4,29 +4,27 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  Modal,
   StyleSheet,
+  ScrollView,
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
-import Entypo from "react-native-vector-icons/Entypo";
 import * as Animatable from "react-native-animatable";
 import DropDownPicker from "react-native-dropdown-picker";
 import LottieView from "lottie-react-native";
 import { Audio } from "expo-av";
+import robotAnimation from "../SetupScreens/robot.json";
+import Toast from "react-native-toast-message";
+const AUDIO_URL = "https://raw.githubusercontent.com/ShayLavi190/finalProject/main/model1/assets/Recordings/contactBanker.mp3";
 
 const ContactBanker3 = ({ navigation, handleGlobalClick }) => {
-  const [selectedAction, setSelectedAction] = useState("");
+  const [selectedAction, setSelectedAction] = useState(null);
   const [info, setInfo] = useState("");
-  const [modalVisible, setModalVisible] = useState(false);
-  const [explanation, setExplanation] = useState("");
-  const [iconAnimation, setIconAnimation] = useState("");
   const [open, setOpen] = useState(false);
-  const animatableRef = useRef(null);
-  const modalRef = useRef(null);
   const [sound, setSound] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
-
+  const animatableRef = useRef(null);
+  
   const items = [
     { label: "בקשה למידע נוסף", value: "בקשה למידע נוסף" },
     { label: "תלונה", value: "תלונה" },
@@ -37,20 +35,47 @@ const ContactBanker3 = ({ navigation, handleGlobalClick }) => {
     { label: "אחר", value: "אחר" },
   ];
 
+  const handleNavigate = (route, direction) => {
+    stopAudio(); // Stop audio when navigating
+    const animation = direction === "forward" ? "fadeOutLeft" : "fadeOutRight";
+    animatableRef.current
+      .animate(animation, 500)
+      .then(() => navigation.navigate(route))
+      .catch((error) => {
+        console.error("Animation error:", error);
+        navigation.navigate(route);
+      });
+  };
+
   const handleLottiePress = async () => {
+    handleGlobalClick();
     if (sound && isPlaying) {
+      // If playing, pause the audio
       await sound.pauseAsync();
       setIsPlaying(false);
     } else if (sound) {
+      // If paused, resume playing
       await sound.playAsync();
       setIsPlaying(true);
     } else {
-      const { sound: newSound } = await Audio.Sound.createAsync(
-        require("../../../assets/Recordings/contactBanker.mp3"), // Ensure the file exists
-        { shouldPlay: true }
-      );
-      setSound(newSound);
-      setIsPlaying(true);
+      // Load and play new sound
+      try {
+        const { sound: newSound } = await Audio.Sound.createAsync(
+          { uri: AUDIO_URL },
+          { shouldPlay: true }
+        );
+        setSound(newSound);
+        setIsPlaying(true);
+      } catch (error) {
+        console.error("Error playing audio:", error);
+        Toast.show({
+          type: 'error',
+          position: 'bottom',
+          text1: 'שגיאה בהפעלת ההקלטה',
+          text2: 'לא ניתן להפעיל את ההקלטה כרגע',
+          visibilityTime: 4000,
+        });
+      }
     }
   };
 
@@ -63,149 +88,142 @@ const ContactBanker3 = ({ navigation, handleGlobalClick }) => {
     }
   };
 
+  const handleSend = () => {
+    stopAudio(); // Stop audio when submitting
+    handleGlobalClick();
+    
+    if (info.trim() !== "" && selectedAction !== null) {
+      // Hide any currently showing Toast
+      Toast.hide();
+      
+      // Show success toast
+      setTimeout(() => {
+        Toast.show({
+          type: 'success',
+          position: 'bottom',
+          text1: 'הצלחה',
+          text2: 'הבקשה הועברה לבנקאי בהצלחה',
+          visibilityTime: 4000,
+          autoHide: true,
+        });
+      }, 100);
+      
+      setInfo("");
+      setSelectedAction(null);
+    } else {
+      // Hide any currently showing Toast
+      Toast.hide();
+      
+      // Show error toast
+      setTimeout(() => {
+        Toast.show({
+          type: 'error',
+          position: 'bottom',
+          text1: 'שגיאה',
+          text2: 'לא כל השדות מולאו. מלא/י את כלל השדות',
+          visibilityTime: 4000,
+          autoHide: true,
+        });
+      }, 100);
+    }
+  };
+
+  // Cleanup audio on component unmount
   useEffect(() => {
     return () => {
       stopAudio();
     };
   }, []);
 
-  const handleIconPress = (field) => {
-    stopAudio(); // Add this line
-    const fieldExplanations = {
-      action: "אנא בחר פעולה שברצונך לבצע מהרשימה.",
-      info: "אנא הזן את תיאור הבקשה לבנקאי שלך.",
-    };
-    setExplanation(fieldExplanations[field]);
-    setIconAnimation("pulse");
-    setModalVisible(true);
-    handleGlobalClick();
-  };
-
-  const handleNavigate = (route, direction) => {
-    stopAudio();
-    const animation = direction === "forward" ? "fadeOutLeft" : "fadeOutRight";
-    animatableRef.current
-      .animate(animation, 500)
-      .then(() => navigation.navigate(route));
-  };
-
-  const handleSend = () => {
-    stopAudio(); // Add this line
-    handleGlobalClick();
-    if (info !== "" && selectedAction !== "") {
-      alert("הבקשה הועברה לבנקאי בהצלחה");
-      setInfo("");
-      setSelectedAction("");
-    } else {
-      alert("לא כל השדות מולאו. מלא/י את כלל השדות");
-    }
-  };
-
-  const closeModal = () => {
-    stopAudio(); // Add this line
-    modalRef.current
-      .animate("fadeOutDown", 500)
-      .then(() => setModalVisible(false));
-    setIconAnimation("");
-    handleGlobalClick();
-  };
-
   return (
     <Animatable.View
       ref={animatableRef}
+      style={{ flex: 1 }}
       animation="fadeInDown"
       duration={2000}
-      style={{ flex: 1 }}
     >
       <KeyboardAvoidingView
-        style={styles.container}
+        style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        <View style={styles.card}>
-          <Text style={styles.title}>כתוב לבנקאי</Text>
-          <Text style={styles.subtitle}>
-            המידע נשמר בצורה מאובטחת. מלא את כלל הפרטים כדי לבצע העברה.
-          </Text>
-
-          <View style={styles.inputContainer}>
-            <TouchableOpacity onPress={() => handleIconPress("action")}>
-              <Animatable.View
-                animation={iconAnimation}
-                style={styles.iconContainer}
-              >
-                <Entypo name="light-bulb" size={40} color="yellow" />
-              </Animatable.View>
-            </TouchableOpacity>
+        <ScrollView contentContainerStyle={styles.container}>
+          <View style={styles.titleContainer}>
+            <Text style={styles.title}>כתוב לבנקאי</Text>
+          </View>
+          
+          <View>
+            <Text style={styles.subtitle}>
+              המידע נשמר בצורה מאובטחת. מלא את כלל הפרטים כדי ליצור קשר עם הבנקאי שלך.
+            </Text>
+          </View>
+          
+          {/* Form Container */}
+          <View style={styles.formContainer}>
+            {/* Action Dropdown */}
             <DropDownPicker
               open={open}
               value={selectedAction}
               items={items}
               setOpen={setOpen}
               setValue={setSelectedAction}
-              textStyle={styles.input}
               placeholder="בחר פעולה..."
               style={styles.dropdown}
+              textStyle={styles.dropdownText}
               dropDownContainerStyle={styles.dropdownContainer}
+              zIndex={3000}
+              zIndexInverse={1000}
             />
-          </View>
-
-          <View style={styles.inputContainer}>
-            <TouchableOpacity onPress={() => handleIconPress("info")}>
-              <Animatable.View
-                animation={iconAnimation}
-                style={styles.iconContainer}
-              >
-                <Entypo name="light-bulb" size={40} color="yellow" />
-              </Animatable.View>
-            </TouchableOpacity>
+            
+            {/* Description Input */}
             <TextInput
-              style={[styles.input, { height: 200 }]}
-              placeholder="תיאור"
+              style={styles.textArea}
+              placeholder="הזן את תיאור הבקשה שלך כאן..."
               value={info}
               onChangeText={setInfo}
+              multiline
+              textAlignVertical="top"
             />
-          </View>
-
-          <View
-            style={{ alignItems: "center", marginBottom: 20, marginTop: 10 }}
-          >
+            
+            {/* Send Button */}
             <TouchableOpacity
-              style={[styles.button, styles.sendBtn]}
+              style={styles.sendButton}
               onPress={handleSend}
             >
               <Text style={styles.buttonText}>שליחת בקשה</Text>
             </TouchableOpacity>
           </View>
-
+          
+          {/* Navigation Buttons */}
           <View style={styles.buttonRow}>
             <TouchableOpacity
-              style={[styles.button, styles.forwardBtn]}
+              style={[styles.button, { backgroundColor: "orange" }]}
               onPress={() => handleNavigate("Bank3", "forward")}
             >
               <Text style={styles.buttonText}>פעולות בנקאיות</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[styles.button, styles.backBtn]}
+              style={[styles.button, { backgroundColor: "green" }]}
               onPress={() => handleNavigate("Home13", "back")}
             >
               <Text style={styles.buttonText}>מסך בית</Text>
             </TouchableOpacity>
           </View>
-        </View>
-
-        <View>
+          
+          {/* Lottie Animation */}
           <TouchableOpacity
             style={styles.lottieButton}
             onPress={handleLottiePress}
           >
             <LottieView
-              source={require("../SetupScreens/robot.json")}
+              source={robotAnimation}
               autoPlay
               loop
               style={styles.lottie}
             />
           </TouchableOpacity>
-        </View>
+          
+          <Toast />
+        </ScrollView>
       </KeyboardAvoidingView>
     </Animatable.View>
   );
@@ -213,13 +231,33 @@ const ContactBanker3 = ({ navigation, handleGlobalClick }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: "#f2f2f2",
-    justifyContent: "center",
+    flexGrow: 1,
     alignItems: "center",
-    paddingHorizontal: 20,
+    padding: 20,
+    backgroundColor: "#f2f2f2",
+    marginTop: 10,
   },
-  card: {
+  titleContainer: {
+    width: "100%",
+    alignItems: "center",
+    marginTop: 10,
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: "bold",
+    textAlign: "center",
+    color: "#333",
+  },
+  subtitle: {
+    fontSize: 20,
+    color: "#555",
+    textAlign: "center",
+    marginTop: 20,
+    marginBottom: 40,
+    fontWeight: "bold",
+    maxWidth: 800,
+  },
+  formContainer: {
     width: "90%",
     maxWidth: 800,
     backgroundColor: "#fff",
@@ -230,122 +268,83 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     shadowOffset: { width: 0, height: 2 },
     elevation: 5,
-    marginBottom: 140,
+    marginBottom: 30,
+    alignItems: "center",
   },
-  title: {
-    fontSize: 24,
+  inputLabel: {
+    fontSize: 18,
     fontWeight: "bold",
-    marginBottom: 20,
+    alignSelf: "flex-start",
+    marginBottom: 10,
+    color: "#333",
+  },
+  dropdown: {
+    width: "100%",
+    borderColor: "#ccc",
+    borderRadius: 5,
+    marginBottom: 10,
+    zIndex: 3000,
+  },
+  dropdownText: {
+    fontSize: 16,
     textAlign: "center",
   },
-  inputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 15,
+  dropdownContainer: {
+    borderColor: "#ccc",
   },
-  input: {
-    flex: 1,
+  textArea: {
+    width: "100%",
+    height: 150,
     borderWidth: 1,
     borderColor: "#ccc",
     borderRadius: 5,
-    textAlign: "center",
     padding: 10,
     fontSize: 16,
+    textAlign: "right",
   },
-  iconContainer: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: "grey",
-    justifyContent: "center",
-    alignItems: "center",
-    marginRight: 10,
-    shadowColor: "yellow",
-    shadowRadius: 3,
-    shadowOpacity: 1,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: "#555",
-    textAlign: "center",
-    marginBottom: 20,
-  },
-  button: {
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-    alignItems: "center",
-    justifyContent: "center",
-    width: "48%",
+  sendButton: {
+    backgroundColor: "#52bfbf",
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    borderRadius: 10,
     marginTop: 20,
+    width: "60%",
+    alignItems: "center",
     shadowColor: "black",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 2,
   },
-  forwardBtn: {
-    backgroundColor: "green",
-  },
-  backBtn: {
-    backgroundColor: "orange",
-  },
-  closeBtn: {
-    backgroundColor: "red",
-  },
-  buttonText: {
-    fontSize: 18,
-    color: "#fff",
-    fontWeight: "bold",
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "transperent",
-  },
-  modalContent: {
-    backgroundColor: "#fff",
-    padding: 20,
-    borderRadius: 10,
-    alignItems: "center",
-    backgroundColor: "whitesmoke",
-    borderEndColor: "black",
-    borderBottomEndRadius: "2",
-  },
-  fontex: {
-    fontSize: 20,
-    marginBottom: 15,
-    fontWeight: "bold",
-    color: "black",
-  },
   buttonRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 60,
+    width: "100%",
+    maxWidth: 800,
+    marginTop: 20,
   },
-  dropdown: {
-    width: 595,
-    borderColor: "gray",
-    borderRadius: 5,
+  button: {
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    borderRadius: 10,
+    width: "48%",
+    alignItems: "center",
+    shadowColor: "black",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 2,
   },
-
-  dropdownContainer: {
-    width: 595,
-    borderColor: "gray",
-  },
-  sendBtn: {
-    backgroundColor: "#52bfbf",
+  buttonText: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold",
+    textAlign: "center",
   },
   lottieButton: {
     position: "absolute",
-    bottom: -200,
-    right: 110,
+    top: 600,
+    right: 900,
     width: 300,
     height: 300,
-    shadowColor: "black",
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.3,
-    shadowRadius: 2,
   },
   lottie: {
     width: "100%",

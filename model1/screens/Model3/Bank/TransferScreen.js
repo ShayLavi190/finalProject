@@ -8,7 +8,6 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
-  Alert,
 } from "react-native";
 import Entypo from "react-native-vector-icons/Entypo";
 import * as Animatable from "react-native-animatable";
@@ -16,6 +15,10 @@ import DropDownPicker from "react-native-dropdown-picker";
 import { useUser } from "../../Model2/userContext";
 import LottieView from "lottie-react-native";
 import { Audio } from "expo-av";
+import robotAnimation from "../SetupScreens/robot.json";
+import Toast from "react-native-toast-message";
+
+const AUDIO_URL = "https://raw.githubusercontent.com/ShayLavi190/finalProject/main/model1/assets/Recordings/moneyTransfer.mp3";
 
 const Transaction3 = ({ navigation, handleGlobalClick }) => {
   const { user, updateUser } = useUser();
@@ -32,6 +35,11 @@ const Transaction3 = ({ navigation, handleGlobalClick }) => {
   const [iconAnimation, setIconAnimation] = useState("");
   const [open, setOpen] = useState(false);
   const [open2, setOpen2] = useState(false);
+  
+  // Audio state variables
+  const [sound, setSound] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  
   const [items, setItems] = useState([
     { label: "לאומי", value: "10" },
     { label: "פועלים", value: "12" },
@@ -57,32 +65,41 @@ const Transaction3 = ({ navigation, handleGlobalClick }) => {
   ]);
   const animatableRef = useRef(null);
   const modalRef = useRef(null);
-  const [sound, setSound] = useState(null);
-  const [isPlaying, setIsPlaying] = useState(false);
 
-  useEffect(() => {
-    setSelectedBank(user.selectedBank || "");
-    setBankAccountNumber(user.bankAccountNumber || "");
-    setBankBranchNumber(user.bankBranchNumber || "");
-  }, [user]);
-
+  // Function to handle Lottie animation press and audio playback
   const handleLottiePress = async () => {
+    handleGlobalClick();
     if (sound && isPlaying) {
+      // If playing, pause the audio
       await sound.pauseAsync();
       setIsPlaying(false);
     } else if (sound) {
+      // If paused, resume playing
       await sound.playAsync();
       setIsPlaying(true);
     } else {
-      const { sound: newSound } = await Audio.Sound.createAsync(
-        require("../../../assets/Recordings/moneyTransfer.mp3"), // Ensure the file exists
-        { shouldPlay: true }
-      );
-      setSound(newSound);
-      setIsPlaying(true);
+      // Load and play new sound
+      try {
+        const { sound: newSound } = await Audio.Sound.createAsync(
+          { uri: AUDIO_URL },
+          { shouldPlay: true }
+        );
+        setSound(newSound);
+        setIsPlaying(true);
+      } catch (error) {
+        console.error("Error playing audio:", error);
+        Toast.show({
+          type: 'error',
+          position: 'bottom',
+          text1: 'שגיאה בהפעלת ההקלטה',
+          text2: 'לא ניתן להפעיל את ההקלטה כרגע',
+          visibilityTime: 4000,
+        });
+      }
     }
   };
 
+  // Function to stop audio playback
   const stopAudio = async () => {
     if (sound) {
       await sound.stopAsync();
@@ -93,13 +110,21 @@ const Transaction3 = ({ navigation, handleGlobalClick }) => {
   };
 
   useEffect(() => {
+    setSelectedBank(user.selectedBank || "");
+    setBankAccountNumber(user.bankAccountNumber || "");
+    setBankBranchNumber(user.bankBranchNumber || "");
+  }, [user]);
+
+  // Clean up audio when component unmounts
+  useEffect(() => {
     return () => {
       stopAudio();
     };
   }, []);
 
   const handleIconPress = (field) => {
-    stopAudio(); // Add this line
+    stopAudio(); // Stop audio when opening explanation
+    
     const fieldExplanations = {
       bank: "אנא בחר בנק מהרשימה.",
       account: "אנא הזן את מספר חשבון הבנק שלך.",
@@ -114,7 +139,8 @@ const Transaction3 = ({ navigation, handleGlobalClick }) => {
   };
 
   const handleNavigate = (route, direction) => {
-    stopAudio(); // Add this line
+    stopAudio(); // Stop audio when navigating
+    
     if (direction === "forward") {
       animatableRef.current
         .animate("fadeOutLeft", 500)
@@ -127,8 +153,9 @@ const Transaction3 = ({ navigation, handleGlobalClick }) => {
   };
 
   const handelSend = () => {
-    stopAudio(); // Add this line
+    stopAudio(); // Stop audio when submitting
     handleGlobalClick();
+    
     if (
       reason !== "" &&
       selectedBank !== "" &&
@@ -139,18 +166,45 @@ const Transaction3 = ({ navigation, handleGlobalClick }) => {
       bankAccountNumberReciver !== "" &&
       bankBranchNumberReciver !== ""
     ) {
-      Alert.alert("העברה בוצעה בהצלחה");
+      // First, hide any currently showing Toast
+      Toast.hide();
+      
+      // Use setTimeout to ensure the Toast appears after UI updates
+      setTimeout(() => {
+        Toast.show({
+          type: 'success',
+          position: 'bottom',
+          text1: 'הצלחה',
+          text2: 'העברה בוצעה בהצלחה',
+          visibilityTime: 4000,
+        });
+      }, 100);
+      
+      // Reset fields
       setBankAccountNumberReciver("");
       setBankBranchNumberReciver("");
       setReason("");
       setMoney("");
     } else {
-      Alert.alert("לא כל השדות מולאו. מלא/י את כלל השדות");
+      // First, hide any currently showing Toast
+      Toast.hide();
+      
+      // Use setTimeout to ensure the Toast appears after UI updates
+      setTimeout(() => {
+        Toast.show({
+          type: 'error',
+          position: 'bottom',
+          text1: 'שגיאה',
+          text2: 'לא כל השדות מולאו. מלא/י את כלל השדות',
+          visibilityTime: 4000,
+        });
+      }, 100);
     }
   };
 
   const closeModal = () => {
-    stopAudio(); // Add this line
+    stopAudio(); // Stop audio when closing modal
+    
     modalRef.current
       .animate("fadeOutDown", 500)
       .then(() => setModalVisible(false));
@@ -169,14 +223,14 @@ const Transaction3 = ({ navigation, handleGlobalClick }) => {
         style={styles.container}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        <View style={styles.card}>
+        <View style={[styles.card, open || open2 ? { zIndex: 100 } : {}]}>
           <Text style={styles.title}>ביצוע העברה בנקאית</Text>
           <Text style={styles.subtitle}>
             המידע נשמר בצורה מאובטחת. מלא את כלל הפרטים כדי לבצע העברה.
           </Text>
 
-          {/* Bank Picker */}
-          <View style={styles.inputContainer}>
+          {/* Sender's bank section */}
+          <View style={[styles.inputContainer, { zIndex: 3000 }]}>
             <TouchableOpacity onPress={() => handleIconPress("bank")}>
               <Animatable.View
                 animation={iconAnimation}
@@ -191,24 +245,24 @@ const Transaction3 = ({ navigation, handleGlobalClick }) => {
               items={items}
               setOpen={(value) => {
                 setOpen(value);
+                if (value) setOpen2(false); // Close the other dropdown if opening this one
                 handleGlobalClick();
               }}
               setValue={setSelectedBank}
               setItems={setItems}
-              textStyle={styles.input}
               placeholder="בחר בנק..."
               style={styles.dropdown}
-              dropDownContainerStyle={styles.dropdownContainer}
+              textStyle={styles.dropdownText}
+              dropDownDirection="BOTTOM"
+              zIndex={3000}
+              zIndexInverse={1000}
             />
           </View>
 
-          {/* Account Number Input */}
-          <View style={styles.inputContainer}>
+          {/* These fields should have lower z-index when dropdowns are open */}
+          <View style={[styles.inputContainer, { zIndex: open || open2 ? 1 : 10 }]}>
             <TouchableOpacity onPress={() => handleIconPress("account")}>
-              <Animatable.View
-                animation={iconAnimation}
-                style={styles.iconContainer}
-              >
+              <Animatable.View animation={iconAnimation} style={styles.iconContainer}>
                 <Entypo name="light-bulb" size={40} color="yellow" />
               </Animatable.View>
             </TouchableOpacity>
@@ -225,13 +279,9 @@ const Transaction3 = ({ navigation, handleGlobalClick }) => {
             />
           </View>
 
-          {/* Branch Number Input */}
-          <View style={styles.inputContainer}>
+          <View style={[styles.inputContainer, { zIndex: open || open2 ? 1 : 10 }]}>
             <TouchableOpacity onPress={() => handleIconPress("branch")}>
-              <Animatable.View
-                animation={iconAnimation}
-                style={styles.iconContainer}
-              >
+              <Animatable.View animation={iconAnimation} style={styles.iconContainer}>
                 <Entypo name="light-bulb" size={40} color="yellow" />
               </Animatable.View>
             </TouchableOpacity>
@@ -247,8 +297,9 @@ const Transaction3 = ({ navigation, handleGlobalClick }) => {
               keyboardType="numeric"
             />
           </View>
-          {/* Bank Picker */}
-          <View style={styles.inputContainer}>
+
+          {/* Receiver's bank section */}
+          <View style={[styles.inputContainer, { zIndex: 2000 }]}>
             <TouchableOpacity onPress={() => handleIconPress("bank")}>
               <Animatable.View
                 animation={iconAnimation}
@@ -263,24 +314,22 @@ const Transaction3 = ({ navigation, handleGlobalClick }) => {
               items={items}
               setOpen={(value) => {
                 setOpen2(value);
+                if (value) setOpen(false); // Close the other dropdown if opening this one
                 handleGlobalClick();
               }}
               setValue={setSelectedBankReciver}
               setItems={setItems}
-              textStyle={styles.input}
               placeholder="בחר בנק של המקבל..."
               style={styles.dropdown}
-              dropDownContainerStyle={styles.dropdownContainer}
+              textStyle={styles.dropdownText}
+              zIndex={2000}
+              zIndexInverse={2000}
             />
           </View>
 
-          {/* Account Number Input */}
-          <View style={styles.inputContainer}>
+          <View style={[styles.inputContainer, { zIndex: open || open2 ? 1 : 10 }]}>
             <TouchableOpacity onPress={() => handleIconPress("account")}>
-              <Animatable.View
-                animation={iconAnimation}
-                style={styles.iconContainer}
-              >
+              <Animatable.View animation={iconAnimation} style={styles.iconContainer}>
                 <Entypo name="light-bulb" size={40} color="yellow" />
               </Animatable.View>
             </TouchableOpacity>
@@ -297,13 +346,9 @@ const Transaction3 = ({ navigation, handleGlobalClick }) => {
             />
           </View>
 
-          {/* Branch Number Input */}
-          <View style={styles.inputContainer}>
+          <View style={[styles.inputContainer, { zIndex: open || open2 ? 1 : 10 }]}>
             <TouchableOpacity onPress={() => handleIconPress("branch")}>
-              <Animatable.View
-                animation={iconAnimation}
-                style={styles.iconContainer}
-              >
+              <Animatable.View animation={iconAnimation} style={styles.iconContainer}>
                 <Entypo name="light-bulb" size={40} color="yellow" />
               </Animatable.View>
             </TouchableOpacity>
@@ -319,13 +364,10 @@ const Transaction3 = ({ navigation, handleGlobalClick }) => {
               keyboardType="numeric"
             />
           </View>
-          {/* Reason and Money Inputs */}
-          <View style={styles.inputContainer}>
+
+          <View style={[styles.inputContainer, { zIndex: open || open2 ? 1 : 10 }]}>
             <TouchableOpacity onPress={() => handleIconPress("reason")}>
-              <Animatable.View
-                animation={iconAnimation}
-                style={styles.iconContainer}
-              >
+              <Animatable.View animation={iconAnimation} style={styles.iconContainer}>
                 <Entypo name="light-bulb" size={40} color="yellow" />
               </Animatable.View>
             </TouchableOpacity>
@@ -340,12 +382,10 @@ const Transaction3 = ({ navigation, handleGlobalClick }) => {
               }}
             />
           </View>
-          <View style={styles.inputContainer}>
+
+          <View style={[styles.inputContainer, { zIndex: open || open2 ? 1 : 10 }]}>
             <TouchableOpacity onPress={() => handleIconPress("money")}>
-              <Animatable.View
-                animation={iconAnimation}
-                style={styles.iconContainer}
-              >
+              <Animatable.View animation={iconAnimation} style={styles.iconContainer}>
                 <Entypo name="light-bulb" size={40} color="yellow" />
               </Animatable.View>
             </TouchableOpacity>
@@ -361,9 +401,10 @@ const Transaction3 = ({ navigation, handleGlobalClick }) => {
               keyboardType="numeric"
             />
           </View>
-          <View
-            style={{ alignItems: "center", marginBottom: 20, marginTop: 10 }}
-          >
+
+          <View style={[
+            { alignItems: "center", marginBottom: 20, marginTop: 10, zIndex: open || open2 ? 1 : 10 }
+          ]}>
             <TouchableOpacity
               style={[styles.button, styles.sendBtn]}
               onPress={handelSend}
@@ -371,8 +412,9 @@ const Transaction3 = ({ navigation, handleGlobalClick }) => {
               <Text style={styles.buttonText}>ביצוע העברה</Text>
             </TouchableOpacity>
           </View>
+
           {/* Buttons */}
-          <View style={styles.buttonRow}>
+          <View style={[styles.buttonRow, { zIndex: open || open2 ? 1 : 10 }]}>
             <TouchableOpacity
               style={[styles.button, styles.forwardBtn]}
               onPress={() => handleNavigate("Bank3", "forward")}
@@ -387,6 +429,7 @@ const Transaction3 = ({ navigation, handleGlobalClick }) => {
             </TouchableOpacity>
           </View>
         </View>
+
         <Modal visible={modalVisible} transparent animationType="none">
           <View style={styles.modalContainer}>
             <Animatable.View
@@ -405,19 +448,24 @@ const Transaction3 = ({ navigation, handleGlobalClick }) => {
             </Animatable.View>
           </View>
         </Modal>
+        
+        {/* Lottie Animation */}
         <View>
           <TouchableOpacity
             style={styles.lottieButton}
             onPress={handleLottiePress}
           >
             <LottieView
-              source={require("../SetupScreens/robot.json")}
+              source={robotAnimation}
               autoPlay
               loop
               style={styles.lottie}
             />
           </TouchableOpacity>
         </View>
+        
+        {/* Toast component positioned at the end of KeyboardAvoidingView */}
+        <Toast />
       </KeyboardAvoidingView>
     </Animatable.View>
   );
@@ -430,6 +478,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 20,
+    position: "relative",
+    zIndex: 1,
   },
   card: {
     width: "90%",
@@ -443,6 +493,8 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     elevation: 5,
     marginBottom: 140,
+    zIndex: 1,
+    position: "relative",
   },
   title: {
     fontSize: 24,
@@ -454,6 +506,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 15,
+    position: "relative",
   },
   input: {
     flex: 1,
@@ -489,10 +542,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     width: "48%",
-    shadowColor: "black",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 2,
   },
   forwardBtn: {
     backgroundColor: "green",
@@ -512,7 +561,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "transperent",
+    backgroundColor: "transparent",
+    zIndex: 1000,
   },
   modalContent: {
     backgroundColor: "#fff",
@@ -521,7 +571,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "whitesmoke",
     borderEndColor: "black",
-    borderBottomEndRadius: "2",
+    borderBottomEndRadius: 2,
   },
   fontex: {
     fontSize: 20,
@@ -535,28 +585,25 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   dropdown: {
-    width: 595,
-    borderColor: "gray",
-    borderRadius: 5,
+    flex: 1,
+    borderColor: "#ccc",
+    height: 30,
+    width: "92%",
   },
-
-  dropdownContainer: {
-    width: 595,
-    borderColor: "gray",
+  dropdownText: {
+    textAlign: "center",
+    fontSize: 16,
   },
   sendBtn: {
     backgroundColor: "#52bfbf",
+    width: "60%",
   },
   lottieButton: {
     position: "absolute",
-    bottom: -150,
-    right: 110,
+    bottom: -80,
+    right: 300,
     width: 300,
     height: 300,
-    shadowColor: "black",
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.3,
-    shadowRadius: 2,
   },
   lottie: {
     width: "100%",

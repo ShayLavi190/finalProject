@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { useUser } from "../userContext";
 import * as Animatable from "react-native-animatable";
+import Toast from "react-native-toast-message";
 
 const Bankm2 = ({ navigation,handleGlobalClick }) => {
   const { user } = useUser();
@@ -26,7 +27,19 @@ const Bankm2 = ({ navigation,handleGlobalClick }) => {
     }
   };
   const handelBank = () => {
-    Alert.alert("הועברת למצב חשבון");
+    Toast.show({
+      type: "success",
+      text1: "הועברת למצב חשבון",
+      visibilityTime: 4000,
+      position: "top",
+      textStyle: { fontSize: 18, textAlign: "right" }, 
+      style: { 
+        width: "90%", 
+        backgroundColor: "#ff4d4d", 
+        borderRadius: 10, 
+        alignSelf: "flex-end",
+        zIndex: 9999 
+      },});
     handleGlobalClick();
     }
   return (
@@ -37,6 +50,7 @@ const Bankm2 = ({ navigation,handleGlobalClick }) => {
       duration={2000}
     >
       <ScrollView contentContainerStyle={styles.container}>
+      <Toast/>
         <View style={styles.titleContainer}>
           <Text style={styles.title}>ברוך הבא לשירותי הבנק</Text>
         </View>
@@ -70,7 +84,6 @@ const Bankm2 = ({ navigation,handleGlobalClick }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
     alignItems: "center",
     padding: 20,
     backgroundColor: "#f2f2f2",
@@ -80,7 +93,7 @@ const styles = StyleSheet.create({
     width: "100%",
     alignItems: "center",
     marginBottom: 170,
-    marginTop: 50,
+    marginTop: 90,
   },
   title: {
     fontSize: 32,
@@ -121,6 +134,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 20,
     fontWeight: "bold",
+    marginBottom:50
   },
 });
 
