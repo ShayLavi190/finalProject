@@ -10,6 +10,9 @@ import { useUser } from "../../Model2/userContext";
 import * as Animatable from "react-native-animatable";
 import LottieView from "lottie-react-native";
 import { Audio } from "expo-av";
+import robotAnimation from "../SetupScreens/robot.json";
+const AUDIO_URL = "https://raw.githubusercontent.com/ShayLavi190/finalProject/main/model1/assets/Recordings/bank.mp3";
+import Toast from "react-native-toast-message";
 
 const Bank3 = ({ navigation, handleGlobalClick }) => {
   const { user } = useUser();
@@ -35,7 +38,7 @@ const Bank3 = ({ navigation, handleGlobalClick }) => {
       setIsPlaying(true);
     } else {
       const { sound: newSound } = await Audio.Sound.createAsync(
-        require("../../../assets/Recordings/bank.mp3"), // Ensure the file exists
+        { uri: AUDIO_URL },
         { shouldPlay: true }
       );
       setSound(newSound);
@@ -60,6 +63,14 @@ const Bank3 = ({ navigation, handleGlobalClick }) => {
 
   const handleBank = () => {
     stopAudio(); // Stop audio before performing action
+    Toast.show({
+      type: "info",
+      text1: "מצב חשבון",
+      text2: "מצב החשבון שלך מוצג",
+      visibilityTime: 4000,
+      position: "bottom",
+      textStyle: { fontSize: 18 },
+    });
     handleGlobalClick();
   };
 
@@ -130,13 +141,14 @@ const Bank3 = ({ navigation, handleGlobalClick }) => {
             onPress={handleLottiePress}
           >
             <LottieView
-              source={require("../SetupScreens/robot.json")}
+              source={robotAnimation}
               autoPlay
               loop
               style={styles.lottie}
             />
           </TouchableOpacity>
         </View>
+        <Toast />
       </ScrollView>
     </Animatable.View>
   );
@@ -148,7 +160,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 20,
     backgroundColor: "#f2f2f2",
-    marginTop: 50,
+    marginTop: 10,
   },
   titleContainer: {
     width: "100%",
@@ -211,10 +223,6 @@ const styles = StyleSheet.create({
     right: 110,
     width: 300,
     height: 300,
-    shadowColor: "black",
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.3,
-    shadowRadius: 2,
   },
   lottie: {
     width: "100%",

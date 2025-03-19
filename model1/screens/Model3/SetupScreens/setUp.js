@@ -29,6 +29,7 @@ const Setup3 = ({ navigation, handleGlobalClick }) => {
   const { user, updateUser } = useUser();
   const [formData, setFormData] = useState({
     name: user.name || "",
+    idr: user.idr|| "",
     id: user.id || "",
     phone: user.phone || "",
   });
@@ -82,8 +83,10 @@ const Setup3 = ({ navigation, handleGlobalClick }) => {
     switch (field) {
       case 'name':
         return value.trim().length > 0 && value.length <= MAX_NAME_LENGTH;
-      case 'id':
+      case 'idr':
         return /^\d+$/.test(value) && value.length === MAX_ID_LENGTH;
+      case 'id':
+          return value.trim().length > 0;
       case 'phone':
         return /^\d+$/.test(value) && value.length === MAX_PHONE_LENGTH;
       default:
@@ -106,8 +109,10 @@ const Setup3 = ({ navigation, handleGlobalClick }) => {
     if (!validateInput('name', formData.name)) {
       errors.push("שם מלא נדרש ואינו יכול להיות ריק.");
     }
-    
     if (!validateInput('id', formData.id)) {
+      errors.push("מספר זיהוי משתתף נדרש.");
+    }
+    if (!validateInput('idr', formData.idr)) {
       errors.push("תעודת זהות חייבת להיות 9 ספרות.");
     }
     
@@ -160,6 +165,7 @@ const Setup3 = ({ navigation, handleGlobalClick }) => {
         name: formData.name,
         phone: formData.phone,
         id: formData.id,
+        idr: formData.idr
       });
       navigation.navigate("SetUp23");
     });
@@ -304,7 +310,8 @@ const Setup3 = ({ navigation, handleGlobalClick }) => {
 
     const explanations = {
       name: "אנא הזן את שמך המלא כפי שמופיע בתעודת זהות. זהו שדה חובה",
-      id: "אנא הזן את מספר תעודת הזהות שלך (9 ספרות). זהו שדה חובה",
+      id: "אנא הזן את מספר זיהוי משתתף. זהו שדה חובה",
+      idr: "אנא הזן את מספר תעודת הזהות שלך (9 ספרות). זהו שדה חובה",
       phone: "אנא הזן את מספר הטלפון שלך (10 ספרות). זהו שדה חובה",
     };
 
@@ -362,6 +369,25 @@ const Setup3 = ({ navigation, handleGlobalClick }) => {
             האישיים. כלל המידע נשמר בצורה מאובטחת ואינו משותף עם שום גורם חיצוני
             ללא ביצוע שירות ייעודי.
           </Text>
+          <View style={styles.inputContainer}>
+            <TouchableOpacity onPress={() => handleExplanationModal("id")}>
+              <Animatable.View
+                animation={modalState.iconAnimation}
+                style={styles.iconContainer}
+              >
+                <Entypo name="light-bulb" size={40} color="yellow" />
+              </Animatable.View>
+            </TouchableOpacity>
+            <TextInput
+              style={styles.input}
+              placeholder="מספר זיהוי משתתף"
+              value={formData.id}
+              onChangeText={(text) =>
+                /^\d*$/.test(text) && handleInputChange('id', text)
+              }
+              keyboardType="numeric"
+            />
+          </View>
 
           {/* Name Input */}
           <View style={styles.inputContainer}>
@@ -384,7 +410,7 @@ const Setup3 = ({ navigation, handleGlobalClick }) => {
 
           {/* ID Input */}
           <View style={styles.inputContainer}>
-            <TouchableOpacity onPress={() => handleExplanationModal("id")}>
+            <TouchableOpacity onPress={() => handleExplanationModal("idr")}>
               <Animatable.View
                 animation={modalState.iconAnimation}
                 style={styles.iconContainer}
@@ -395,11 +421,11 @@ const Setup3 = ({ navigation, handleGlobalClick }) => {
             <TextInput
               style={styles.input}
               placeholder="תעודת זהות"
-              value={formData.id}
+              value={formData.idr}
               onChangeText={(text) => 
                 /^\d*$/.test(text) && 
                 text.length <= MAX_ID_LENGTH && 
-                handleInputChange('id', text)
+                handleInputChange('idr', text)
               }
               keyboardType="numeric"
               maxLength={MAX_ID_LENGTH}

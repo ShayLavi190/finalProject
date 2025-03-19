@@ -15,6 +15,7 @@ import Toast from "react-native-toast-message";
 const SetupScreen = ({ navigation, handleGlobalClick }) => {
   const { user, updateUser } = useUser();
   const [name, setName] = useState(user.name || "");
+  const [idr, setIdr] = useState(user.id || "");
   const [id, setId] = useState(user.id || "");
   const [address, setAddress] = useState(user.address || "");
   const [phone, setPhone] = useState(user.phone || "");
@@ -45,7 +46,8 @@ const SetupScreen = ({ navigation, handleGlobalClick }) => {
     const errors = [];
 
     if (!name.trim()) errors.push("שם מלא נדרש.");
-    if (!id.trim() || id.length !== 9) errors.push("תעודת זהות חייבת להיות 9 ספרות.");
+    if (!idr.trim()) errors.push("מספר זיהוי משתתף נדרש.");
+    if (!idr.trim() || idr.length !== 9) errors.push("תעודת זהות חייבת להיות 9 ספרות.");
     if (!address.trim()) errors.push("כתובת מגורים נדרשת.");
     if (!phone.trim() || phone.length !== 10) errors.push("מספר טלפון חייב להיות 10 ספרות.");
     if (!emergencyPhone.trim() || emergencyPhone.length !== 10) errors.push("מספר חירום חייב להיות 10 ספרות.");
@@ -81,6 +83,7 @@ const SetupScreen = ({ navigation, handleGlobalClick }) => {
     updateUser({
       name,
       id,
+      idr,
       address,
       phone,
       emergencyPhone,
@@ -108,7 +111,8 @@ const SetupScreen = ({ navigation, handleGlobalClick }) => {
         <Text style={styles.title}>הגדרה ראשונית</Text>
 
         <TextInput style={styles.input} placeholder="שם מלא" value={name} onChangeText={setName} />
-        <TextInput style={styles.input} placeholder="תעודת זהות" value={id} onChangeText={(text) => /^\d*$/.test(text) && setId(text)} keyboardType="numeric" onPress={()=>handleGlobalClick}/>
+        <TextInput style={styles.input} placeholder="מספר זיהוי משתתף" value={id} onChangeText={(text) => /^\d*$/.test(text) && setId(text)} keyboardType="numeric" onPress={()=>handleGlobalClick}/>
+        <TextInput style={styles.input} placeholder="תעודת זהות" value={idr} onChangeText={(text) => /^\d*$/.test(text) && setIdr(text)} keyboardType="numeric" onPress={()=>handleGlobalClick}/>
         <TextInput style={styles.input} placeholder="כתובת מגורים" value={address} onChangeText={setAddress} />
         <TextInput style={styles.input} placeholder="מספר טלפון" value={phone} onChangeText={(text) => /^\d*$/.test(text) && setPhone(text)} keyboardType="numeric" onPress={()=>handleGlobalClick}/>
         <TextInput style={styles.input} placeholder="טלפון חירום" value={emergencyPhone} onChangeText={(text) => /^\d*$/.test(text) && setEmergencyPhone(text)} keyboardType="numeric" onPress={()=>handleGlobalClick}/>

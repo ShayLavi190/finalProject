@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -6,31 +6,34 @@ import {
   TouchableOpacity,
   TextInput,
   StyleSheet,
-  Alert,
-} from "react-native";
-import products from "../../SuperMarket/products";
-import * as Animatable from "react-native-animatable";
+} from 'react-native';
+import products from '../../SuperMarket/products';
+import * as Animatable from 'react-native-animatable';
 import DropDownPicker from "react-native-dropdown-picker";
+import Toast from "react-native-toast-message";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import LottieView from "lottie-react-native";
-import { useUser } from "../../Model2/userContext";
-import { Audio } from "expo-av"; // Added Audio import
+import { Audio } from "expo-av"; 
+import robotAnimation from "../SetupScreens/robot.json";
+
+const AUDIO_URL = "https://raw.githubusercontent.com/ShayLavi190/finalProject/main/model1/assets/Recordings/editCart.mp3";
 
 const EditCart3 = ({ navigation, handleGlobalClick }) => {
-  const { user, updateUser } = useUser();
   const animatableRef = useRef(null);
-  const [cartItems, setCartItems] = user.cart
-    ? useState(user.cart)
-    : useState([
-        { id: "1", name: "חלב", quantity: 1 },
-        { id: "2", name: "לחם", quantity: 2 },
-        { id: "3", name: "ביצים", quantity: 1 },
-      ]);
-  const [selectedProduct, setSelectedProduct] = useState("");
+  const [cartItems, setCartItems] = useState([]);
+  const [selectedProduct, setSelectedProduct] = useState('');
   const [productQuantity, setProductQuantity] = useState(1);
   const [open, setOpen] = useState(false);
-  // Added audio state variables
+  const [items, setItems] = useState(products);
+  // Audio state variables
   const [sound, setSound] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  
+  const DEFAULT_CART = [
+    { id: '1', name: 'חלב', quantity: 1 },
+    { id: '2', name: 'לחם', quantity: 2 },
+    { id: '3', name: 'ביצים', quantity: 1 },
+  ];
 
   // Function to stop audio playback
   const stopAudio = async () => {
@@ -42,27 +45,7 @@ const EditCart3 = ({ navigation, handleGlobalClick }) => {
     }
   };
 
-  const handleQuantityChange = (id, newQuantity) => {
-    if (newQuantity < 1) {
-      Alert.alert("שגיאה", "הכמות חייבת להיות לפחות 1.");
-      return;
-    }
-    setCartItems((prevItems) =>
-      prevItems.map((item) =>
-        item.id === id ? { ...item, quantity: newQuantity } : item
-      )
-    );
-    handleGlobalClick(`שינוי כמות עבור פריט ${id}`);
-  };
-
-  const handleRemoveItem = (id) => {
-    stopAudio(); // Stop audio when removing item
-
-    setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
-    handleGlobalClick(`הסרת פריט ${id}`);
-  };
-
-  // Updated to handle audio playback
+  // Function to handle Lottie press and audio playback
   const handleLottiePress = async () => {
     handleGlobalClick();
     if (sound && isPlaying) {
@@ -77,62 +60,16 @@ const EditCart3 = ({ navigation, handleGlobalClick }) => {
       // Load and play new sound
       try {
         const { sound: newSound } = await Audio.Sound.createAsync(
-          require("../../../assets/Recordings/editCart.mp3"), // Make sure this file exists
+          { uri: AUDIO_URL },
           { shouldPlay: true }
         );
         setSound(newSound);
         setIsPlaying(true);
       } catch (error) {
         console.error("Error playing audio:", error);
-        Alert.alert("שגיאה בהפעלת ההקלטה", "לא ניתן להפעיל את ההקלטה כרגע.");
+        showToast('error', 'שגיאה', 'לא ניתן להפעיל את ההקלטה כרגע');
       }
     }
-  };
-
-  const handleAddItem = () => {
-    stopAudio(); // Stop audio when adding item
-
-    if (!selectedProduct) {
-      Alert.alert("שגיאה", "אנא בחר מוצר.");
-      return;
-    }
-    if (productQuantity < 1) {
-      Alert.alert("שגיאה", "אנא בחר כמות גדולה מ-1.");
-      return;
-    }
-    setCartItems((prevItems) => [
-      ...prevItems,
-      {
-        id: (prevItems.length + 1).toString(),
-        name: selectedProduct,
-        quantity: productQuantity,
-      },
-    ]);
-    setSelectedProduct("");
-    setProductQuantity(1);
-    handleGlobalClick(`הוספת פריט ${selectedProduct}`);
-  };
-
-  const handleCheckout = () => {
-    stopAudio(); // Stop audio when checking out
-
-    Alert.alert("הצלחה", "העגלה נשמרה בהצלחה !");
-    updateUser({ ...user, cart: cartItems });
-    handleGlobalClick("עריכה בוצעה");
-  };
-
-  const handleNavigate = (route) => {
-    stopAudio(); // Stop audio when navigating
-
-    animatableRef.current
-      .animate("fadeOutRight", 500)
-      .then(() => {
-        navigation.navigate(route);
-      })
-      .catch((err) => {
-        console.error("Animation error:", err);
-        navigation.navigate(route);
-      });
   };
 
   // Cleanup audio on component unmount
@@ -142,15 +79,135 @@ const EditCart3 = ({ navigation, handleGlobalClick }) => {
     };
   }, []);
 
+  const showToast = (type, title, message) => {
+    // First, hide any currently showing Toast
+    Toast.hide();
+    
+    // Use setTimeout to ensure the Toast appears after UI updates
+    setTimeout(() => {
+      Toast.show({
+        type: type,
+        position: 'bottom',
+        text1: title,
+        text2: message,
+        visibilityTime: 4000,
+        autoHide: true,
+      });
+    }, 100);
+  };
+
+  const loadCartFromStorage = async () => {
+    try {
+      const storedCart = await AsyncStorage.getItem('cart');
+      if (storedCart) {
+        setCartItems(JSON.parse(storedCart));
+        showToast('success', 'הצלחה', 'עגלה נטענה בהצלחה!');
+      } else {
+        setCartItems(DEFAULT_CART);
+        showToast('info', 'מידע', 'אין נתונים שמורים, נטען ברירת מחדל.');
+      }
+    } catch (error) {
+      console.error('שגיאה בטעינת העגלה:', error);
+      setCartItems(DEFAULT_CART); // fallback במקרה של שגיאה
+      showToast('error', 'שגיאה', 'שגיאה בטעינת העגלה.');
+    }
+  };
+
+  useEffect(() => {
+    loadCartFromStorage();
+  }, []);
+
+  const handleQuantityChange = (id, newQuantity) => {
+    stopAudio(); // Stop audio when changing quantity
+    
+    if (newQuantity < 1) {
+      showToast('error', 'שגיאה', 'הכמות חייבת להיות לפחות 1.');
+      return;
+    }
+    
+    setCartItems((prevItems) =>
+      prevItems.map((item) =>
+        item.id === id ? { ...item, quantity: newQuantity } : item
+      )
+    );
+    handleGlobalClick(`שינוי כמות עבור פריט ${id}`);
+  };
+
+  const handleRemoveItem = (id) => {
+    stopAudio(); // Stop audio when removing item
+    
+    setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
+    handleGlobalClick(`הסרת פריט ${id}`);
+    showToast('success', 'הצלחה', 'המוצר הוסר מהעגלה');
+  };
+
+  const handleAddItem = () => {
+    stopAudio(); // Stop audio when adding item
+    
+    if (!selectedProduct) {
+      showToast('error', 'שגיאה', 'אנא בחר מוצר.');
+      return;
+    }
+    if (productQuantity < 1) {
+      showToast('error', 'שגיאה', 'אנא בחר כמות גדולה מ-1.');
+      return;
+    }
+    
+    setCartItems((prevItems) => [
+      ...prevItems,
+      {
+        id: (prevItems.length + 1).toString(),
+        name: selectedProduct,
+        quantity: productQuantity,
+      },
+    ]);
+    setSelectedProduct('');
+    setProductQuantity(1);
+    handleGlobalClick(`הוספת פריט ${selectedProduct}`);
+    showToast('success', 'הצלחה', 'המוצר נוסף לעגלה');
+  };
+
+  const saveCartToStorage = async () => {
+    stopAudio(); // Stop audio when saving
+    
+    try {
+      await AsyncStorage.setItem('cart', JSON.stringify(cartItems));
+      showToast('success', 'הצלחה', 'העגלה נשמרה בהצלחה!');
+    } catch (error) {
+      console.error('שגיאה בשמירת העגלה:', error);
+      showToast('error', 'שגיאה', 'שגיאה בשמירת העגלה.');
+    }
+  };
+
+  const handleCheckout = async () => {
+    await saveCartToStorage();
+    navigation.navigate('Supermarket3');
+    handleGlobalClick('שמירה');
+  };
+  
+  const handleNavigate = (route) => {
+    stopAudio(); // Stop audio when navigating
+    
+    animatableRef.current
+      .animate('fadeOutRight', 500)
+      .then(() => {
+        navigation.navigate(route);
+      })
+      .catch((err) => {
+        console.error("Animation error:", err);
+        navigation.navigate(route);
+      });
+  };
+
   const renderItem = ({ item }) => (
     <View style={styles.itemContainer}>
       <Text style={styles.itemName}>{item.name}</Text>
       <TextInput
         style={styles.input}
         keyboardType="numeric"
-        value={item.quantity === "" ? "" : String(item.quantity)}
+        value={item.quantity === '' ? '' : String(item.quantity)}
         onChangeText={(text) => {
-          const newQuantity = text === "" ? "" : parseInt(text);
+          const newQuantity = text === '' ? '' : parseInt(text);
           if (newQuantity >= 1) {
             handleQuantityChange(item.id, newQuantity);
           }
@@ -170,171 +227,188 @@ const EditCart3 = ({ navigation, handleGlobalClick }) => {
       ref={animatableRef}
       animation="fadeInDown"
       duration={2000}
-      style={{ flex: 1 }}
+      style={styles.mainContainer}
     >
       <View style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.title}>עגלת הקניות שלך</Text>
           <Text style={styles.subtitle}>
-            ניתן לראות את רשימת המוצרים בסל. הוספת מוצר היא דרך לחיצה על בחירות
-            מוצר, בחירת כמו ואז לחיצה על הוספת מוצר. כדי להסידר מוצר יש ללחות על
-            כפתור הסר. לתשלום לוחצים על הכפתור היעודי
+            ניתן לראות את רשימת המוצרים בסל. הוספת מוצר היא דרך לחיצה על בחירות מוצר, בחירת כמו ואז לחיצה על הוספת מוצר. כדי להסידר מוצר יש ללחות על כפתור הסר. לשמירה לוחצים על הכפתור היעודי
           </Text>
         </View>
-        <View style={styles.row}>
-          <TextInput
-            style={styles.quantityInput}
-            keyboardType="numeric"
-            placeholder="כמות"
-            value={String(productQuantity)}
-            onChangeText={(text) => setProductQuantity(parseInt(text) || "")}
-          />
-          <DropDownPicker
-            open={open}
-            value={selectedProduct}
-            items={products}
-            setOpen={(value) => {
-              setOpen(value);
-              handleGlobalClick();
-            }}
-            setValue={setSelectedProduct}
-            placeholder="בחר מוצר"
-            textStyle={{ textAlign: "center", fontSize: 16 }}
-            style={styles.dropdown}
-            dropDownContainerStyle={styles.dropdownContainer}
-          />
+        <View style={[styles.row, { zIndex: 3000 }]}>
+          <View style={styles.quantityWrapper}>
+            <TextInput
+              style={styles.quantityInput}
+              keyboardType="numeric"
+              placeholder="1"
+              value={String(productQuantity)}
+              onChangeText={(text) => setProductQuantity(parseInt(text) || 1)}
+            />
+          </View>
+          <View style={styles.dropdownWrapper}>
+            <DropDownPicker
+              open={open}
+              value={selectedProduct}
+              items={items}
+              setOpen={(value) => {setOpen(value); handleGlobalClick();}}
+              setValue={setSelectedProduct}
+              setItems={setItems}
+              placeholder="בחר מוצר"
+              textStyle={{ textAlign: 'center', fontSize: 16 }}
+              style={styles.dropdown}
+              dropDownContainerStyle={styles.dropdownContainer}
+              zIndex={3000}
+              zIndexInverse={1000}
+            />
+          </View>
         </View>
-        <TouchableOpacity style={styles.addButton} onPress={handleAddItem}>
+        <TouchableOpacity 
+          style={[styles.addButton, { zIndex: open ? 1 : 10 }]} 
+          onPress={handleAddItem}
+        >
           <Text style={styles.addButtonText}>הוסף מוצר</Text>
         </TouchableOpacity>
-        <View style={{ flex: 1 }}>
+        <View style={[{ flex: 1 }, { zIndex: open ? 1 : 10 }]}>
           <FlatList
             data={cartItems}
             keyExtractor={(item) => item.id}
             renderItem={renderItem}
-            ListEmptyComponent={
-              <Text style={styles.emptyCart}>העגלה ריקה</Text>
-            }
+            ListEmptyComponent={<Text style={styles.emptyCart}>העגלה ריקה</Text>}
             contentContainerStyle={styles.listContainer}
           />
 
           {cartItems.length > 0 && (
-            <TouchableOpacity
-              style={styles.checkoutButton}
-              onPress={handleCheckout}
-            >
-              <Text style={styles.checkoutButtonText}>שמירה</Text>
+            <TouchableOpacity style={styles.checkoutButton} onPress={handleCheckout}>
+              <Text style={styles.checkoutButtonText}>שמור</Text>
             </TouchableOpacity>
           )}
-          <View>
-            <TouchableOpacity
-              style={styles.lottieButton}
-              onPress={handleLottiePress}
-            >
-              <LottieView
-                source={require("../SetupScreens/robot.json")}
-                autoPlay
-                loop
-                style={styles.lottie}
-              />
-            </TouchableOpacity>
-          </View>
+
           <View style={styles.buttonRow}>
-            <TouchableOpacity
-              style={styles.forwardButton}
-              onPress={() => handleNavigate("Supermarket3")}
-            >
-              <Text style={styles.forwardButtonText}>שירותי סופרמרקט</Text>
+            <TouchableOpacity style={styles.forwardButton} onPress={() => handleNavigate('Supermarket3')}>
+              <Text style={styles.forwardButtonText}>חזור</Text>
             </TouchableOpacity>
           </View>
         </View>
+
+        {/* Lottie Animation */}
+        <TouchableOpacity
+          style={styles.lottieButton}
+          onPress={handleLottiePress}
+        >
+          <LottieView
+            source={robotAnimation}
+            autoPlay
+            loop
+            style={styles.lottie}
+          />
+        </TouchableOpacity>
+
+        {/* Toast component */}
+        <Toast />
       </View>
     </Animatable.View>
   );
 };
 
 const styles = StyleSheet.create({
+  mainContainer: {
+    flex: 1,
+    backgroundColor: '#f2f2f2',
+  },
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: '#f2f2f2',
+    position: 'relative',
+    zIndex: 1,
+  },
   header: {
     marginBottom: 20,
   },
   title: {
     fontSize: 24,
-    fontWeight: "bold",
-    textAlign: "center",
+    fontWeight: 'bold',
+    textAlign: 'center',
     marginTop: 40,
   },
   subtitle: {
     fontSize: 18,
-    fontWeight: "bold",
-    color: "#555",
-    textAlign: "center",
+    fontWeight: 'bold',
+    color: '#555',
+    textAlign: 'center',
     marginBottom: 20,
     marginTop: 30,
   },
   row: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     marginBottom: 15,
+    position: "relative",
+    paddingHorizontal: 5,
   },
-  pickerContainer: {
-    marginRight: 10,
+  quantityWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '25%',
+  },
+  dropdownWrapper: {
+    width: '70%',
+  },
+  quantityLabel: {
+    marginRight: 5,
+    fontSize: 16,
+    fontWeight: 'bold',
   },
   dropdown: {
-    width: "85%",
-    borderColor: "gray",
+    width: '100%',
+    borderColor: 'gray',
     borderRadius: 5,
-    shadowColor: "black",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 2,
   },
   dropdownContainer: {
-    width: "70%",
-    borderColor: "gray",
+    width: '100%',
+    borderColor: 'gray',
   },
   input: {
     flex: 1,
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: '#ccc',
     borderRadius: 5,
-    textAlign: "center",
+    textAlign: 'center',
     padding: 10,
     fontSize: 16,
   },
   quantityInput: {
     height: 40,
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: '#ccc',
     borderRadius: 5,
-    textAlign: "center",
-    backgroundColor: "white",
-    width: "10%",
-    marginRight: 30,
+    textAlign: 'center',
+    backgroundColor: 'white',
+    width: '60%',
+    fontSize: 16,
   },
   addButton: {
-    backgroundColor: "#007bff",
+    backgroundColor: '#007bff',
     padding: 15,
     borderRadius: 5,
-    alignItems: "center",
+    alignItems: 'center',
     marginBottom: 10,
-    shadowColor: "black",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 2,
   },
   addButtonText: {
-    color: "#fff",
+    color: '#fff',
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   itemContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: 15,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     padding: 10,
     borderRadius: 5,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowRadius: 5,
     shadowOffset: { width: 0, height: 2 },
@@ -342,94 +416,73 @@ const styles = StyleSheet.create({
   itemName: {
     flex: 1,
     fontSize: 20,
-    textAlign: "center",
+    textAlign: 'center',
     marginLeft: 70,
   },
   removeButton: {
-    backgroundColor: "#ff4d4d",
+    backgroundColor: '#ff4d4d',
     padding: 10,
     borderRadius: 5,
     marginLeft: 15,
-    shadowColor: "black",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 2,
   },
   removeButtonText: {
-    color: "#fff",
-    fontWeight: "bold",
-  },
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: "#f2f2f2",
+    color: '#fff',
+    fontWeight: 'bold',
   },
   listContainer: {
-    paddingBottom: 200,
-    shadowColor: "black",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 1,
+    flexGrow: 1,
+    paddingBottom: 150,
+    backgroundColor: '#f2f2f2',
   },
   checkoutButton: {
-    backgroundColor: "#5cb85c",
+    backgroundColor: '#5cb85c',
     padding: 15,
     borderRadius: 5,
-    alignItems: "center",
+    alignItems: 'center',
     marginBottom: 20,
     marginHorizontal: 5,
     marginTop: 20,
-    shadowColor: "black",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 2,
   },
   checkoutButtonText: {
-    color: "#fff",
+    color: '#fff',
     fontSize: 18,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   buttonRow: {
-    flexDirection: "row",
-    marginBottom: 180,
+    flexDirection: 'row',
+    marginBottom: 150,
   },
   forwardButton: {
-    backgroundColor: "orange",
+    backgroundColor: 'orange',
     paddingVertical: 15,
     paddingHorizontal: 30,
     borderRadius: 10,
     width: 200,
-    shadowColor: "black",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 2,
   },
   forwardButtonText: {
-    color: "#fff",
+    color: '#fff',
     fontSize: 20,
-    fontWeight: "bold",
-    textAlign: "center",
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
   emptyCart: {
-    textAlign: "center",
+    textAlign: 'center',
     marginTop: 20,
     fontSize: 16,
-    color: "#555",
+    color: '#555',
   },
   lottieButton: {
-    position: "absolute",
-    top: 40,
-    left: 0,
+    position: 'absolute',
+    bottom: -10,     // More centered vertically
+    right: 1000,      // Positioned from right
     width: 300,
     height: 300,
-    shadowColor: "black",
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.3,
-    shadowRadius: 2,
+    zIndex: 9999,    // Extremely high z-index to ensure it's on top
+    elevation: 10,   // For Android
   },
   lottie: {
-    width: "100%",
-    height: "100%",
+    width: '100%',
+    height: '100%',
   },
 });
 

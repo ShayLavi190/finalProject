@@ -18,6 +18,7 @@ const SetUp = ({ navigation, handleGlobalClick }) => {
   const { user, updateUser } = useUser();
   const [name, setName] = useState("");
   const [id, setId] = useState("");
+  const [idr, setIdr] = useState("");
   const [phone, setPhone] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
   const [explanation, setExplanation] = useState("");
@@ -27,6 +28,7 @@ const SetUp = ({ navigation, handleGlobalClick }) => {
 
   useEffect(() => {
     setName(user.name);
+    setIdr(user.idr);
     setId(user.id);
     setPhone(user.phone);
   }, [user]);
@@ -34,7 +36,8 @@ const SetUp = ({ navigation, handleGlobalClick }) => {
   const handleIconPress = (field) => {
     const fieldExplanations = {
       name: "אנא הזן את שמך המלא כפי שמופיע בתעודת זהות. זהו שדה חובה",
-      id: "אנא הזן את מספר תעודת הזהות שלך (9 ספרות). זהו שדה חובה",
+      idr: "אנא הזן את מספר תעודת הזהות שלך (9 ספרות). זהו שדה חובה",
+      id: "אנא הזן את מספר זיהוי משתתף. זהו שדה חובה",
       phone: "אנא הזן את מספר הטלפון שלך (10 ספרות). זהו שדה חובה",
     };
     setExplanation(fieldExplanations[field]);
@@ -45,30 +48,44 @@ const SetUp = ({ navigation, handleGlobalClick }) => {
 
   const validateInputs = () => {
     const errors = [];
-    if (!name.trim()) errors.push("שם מלא נדרש.");
-    if (!id.trim() || id.length !== 9)
+    
+    if (!id) errors.push("מספר זיהוי משתתף נדרש.");
+    if (!name) errors.push("שם מלא נדרש.");
+    
+    // Check if idr exists before checking its length
+    if (!idr) {
+      errors.push("תעודת זהות נדרשת.");
+    } else if (idr.length !== 9) {
       errors.push("תעודת זהות חייבת להיות 9 ספרות.");
-    if (!phone.trim() || phone.length !== 10)
+    }
+    
+    // Check if phone exists before checking its length
+    if (!phone) {
+      errors.push("מספר טלפון נדרש.");
+    } else if (phone.length !== 10) {
       errors.push("מספר טלפון חייב להיות באורך 10 ספרות.");
+    }
+    
     if (errors.length > 0) {
-      errors.forEach((error, index) => {
-        setTimeout(() => {
-          Toast.show({
-            type: "error",
-            text1: "שגיאה",
-            text2: error,
-            visibilityTime: 4000,
-            position: "top",
-            textStyle: { fontSize: 18, textAlign: "right" }, 
-            style: { width: "90%", backgroundColor: "#ff4d4d", borderRadius: 10, alignSelf: "flex-end" },
-          });
-        }, index * 800); 
+      // Hide any currently showing Toast
+      Toast.hide();
+      
+      // Show a single toast with all errors
+      Toast.show({
+        type: "error",
+        text1: "שגיאה בטופס",
+        text2: errors.join(" | "),
+        visibilityTime: 4000,
+        position: "top",
+        textStyle: { fontSize: 18, textAlign: "right" },
+        style: { width: "90%", backgroundColor: "#ff4d4d", borderRadius: 10, alignSelf: "flex-end" },
       });
+      
       return false;
     }
+    
     return true;
   };
-
   const handleMoveForward = () => {
     if (!validateInputs()) return;
     animatableRef.current.animate("fadeOutLeft", 500).then(() => {
@@ -76,6 +93,7 @@ const SetUp = ({ navigation, handleGlobalClick }) => {
         ...user,
         name: name,
         phone: phone,
+        idr: idr,
         id: id,
       });
       navigation.navigate("SetUp2");
@@ -109,7 +127,27 @@ const SetUp = ({ navigation, handleGlobalClick }) => {
             האישיים. כלל המידע נשמר בצורה מאובטחת ואינו משותף עם שום גורם חיצוני
             ללא ביצוע שירות ייעודי.
           </Text>
-
+          {/* ID Input */}
+          <View style={styles.inputContainer}>
+            <TouchableOpacity onPress={() => handleIconPress("id")}>
+              <Animatable.View
+                animation={iconAnimation}
+                style={styles.iconContainer}
+              >
+                <Entypo name="light-bulb" size={40} color="yellow" />
+              </Animatable.View>
+            </TouchableOpacity>
+            <TextInput
+              style={styles.input}
+              placeholder=" מספר זיהוי משתתף"
+              value={id}
+              onChangeText={(text) => {
+                /^\d*$/.test(text) && setId(text);
+              }}
+              onPress={() => handleGlobalClick()}
+              keyboardType="numeric"
+            />
+          </View>
           {/* Name Input */}
           <View style={styles.inputContainer}>
             <TouchableOpacity onPress={() => handleIconPress("name")}>
@@ -133,7 +171,7 @@ const SetUp = ({ navigation, handleGlobalClick }) => {
 
           {/* ID Input */}
           <View style={styles.inputContainer}>
-            <TouchableOpacity onPress={() => handleIconPress("id")}>
+            <TouchableOpacity onPress={() => handleIconPress("idr")}>
               <Animatable.View
                 animation={iconAnimation}
                 style={styles.iconContainer}
@@ -144,9 +182,9 @@ const SetUp = ({ navigation, handleGlobalClick }) => {
             <TextInput
               style={styles.input}
               placeholder="תעודת זהות"
-              value={id}
+              value={idr}
               onChangeText={(text) => {
-                /^\d*$/.test(text) && setId(text);
+                /^\d*$/.test(text) && setIdr(text);
               }}
               onPress={() => handleGlobalClick()}
               keyboardType="numeric"
