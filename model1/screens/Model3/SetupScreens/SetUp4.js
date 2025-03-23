@@ -192,6 +192,7 @@ const SetUp43 = ({ navigation, handleGlobalClick }) => {
                 setValue={setSelectedhealthFund}
                 setItems={setItems}
                 placeholder="בחר קופת חולים..."
+                textStyle={{ textAlign: "center" }}
                 style={styles.dropdown}
                 dropDownContainerStyle={styles.dropdownContainer}
                 zIndex={9999}
@@ -334,6 +335,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 15,
+    zIndex: 1,
   },
   input: {
     flex: 1,

@@ -371,7 +371,7 @@ const SetUp23 = ({ navigation, handleGlobalClick }) => {
                 style={styles.input}
                 placeholder={
                   field === 'street' ? 'רחוב' :
-                  field === 'number' ? 'מספר רחוב ודירה אם יש' :
+                  field === 'number' ? 'מספר בית ודירה אם יש' :
                   field === 'city' ? 'עיר' :
                   'מדינה'
                 }

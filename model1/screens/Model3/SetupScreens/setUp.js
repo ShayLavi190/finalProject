@@ -463,17 +463,6 @@ const Setup3 = ({ navigation, handleGlobalClick }) => {
           >
             <Text style={styles.buttonText}>המשך</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.button, { backgroundColor: "red" }]}
-            onPress={() => {
-              if (audioState.isPlaying) {
-                stopAudio();
-              }
-              navigation.navigate("Premissions13");
-            }}
-          >
-            <Text style={styles.buttonText}>מעבר</Text>
-          </TouchableOpacity>
         </View>
 
         {/* Explanation Modal */}
