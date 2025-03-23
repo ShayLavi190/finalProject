@@ -220,14 +220,6 @@ const SetUp = ({ navigation, handleGlobalClick }) => {
           >
             <Text style={styles.buttonText}>המשך</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.button, { backgroundColor: "red" }]}
-            onPress={() => {
-              navigation.navigate("Premissions3");
-            }}
-          >
-            <Text style={styles.buttonText}>מעבר</Text>
-          </TouchableOpacity>
         </View>
         <Modal visible={modalVisible} transparent animationType="none">
           <View style={styles.modalContainer}>

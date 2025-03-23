@@ -155,7 +155,11 @@ const SetUp33 = ({ navigation, handleGlobalClick }) => {
       >
         <View style={styles.card}>
           <Text style={styles.title}>הגדרת פרטי חשבון בנק</Text>
-  
+          <Text style={styles.subtitle}>
+            .כדי שהרובוט המטפל יוכל להפעיל את שירותיו לטובך, נצטרך את פרטי הבנק
+            שלך. קיימת אפשרות לא להזין את פרטי חשבונך אך לא תוכל להשתמש בשירותי
+            הבנק. המידע נשמר בצורה מאובטחת.
+          </Text>          
           {/* Bank Picker with Bulb Icon */}
           <View style={[styles.inputContainer, { zIndex: 9999 }]}>
             <TouchableOpacity onPress={() => handleExplanationModal("bank")}>
@@ -175,6 +179,7 @@ const SetUp33 = ({ navigation, handleGlobalClick }) => {
                 setValue={setSelectedBank}
                 onPress={()=>handleGlobalClick()}
                 placeholder="בחר בנק..."
+                textStyle={{ textAlign: "center" }}
                 style={styles.dropdown}
                 dropDownContainerStyle={styles.dropdownContainer}
                 zIndex={9999}
