@@ -11,7 +11,7 @@ import {
   Alert,
   LogBox
 } from "react-native";
-import Entypo from "react-native-vector-icons/Entypo";
+import { Entypo } from '@expo/vector-icons';
 import * as Animatable from "react-native-animatable";
 import DropDownPicker from "react-native-dropdown-picker";
 import { useUser } from "../../Model2/userContext";
@@ -80,7 +80,7 @@ const SetUp43 = ({ navigation, handleGlobalClick }) => {
 
     if (!animatableRef.current) {
       // Fallback if the animation reference is not set
-      navigation.navigate("Premission13");
+      navigation.navigate("HomeSetUp");
       return;
     }
     animatableRef.current
@@ -92,11 +92,11 @@ const SetUp43 = ({ navigation, handleGlobalClick }) => {
           healthFundAccountNumber: healthFundAccountNumber,
           emergencyNumber: emergencyPhone,
         });
-        navigation.navigate("Premissions13");
+        navigation.navigate("HomeSetUp");
       })
       .catch((error) => {
         console.error("Animation failed", error);
-        navigation.navigate("Premissions13");
+        navigation.navigate("HomeSetUp");
       });
   };
 
@@ -247,22 +247,14 @@ const SetUp43 = ({ navigation, handleGlobalClick }) => {
               keyboardType="numeric"
             />
           </View>
-
-          {/* Buttons */}
-          <View style={styles.buttonRow}>
-            <TouchableOpacity
-              style={[styles.button, styles.forwardBtn]}
-              onPress={handleMoveForward}
-            >
-              <Text style={styles.buttonText}>המשך</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.button, styles.backBtn]}
-              onPress={handleGoBack}
-            >
-              <Text style={styles.buttonText}>חזור</Text>
-            </TouchableOpacity>
-          </View>
+              <View style={{ alignItems: 'center' }}>
+              <TouchableOpacity
+                style={[{ backgroundColor: "green" }, styles.button]}
+                onPress={handleMoveForward}
+              >
+                <Text style={styles.buttonText}>שמור</Text>
+              </TouchableOpacity>
+            </View>
         </View>
 
         {/* Modal */}

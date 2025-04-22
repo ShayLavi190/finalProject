@@ -14,7 +14,7 @@ import {
 
 // Ignore specific warnings related to DropDownPicker
 LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
-import Entypo from "react-native-vector-icons/Entypo";
+import { Entypo } from '@expo/vector-icons';
 import * as Animatable from "react-native-animatable";
 import DropDownPicker from "react-native-dropdown-picker";
 import { useUser } from "../../Model2/userContext";
@@ -121,7 +121,7 @@ const SetUp33 = ({ navigation, handleGlobalClick }) => {
         bankAccountNumber,
         bankBranchNumber,
       });
-      navigation.navigate("SetUp43");
+      navigation.navigate("HomeSetUp");
     });
   };
 
@@ -226,16 +226,14 @@ const SetUp33 = ({ navigation, handleGlobalClick }) => {
               onChangeText={(t) => setBankBranchNumber(t.replace(/[^0-9]/g, ""))}
             />
           </View>
-  
-          {/* Buttons */}
-          <View style={styles.buttonRow}>
-            <TouchableOpacity style={[styles.button, styles.forwardBtn]} onPress={handleMoveForward}>
-              <Text style={styles.buttonText}>המשך</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.button, styles.backBtn]} onPress={handleGoBack}>
-              <Text style={styles.buttonText}>חזור</Text>
-            </TouchableOpacity>
-          </View>
+              <View style={{ alignItems: 'center' }}>
+              <TouchableOpacity
+                style={[{ backgroundColor: "green" }, styles.button]}
+                onPress={handleMoveForward}
+              >
+                <Text style={styles.buttonText}>שמור</Text>
+              </TouchableOpacity>
+            </View>
         </View>
         {/* Modal for Explanations */}
         <Modal visible={modalVisible} transparent animationType="none">

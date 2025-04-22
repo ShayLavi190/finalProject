@@ -83,7 +83,7 @@ const Premissions13 = ({ navigation, handleGlobalClick }) => {
           healthMonitoring: healthMonitoring,
         },
       });
-      navigation.navigate("Premissions23");
+      navigation.navigate("HomePermissions");
     });
   };
 
@@ -248,7 +248,7 @@ const Premissions13 = ({ navigation, handleGlobalClick }) => {
             style={[{ backgroundColor: "green" }, styles.button]}
             onPress={handleMoveForward}
           >
-            <Text style={styles.buttonText}>המשך</Text>
+            <Text style={styles.buttonText}>שמור</Text>
           </TouchableOpacity>
         </View>
         <Modal visible={modalVisible} transparent animationType="none">

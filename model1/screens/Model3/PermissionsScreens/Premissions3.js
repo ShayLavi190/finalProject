@@ -85,7 +85,7 @@ const Premissions33 = ({ navigation, handleGlobalClick }) => {
           familyUpdates: familyUpdates,
         },
       });
-      navigation.navigate("Home13");
+      navigation.navigate("HomePermissions");
     });
   };
 
@@ -285,20 +285,14 @@ const Premissions33 = ({ navigation, handleGlobalClick }) => {
             </Text>
           </View>
 
-          <View style={styles.buttonRow}>
-            <TouchableOpacity
-              style={[styles.button, styles.forwardBtn]}
-              onPress={handleMoveForward}
-            >
-              <Text style={styles.buttonText}>המשך</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.button, styles.backBtn]}
-              onPress={handleGoBack}
-            >
-              <Text style={styles.buttonText}>חזור</Text>
-            </TouchableOpacity>
-          </View>
+            <View style={{ alignItems: 'center' }}>
+              <TouchableOpacity
+                style={[{ backgroundColor: "green" }, styles.button]}
+                onPress={handleMoveForward}
+              >
+                <Text style={styles.buttonText}>שמור</Text>
+              </TouchableOpacity>
+            </View>
         </View>
         <Modal visible={modalVisible} transparent animationType="none">
           <View style={styles.modalContainer}>
