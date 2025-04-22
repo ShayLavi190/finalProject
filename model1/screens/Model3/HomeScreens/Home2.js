@@ -23,12 +23,12 @@ const Home23 = ({ navigation,handleGlobalClick }) => {
     { label: "בידור", route: "Entertainment3", backgroundColor: "#a39193" },
     {
       label: "עידכון פרטים אישיים",
-      route: "Setup3",
+      route: "HomeSetUp",
       backgroundColor: "#8db1fa",
     },
     {
       label: "הרשאות פרטיות",
-      route: "Premissions13",
+      route: "HomePermissions",
       backgroundColor: "#35223c",
     },
     { label: "ביצועים", route: "Performance3", backgroundColor: "#9dbda4" },

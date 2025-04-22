@@ -11,7 +11,7 @@ const Intro = ({ navigation, handleGlobalClick }) => {
   const models = [
     { label: 'מודל 1', route: 'Setup' },
     { label: 'מודל 2', route: 'SetUp' },
-    { label: 'מודל 3', route: 'Setup3' },
+    { label: 'מודל 3', route: 'HomeSetUp' ,params: { fromIntro: true } },
   ];
 
   return (
@@ -26,7 +26,7 @@ const Intro = ({ navigation, handleGlobalClick }) => {
             <TouchableOpacity
               style={styles.button}
               onPress={() => {
-                navigation.navigate(model.route); 
+                navigation.navigate(model.route, model.params || {});
               }}
             >
               <Text style={styles.buttonText}>{model.label}</Text>

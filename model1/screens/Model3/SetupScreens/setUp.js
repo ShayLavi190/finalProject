@@ -24,7 +24,7 @@ const MAX_NAME_LENGTH = 50;
 const MAX_PHONE_LENGTH = 10;
 const MAX_ID_LENGTH = 9;
 
-const Setup3 = ({ navigation, handleGlobalClick }) => {
+const Setup31 = ({ navigation, handleGlobalClick }) => {
   // State management
   const { user, updateUser } = useUser();
   const [formData, setFormData] = useState({
@@ -167,7 +167,7 @@ const Setup3 = ({ navigation, handleGlobalClick }) => {
         id: formData.id,
         idr: formData.idr
       });
-      navigation.navigate("SetUp23");
+      navigation.navigate("HomeSetUp");
     });
   }, [
     audioState.isPlaying, 
@@ -461,7 +461,7 @@ const Setup3 = ({ navigation, handleGlobalClick }) => {
             style={[{ backgroundColor: "green" }, styles.button]}
             onPress={handleMoveForward}
           >
-            <Text style={styles.buttonText}>המשך</Text>
+            <Text style={styles.buttonText}>שמור</Text>
           </TouchableOpacity>
         </View>
 
@@ -621,4 +621,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Setup3;
+export default Setup31;

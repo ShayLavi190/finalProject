@@ -84,7 +84,7 @@ const Premissions23 = ({ navigation, handleGlobalClick }) => {
           maintenance: maintenance,
         },
       });
-      navigation.navigate("Premissions33");
+      navigation.navigate("HomePermissions");
     });
   };
 
@@ -280,20 +280,14 @@ const Premissions23 = ({ navigation, handleGlobalClick }) => {
             <Text style={styles.input}>הרשאה לעידכוני מערכת אוטומטיים</Text>
           </View>
 
-          <View style={styles.buttonRow}>
-            <TouchableOpacity
-              style={[styles.button, styles.forwardBtn]}
-              onPress={handleMoveForward}
-            >
-              <Text style={styles.buttonText}>המשך</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.button, styles.backBtn]}
-              onPress={handleGoBack}
-            >
-              <Text style={styles.buttonText}>חזור</Text>
-            </TouchableOpacity>
-          </View>
+            <View style={{ alignItems: 'center' }}>
+              <TouchableOpacity
+                style={[{ backgroundColor: "green" }, styles.button]}
+                onPress={handleMoveForward}
+              >
+                <Text style={styles.buttonText}>שמור</Text>
+              </TouchableOpacity>
+            </View>
         </View>
         <Modal visible={modalVisible} transparent animationType="none">
           <View style={styles.modalContainer}>
