@@ -11,6 +11,9 @@ import { Audio } from "expo-av"; // Import Audio from expo
 import { useUser } from "../../Model2/userContext";
 import * as Animatable from "react-native-animatable";
 import LottieView from "lottie-react-native";
+import robotAnimation from "../SetupScreens/robot.json";
+const AUDIO_URL = "https://raw.githubusercontent.com/ShayLavi190/finalProject/main/model1/assets/Recordings/health.mp3";
+import Toast from "react-native-toast-message";
 
 const Health3 = ({ navigation, handleGlobalClick }) => {
   const { user } = useUser();
@@ -33,12 +36,21 @@ const Health3 = ({ navigation, handleGlobalClick }) => {
   };
 
   const handelBuy = () => {
-    stopAudio(); // Add this line to stop audio when buying medications
-    Alert.alert("התרופות הוזמנו");
+    stopAudio(); // Add this line to stop audio when starting conversation
+        Toast.show({
+          type: "info",
+          text1: "הזמנת תרופות",
+          text2: "התרופות הוזמנו",
+          visibilityTime: 4000,
+          position: "bottom",
+          textStyle: { fontSize: 18 },
+        });    
+        handleGlobalClick();    Alert.alert("התרופות הוזמנו");
     handleGlobalClick();
   };
 
   const handleLottiePress = async () => {
+    handleGlobalClick();
     if (sound && isPlaying) {
       await sound.pauseAsync();
       setIsPlaying(false);
@@ -47,7 +59,7 @@ const Health3 = ({ navigation, handleGlobalClick }) => {
       setIsPlaying(true);
     } else {
       const { sound: newSound } = await Audio.Sound.createAsync(
-        require("../../../assets/Recordings/health.mp3"), // Make sure this file exists
+        { uri: AUDIO_URL },
         { shouldPlay: true }
       );
       setSound(newSound);
@@ -79,6 +91,7 @@ const Health3 = ({ navigation, handleGlobalClick }) => {
       duration={2000}
     >
       <ScrollView contentContainerStyle={styles.container}>
+        <Toast />
         <View style={styles.titleContainer}>
           <Text style={styles.title}>ברוך הבא לשירותי קופת חולים</Text>
         </View>
@@ -138,7 +151,7 @@ const Health3 = ({ navigation, handleGlobalClick }) => {
             onPress={handleLottiePress} // Plays the audio when pressed
           >
             <LottieView
-              source={require("../SetupScreens/robot.json")}
+              source={robotAnimation}
               autoPlay
               loop
               style={styles.lottie}
@@ -212,6 +225,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 20,
     fontWeight: "bold",
+    marginBottom: 100,
   },
   lottieButton: {
     position: "absolute",
@@ -219,10 +233,6 @@ const styles = StyleSheet.create({
     right: 110,
     width: 300,
     height: 300,
-    shadowColor: "black",
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.3,
-    shadowRadius: 2,
   },
   lottie: {
     width: "100%",

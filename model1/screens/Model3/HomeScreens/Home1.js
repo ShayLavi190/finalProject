@@ -10,6 +10,9 @@ import { useUser } from "../../Model2/userContext";
 import * as Animatable from "react-native-animatable";
 import LottieView from "lottie-react-native";
 import { Audio } from "expo-av";
+import robotAnimation from "../SetupScreens/robot.json";
+const AUDIO_URL = "https://raw.githubusercontent.com/ShayLavi190/finalProject/main/model1/assets/Recordings/homeScreen1.mp3";
+
 
 const Home13 = ({ navigation, handleGlobalClick }) => {
   const { user } = useUser();
@@ -32,6 +35,7 @@ const Home13 = ({ navigation, handleGlobalClick }) => {
   };
 
   const handleLottiePress = async () => {
+    handleGlobalClick();
     if (sound && isPlaying) {
       // If playing, pause the audio
       await sound.pauseAsync();
@@ -43,7 +47,7 @@ const Home13 = ({ navigation, handleGlobalClick }) => {
     } else {
       // Load and play new sound
       const { sound: newSound } = await Audio.Sound.createAsync(
-        require("../../../assets/Recordings/homeScreen1.mp3"), // Ensure file exists
+        { uri: AUDIO_URL },
         { shouldPlay: true }
       );
       setSound(newSound);
@@ -107,7 +111,7 @@ const Home13 = ({ navigation, handleGlobalClick }) => {
             onPress={handleLottiePress}
           >
             <LottieView
-              source={require("../SetupScreens/robot.json")}
+              source={robotAnimation}
               autoPlay
               loop
               style={styles.lottie}
@@ -121,7 +125,6 @@ const Home13 = ({ navigation, handleGlobalClick }) => {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 50,
     flexGrow: 1,
     alignItems: "center",
     padding: 20,
@@ -133,10 +136,6 @@ const styles = StyleSheet.create({
     right: 110,
     width: 300,
     height: 300,
-    shadowColor: "black",
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.3,
-    shadowRadius: 2,
   },
   lottie: {
     width: "100%",
@@ -146,7 +145,6 @@ const styles = StyleSheet.create({
     width: "100%",
     alignItems: "center",
     marginBottom: 50,
-    marginTop: 50,
   },
   title: {
     fontSize: 32,

@@ -15,7 +15,9 @@ import * as Animatable from "react-native-animatable";
 import { useUser } from "../../Model2/userContext";
 import LottieView from "lottie-react-native";
 import { Audio } from "expo-av"; // Added Audio import
+import robotAnimation from "../SetupScreens/robot.json";
 
+const AUDIO_URL = "https://raw.githubusercontent.com/ShayLavi190/finalProject/main/model1/assets/Recordings/permissions2.mp3";
 const Premissions23 = ({ navigation, handleGlobalClick }) => {
   const { user, updateUser } = useUser();
   const [maintenance, setMaintenance] = useState(false);
@@ -82,7 +84,7 @@ const Premissions23 = ({ navigation, handleGlobalClick }) => {
           maintenance: maintenance,
         },
       });
-      navigation.navigate("Premissions33");
+      navigation.navigate("HomePermissions");
     });
   };
 
@@ -107,6 +109,7 @@ const Premissions23 = ({ navigation, handleGlobalClick }) => {
 
   // Updated to handle audio playback
   const handleLottiePress = async () => {
+    handleGlobalClick();
     if (sound && isPlaying) {
       // If playing, pause the audio
       await sound.pauseAsync();
@@ -119,7 +122,7 @@ const Premissions23 = ({ navigation, handleGlobalClick }) => {
       // Load and play new sound
       try {
         const { sound: newSound } = await Audio.Sound.createAsync(
-          require("../../../assets/Recordings/permissions2.mp3"), // Make sure this file exists
+          { uri: AUDIO_URL },
           { shouldPlay: true }
         );
         setSound(newSound);
@@ -182,7 +185,6 @@ const Premissions23 = ({ navigation, handleGlobalClick }) => {
               width="200"
               ios_backgroundColor="#3e3e3e"
               onValueChange={() => {
-                handleGlobalClick();
                 setCameraAccess((prevState) => !prevState);
               }}
               value={cameraAccess}
@@ -204,7 +206,6 @@ const Premissions23 = ({ navigation, handleGlobalClick }) => {
               width="200"
               ios_backgroundColor="#3e3e3e"
               onValueChange={() => {
-                handleGlobalClick();
                 setRobotTracking((prevState) => !prevState);
               }}
               value={robotTracking}
@@ -228,7 +229,6 @@ const Premissions23 = ({ navigation, handleGlobalClick }) => {
               width="200"
               ios_backgroundColor="#3e3e3e"
               onValueChange={() => {
-                handleGlobalClick();
                 setVoiceRecognition((prevState) => !prevState);
               }}
               value={voiceRecognition}
@@ -250,7 +250,6 @@ const Premissions23 = ({ navigation, handleGlobalClick }) => {
               width="200"
               ios_backgroundColor="#3e3e3e"
               onValueChange={() => {
-                handleGlobalClick();
                 setCustomization((prevState) => !prevState);
               }}
               value={customization}
@@ -274,7 +273,6 @@ const Premissions23 = ({ navigation, handleGlobalClick }) => {
               width="200"
               ios_backgroundColor="#3e3e3e"
               onValueChange={() => {
-                handleGlobalClick();
                 setMaintenance((prevState) => !prevState);
               }}
               value={maintenance}
@@ -282,20 +280,14 @@ const Premissions23 = ({ navigation, handleGlobalClick }) => {
             <Text style={styles.input}>הרשאה לעידכוני מערכת אוטומטיים</Text>
           </View>
 
-          <View style={styles.buttonRow}>
-            <TouchableOpacity
-              style={[styles.button, styles.forwardBtn]}
-              onPress={handleMoveForward}
-            >
-              <Text style={styles.buttonText}>המשך</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.button, styles.backBtn]}
-              onPress={handleGoBack}
-            >
-              <Text style={styles.buttonText}>חזור</Text>
-            </TouchableOpacity>
-          </View>
+            <View style={{ alignItems: 'center' }}>
+              <TouchableOpacity
+                style={[{ backgroundColor: "green" }, styles.button]}
+                onPress={handleMoveForward}
+              >
+                <Text style={styles.buttonText}>שמור</Text>
+              </TouchableOpacity>
+            </View>
         </View>
         <Modal visible={modalVisible} transparent animationType="none">
           <View style={styles.modalContainer}>
@@ -321,7 +313,7 @@ const Premissions23 = ({ navigation, handleGlobalClick }) => {
             onPress={handleLottiePress}
           >
             <LottieView
-              source={require("../SetupScreens/robot.json")}
+              source={robotAnimation}
               autoPlay
               loop
               style={styles.lottie}
@@ -340,7 +332,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 20,
-    marginBottom: 90,
+    marginBottom: 200,
   },
   card: {
     width: "90%",
@@ -449,10 +441,6 @@ const styles = StyleSheet.create({
     right: 110,
     width: 300,
     height: 300,
-    shadowColor: "black",
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.3,
-    shadowRadius: 2,
   },
   lottie: {
     width: "100%",

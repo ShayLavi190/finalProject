@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -7,39 +7,57 @@ import {
   Modal,
   Image,
   ScrollView,
-} from 'react-native';
+  Dimensions,
+  Platform,
+} from "react-native";
+import Toast from "react-native-toast-message";
+import image1 from "./assets/image1.jpg";
+import image2 from "./assets/image2.jpg";
+import image3 from "./assets/image3.jpg";
+import image4 from "./assets/image4.jpg";
+const testResults = [
+  {
+    title: "בדיקה כללית",
+    images: Platform.OS === "web" 
+      ? [image2, image3, image4] 
+      : [require(image2), require(image3), require(image4)], 
+  },
+  {
+    title: "בדיקת דם",
+    images: Platform.OS === "web" 
+      ? [image1] 
+      : [require(image1)],
+  },
+];
 
 const TestResultsScreen = ({ handleGlobalClick }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedImages, setSelectedImages] = useState([]);
-
-  const testResults = [
-    {
-      title: 'בדיקה כללית',
-      images: [
-        require('./assets/image2.jpg'),
-        require('./assets/image3.jpg'),
-        require('./assets/image4.jpg'),
-      ],
-    },
-    {
-      title: 'בדיקת דם',
-      images: [
-        require('./assets/image1.jpg'),
-      ],
-    },
-  ];
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   const openModal = (images, title) => {
     setSelectedImages(images);
     setModalVisible(true);
+    setCurrentIndex(0);
     handleGlobalClick(`פתיחת מודאל עבור: ${title}`);
   };
 
   const closeModal = () => {
     setModalVisible(false);
     setSelectedImages([]);
-    handleGlobalClick('סגירת מודאל');
+    handleGlobalClick("סגירת מודאל");
+  };
+
+  const nextImage = () => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex < selectedImages.length - 1 ? prevIndex + 1 : prevIndex
+    );
+  };
+
+  const prevImage = () => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex > 0 ? prevIndex - 1 : prevIndex
+    );
   };
 
   return (
@@ -56,56 +74,57 @@ const TestResultsScreen = ({ handleGlobalClick }) => {
         </TouchableOpacity>
       ))}
 
-      <Modal visible={modalVisible} transparent={true} animationType="slide">
+      <Modal visible={modalVisible} transparent={true} animationType="fade">
         <View style={styles.modalContainer}>
-          <TouchableOpacity
-            style={styles.closeButton}
-            onPress={closeModal}
-            activeOpacity={0.7}
-          >
+          <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
             <Text style={styles.closeButtonText}>סגור</Text>
           </TouchableOpacity>
-          <ScrollView
-            horizontal
-            pagingEnabled
-            showsHorizontalScrollIndicator={false}
-          >
-            {selectedImages.map((image, index) => (
-              <View key={index} style={styles.imageWrapper}>
-                <Image
-                  source={image}
-                  style={styles.image}
-                  resizeMode="contain"
-                />
-              </View>
-            ))}
-          </ScrollView>
+
+          <View style={styles.imageNavigation}>
+            <TouchableOpacity onPress={prevImage} style={styles.navButton} disabled={currentIndex === 0}>
+              <Text style={styles.navButtonText}>⬅️</Text>
+            </TouchableOpacity>
+
+            <Image
+              source={Platform.OS === "web" ? { uri: selectedImages[currentIndex] } : selectedImages[currentIndex]}
+              style={styles.image}
+              resizeMode="contain"
+            />
+
+            <TouchableOpacity onPress={nextImage} style={styles.navButton} disabled={currentIndex === selectedImages.length - 1}>
+              <Text style={styles.navButtonText}>➡️</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </Modal>
+
+      <Toast />
     </View>
   );
 };
 
+const { width } = Dimensions.get("window");
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 20,
-    backgroundColor: '#f2f2f2',
+    backgroundColor: "#f2f2f2",
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 20,
   },
   card: {
-    width: '90%',
-    backgroundColor: '#fff',
+    width: "90%",
+    backgroundColor: "#fff",
     borderRadius: 10,
     padding: 20,
     marginBottom: 20,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOpacity: 0.1,
     shadowRadius: 5,
     shadowOffset: { width: 0, height: 2 },
@@ -113,38 +132,44 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
   },
   modalContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.8)",
   },
   closeButton: {
-    position: 'absolute',
+    position: "absolute",
     top: 50,
     right: 20,
     padding: 10,
-    backgroundColor: '#fff',
+    backgroundColor: "red",
     borderRadius: 5,
-    zIndex: 10,
   },
   closeButtonText: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
+    color: "white",
   },
-  imageWrapper: {
-    width: 800,
-    height: 1000,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginHorizontal: 10,
+  imageNavigation: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  navButton: {
+    padding: 10,
+  },
+  navButtonText: {
+    fontSize: 30,
+    color: "white",
   },
   image: {
-    width: 800,
-    height: 900,
+    width: width * 0.9,
+    height: 800,
+    marginHorizontal: 10,
   },
 });
 

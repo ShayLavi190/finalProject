@@ -110,33 +110,34 @@ const SetUp4 = ({ navigation, handleGlobalClick }) => {
             קשר במקרה חירום. המידע נשמר בצורה מאובטחת.
           </Text>
           {/* Bank Picker */}
-          <View style={styles.inputContainer}>
-            {/* Icon and Label */}
-            <TouchableOpacity onPress={() => handleIconPress("healthFund")}>
-              <Animatable.View
-                animation={iconAnimation}
-                style={styles.iconContainer}
-              >
-                <Entypo name="light-bulb" size={40} color="yellow" />
-              </Animatable.View>
-            </TouchableOpacity>
-            <DropDownPicker
-              open={open}
-              value={selectedhealthFund}
-              items={items}
-              setOpen={(val) => {
-                setOpen(val);
-                handleGlobalClick();
-              }}
-              setValue={setSelectedhealthFund}
-              setItems={setItems}
-              textStyle={styles.input}
-              placeholder="בחר קופת חולים..."
-              style={styles.dropdown}
-              dropDownContainerStyle={styles.dropdownContainer}
-            />
+          <View style={[styles.dropdownSection, { zIndex: open ? 5000 : 1 }]}>
+            <View style={styles.inputContainer}>
+              <TouchableOpacity onPress={() => handleIconPress("healthFund")}>
+                <Animatable.View animation={iconAnimation} style={styles.iconContainer}>
+                  <Entypo name="light-bulb" size={40} color="yellow" />
+                </Animatable.View>
+              </TouchableOpacity>
+              <View style={styles.dropdownWrapper}>
+                <DropDownPicker
+                  open={open}
+                  value={selectedhealthFund}
+                  items={items}
+                  setOpen={(val) => {
+                    setOpen(val);
+                    handleGlobalClick();
+                  }}
+                  setValue={setSelectedhealthFund}
+                  setItems={setItems}
+                  textStyle={styles.dropdownText}
+                  placeholder="בחר קופת חולים..."
+                  style={styles.dropdown}
+                  dropDownContainerStyle={styles.dropdownContainer}
+                  zIndex={5000}
+                  zIndexInverse={1000}
+                />
+              </View>
+            </View>
           </View>
-
           {/* Account Number Input */}
           <View style={styles.inputContainer}>
             <TouchableOpacity onPress={() => handleIconPress("account")}>
@@ -331,16 +332,27 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginTop: 20,
   },
+  dropdownSection: {
+    zIndex: 5000, 
+    marginBottom: 15,
+  },
+  dropdownWrapper: {
+    flex: 1,
+  },
   dropdown: {
-    width: 595,
-    borderColor: "gray",
+    borderColor: "#ccc",
     borderRadius: 5,
   },
-
   dropdownContainer: {
-    width: 595,
-    borderColor: "gray",
+    borderColor: "#ccc",
+    position: "absolute",
+    width: "100%",
   },
+  dropdownText: {
+    fontSize: 16,
+    textAlign: "center",
+  },
+  
 });
 
 const pickerSelectStyles = {

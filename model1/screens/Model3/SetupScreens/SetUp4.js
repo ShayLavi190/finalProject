@@ -9,13 +9,18 @@ import {
   KeyboardAvoidingView,
   Platform,
   Alert,
+  LogBox
 } from "react-native";
-import Entypo from "react-native-vector-icons/Entypo";
+import { Entypo } from '@expo/vector-icons';
 import * as Animatable from "react-native-animatable";
 import DropDownPicker from "react-native-dropdown-picker";
 import { useUser } from "../../Model2/userContext";
 import LottieView from "lottie-react-native";
-import { Audio } from "expo-av"; // Added Audio import
+import { Audio } from "expo-av";
+import robotAnimation from "./robot.json";
+
+// Ignore specific warnings related to DropDownPicker
+LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
 
 const SetUp43 = ({ navigation, handleGlobalClick }) => {
   const { user, updateUser } = useUser();
@@ -75,7 +80,7 @@ const SetUp43 = ({ navigation, handleGlobalClick }) => {
 
     if (!animatableRef.current) {
       // Fallback if the animation reference is not set
-      navigation.navigate("Premission13");
+      navigation.navigate("HomeSetUp");
       return;
     }
     animatableRef.current
@@ -87,11 +92,11 @@ const SetUp43 = ({ navigation, handleGlobalClick }) => {
           healthFundAccountNumber: healthFundAccountNumber,
           emergencyNumber: emergencyPhone,
         });
-        navigation.navigate("Premissions13");
+        navigation.navigate("HomeSetUp");
       })
       .catch((error) => {
         console.error("Animation failed", error);
-        navigation.navigate("Premissions13");
+        navigation.navigate("HomeSetUp");
       });
   };
 
@@ -118,7 +123,7 @@ const SetUp43 = ({ navigation, handleGlobalClick }) => {
       // Load and play new sound
       try {
         const { sound: newSound } = await Audio.Sound.createAsync(
-          require("../../../assets/Recordings/setup4.mp3"), // Make sure this file exists
+          {uri:"https://raw.githubusercontent.com/ShayLavi190/finalProject/main/model1/assets/Recordings/setup4.mp3"},
           { shouldPlay: true }
         );
         setSound(newSound);
@@ -166,8 +171,8 @@ const SetUp43 = ({ navigation, handleGlobalClick }) => {
             את פרטי חשבונך אך לא תוכל להשתמש בשירותי קופת החולים או להתקשר לאיש
             קשר במקרה חירום. המידע נשמר בצורה מאובטחת.
           </Text>
-          {/* Bank Picker */}
-          <View style={styles.inputContainer}>
+          {/* Health Fund Picker */}
+          <View style={[styles.inputContainer, { zIndex: 9999 }]}>
             {/* Icon and Label */}
             <TouchableOpacity onPress={() => handleIconPress("healthFund")}>
               <Animatable.View
@@ -177,21 +182,24 @@ const SetUp43 = ({ navigation, handleGlobalClick }) => {
                 <Entypo name="light-bulb" size={40} color="yellow" />
               </Animatable.View>
             </TouchableOpacity>
-            <DropDownPicker
-              open={open}
-              value={selectedhealthFund}
-              items={items}
-              setOpen={(val) => {
-                setOpen(val);
-                handleGlobalClick();
-              }}
-              setValue={setSelectedhealthFund}
-              setItems={setItems}
-              textStyle={styles.input}
-              placeholder="בחר קופת חולים..."
-              style={styles.dropdown}
-              dropDownContainerStyle={styles.dropdownContainer}
-            />
+            <View style={{ flex: 1, zIndex: 9999 }}>
+              <DropDownPicker
+                open={open}
+                value={selectedhealthFund}
+                items={items}
+                setOpen={setOpen}
+                onPress={()=>handleGlobalClick()}
+                setValue={setSelectedhealthFund}
+                setItems={setItems}
+                placeholder="בחר קופת חולים..."
+                textStyle={{ textAlign: "center" }}
+                style={styles.dropdown}
+                dropDownContainerStyle={styles.dropdownContainer}
+                zIndex={9999}
+                zIndexInverse={1000}
+                listMode="SCROLLVIEW"
+              />
+            </View>
           </View>
 
           {/* Account Number Input */}
@@ -217,7 +225,7 @@ const SetUp43 = ({ navigation, handleGlobalClick }) => {
             />
           </View>
 
-          {/* Branch Number Input */}
+          {/* Emergency Phone Input */}
           <View style={styles.inputContainer}>
             <TouchableOpacity onPress={() => handleIconPress("phone")}>
               <Animatable.View
@@ -239,22 +247,14 @@ const SetUp43 = ({ navigation, handleGlobalClick }) => {
               keyboardType="numeric"
             />
           </View>
-
-          {/* Buttons */}
-          <View style={styles.buttonRow}>
-            <TouchableOpacity
-              style={[styles.button, styles.forwardBtn]}
-              onPress={handleMoveForward}
-            >
-              <Text style={styles.buttonText}>המשך</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.button, styles.backBtn]}
-              onPress={handleGoBack}
-            >
-              <Text style={styles.buttonText}>חזור</Text>
-            </TouchableOpacity>
-          </View>
+              <View style={{ alignItems: 'center' }}>
+              <TouchableOpacity
+                style={[{ backgroundColor: "green" }, styles.button]}
+                onPress={handleMoveForward}
+              >
+                <Text style={styles.buttonText}>שמור</Text>
+              </TouchableOpacity>
+            </View>
         </View>
 
         {/* Modal */}
@@ -282,7 +282,7 @@ const SetUp43 = ({ navigation, handleGlobalClick }) => {
             onPress={handleLottiePress}
           >
             <LottieView
-              source={require("./robot.json")}
+              source={robotAnimation}
               autoPlay
               loop
               style={styles.lottie}
@@ -301,6 +301,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 20,
+    marginBottom:150,
   },
   card: {
     width: "90%",
@@ -314,6 +315,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     elevation: 5,
     marginBottom: 110,
+    zIndex: 1, // Lower z-index for card
   },
   title: {
     fontSize: 24,
@@ -325,6 +327,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 15,
+    zIndex: 1,
   },
   input: {
     flex: 1,
@@ -369,6 +372,7 @@ const styles = StyleSheet.create({
   },
   closeBtn: {
     backgroundColor: "red",
+    width: "100%",
   },
   buttonText: {
     fontSize: 18,
@@ -379,7 +383,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "transperent",
+    backgroundColor: "transparent",
   },
   modalContent: {
     backgroundColor: "#fff",
@@ -388,28 +392,36 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "whitesmoke",
     borderEndColor: "black",
-    borderBottomEndRadius: "2",
+    borderBottomEndRadius: 2,
+    width: "80%",
+    maxWidth: 400,
   },
   fontex: {
     fontSize: 20,
     marginBottom: 15,
     fontWeight: "bold",
     color: "black",
+    textAlign: "center",
   },
   buttonRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     marginTop: 20,
+    zIndex: 1,
   },
   dropdown: {
-    width: 595,
+    flex: 1,
     borderColor: "gray",
     borderRadius: 5,
+    zIndex: 9999,
+    elevation: 9999,
   },
-
   dropdownContainer: {
-    width: 595,
     borderColor: "gray",
+    position: "absolute",
+    width: "100%",
+    zIndex: 9999,
+    elevation: 9999,
   },
   lottieButton: {
     position: "absolute",
@@ -417,10 +429,7 @@ const styles = StyleSheet.create({
     right: 110,
     width: 300,
     height: 300,
-    shadowColor: "black",
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.3,
-    shadowRadius: 2,
+    zIndex: 500,
   },
   lottie: {
     width: "100%",

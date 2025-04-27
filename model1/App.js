@@ -46,7 +46,7 @@ import Entertainment from "./screens/Model2/Entertainment/EntertainmentM2";
 import NewsChannelsM2 from "./screens/Model2/Entertainment/NewsChannelsM2";
 import NewsPapersM2 from "./screens/Model2/Entertainment/NewsPapersM2";
 import GamesM2 from "./screens/Model2/Entertainment/GamesM2";
-import Setup3 from "./screens/Model3/SetupScreens/setUp";
+import Setup31 from "./screens/Model3/SetupScreens/setUp";
 import SetUp23 from "./screens/Model3/SetupScreens/SetUp2";
 import SetUp33 from "./screens/Model3/SetupScreens/SetUp3";
 import SetUp43 from "./screens/Model3/SetupScreens/SetUp4";
@@ -55,9 +55,7 @@ import Premissions23 from "./screens/Model3/PermissionsScreens/Premissions2";
 import Premissions33 from "./screens/Model3/PermissionsScreens/Premissions3";
 import Home13 from "./screens/Model3/HomeScreens/Home1";
 import Home23 from "./screens/Model3/HomeScreens/Home2";
-import BankPage3 from "./screens/Model3/Bank/BankScreen";
 import Bank3 from "./screens/Model3/Bank/BankScreen";
-import ContactBankerScreen3 from "./screens/Model3/Bank/ContactBankerScreen";
 import ContactBanker3 from "./screens/Model3/Bank/ContactBankerScreen";
 import Transaction3 from "./screens/Model3/Bank/TransferScreen";
 import Emergency3 from "./screens/Model3/EmergencyScreens/Emergency";
@@ -71,14 +69,17 @@ import Entertainment3 from "./screens/Model3/Entertainment/Entertainment3";
 import Games3 from "./screens/Model3/Entertainment/Games3";
 import NewsChannels3 from "./screens/Model3/Entertainment/NewsChannels3";
 import NewsPapers3 from "./screens/Model3/Entertainment/NewsPapers3";
+import Toast from "react-native-toast-message";
+import HomeSetUp from "./screens/Model3/SetupScreens/homeSetUp";
+import HomePermissions from "./screens/Model3/PermissionsScreens/HomePermissions";
 
 const Stack = createStackNavigator();
 
 export default function App() {
   const [globalTasks, setGlobalTasks] = useState([]);
   const [currentRoute, setCurrentRoute] = useState("");
-  const [isTracking, setIsTracking] = useState(false); // Track whether tracking is active
-
+  const [isTracking, setIsTracking] = useState(false); 
+  
   useEffect(() => {
     const clearStorage = async () => {
       try {
@@ -129,6 +130,7 @@ export default function App() {
 
   return (
     <UserProvider>
+      <Toast ref={(ref) => Toast.setRef(ref)} />
       <NavigationContainer onStateChange={handleStateChange}>
         <View
           style={styles.wrapper}
@@ -230,7 +232,7 @@ export default function App() {
                 />
               )}
             </Stack.Screen>
-            <Stack.Screen name="SuperMarket" options={{ headerShown: false }}>
+            <Stack.Screen name="SuperMarket" options={{ headerShown: true }}>
               {(props) => (
                 <SuperMarketPage
                   {...props}
@@ -238,12 +240,12 @@ export default function App() {
                 />
               )}
             </Stack.Screen>
-            <Stack.Screen name="EditCart" options={{ headerShown: false }}>
+            <Stack.Screen name="EditCart" options={{ headerShown: true }}>
               {(props) => (
                 <EditCart {...props} handleGlobalClick={handleGlobalClick} />
               )}
             </Stack.Screen>
-            <Stack.Screen name="Entertainment" options={{ headerShown: false }}>
+            <Stack.Screen name="Entertainment" options={{ headerShown: true }}>
               {(props) => (
                 <EntertainmentPage
                   {...props}
@@ -559,9 +561,9 @@ export default function App() {
                 <GamesM2 {...props} handleGlobalClick={handleGlobalClick} />
               )}
             </Stack.Screen>
-            <Stack.Screen name="Setup3" options={{ headerShown: false }}>
+            <Stack.Screen name="SetUp31" options={{ headerShown: false }}>
               {(props) => (
-                <Setup3 {...props} handleGlobalClick={handleGlobalClick} />
+                <Setup31 {...props} handleGlobalClick={handleGlobalClick} />
               )}
             </Stack.Screen>
             <Stack.Screen name="SetUp23" options={{ headerShown: false }}>
@@ -715,6 +717,23 @@ export default function App() {
                 <NewsPapers3 {...props} handleGlobalClick={handleGlobalClick} />
               )}
             </Stack.Screen>
+            <Stack.Screen
+              name="HomeSetUp"
+              options={{ headerShown: false }}
+            >
+              {(props) => (
+                <HomeSetUp {...props} handleGlobalClick={handleGlobalClick} />
+              )}
+            </Stack.Screen>
+            <Stack.Screen
+              name="HomePermissions"
+              options={{ headerShown: false }}
+            >
+              {(props) => (
+                <HomePermissions {...props} handleGlobalClick={handleGlobalClick} />
+              )}
+            </Stack.Screen>
+
           </Stack.Navigator>
           <BottomTaskTimer
             globalTasks={globalTasks}
@@ -731,5 +750,6 @@ export default function App() {
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
+    backgroundColor:'#f2f2f2'
   },
 });

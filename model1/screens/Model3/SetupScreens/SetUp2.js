@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   View,
   Text,
@@ -9,151 +9,316 @@ import {
   KeyboardAvoidingView,
   Platform,
   Alert,
-} from "react-native";
-import Entypo from "react-native-vector-icons/Entypo";
-import * as Animatable from "react-native-animatable";
-import { useUser } from "../../Model2/userContext";
-import LottieView from "lottie-react-native";
-import { Audio } from "expo-av"; // Added Audio import
+} from 'react-native';
+import { Entypo } from '@expo/vector-icons';
+import * as Animatable from 'react-native-animatable';
+import { useUser } from '../../Model2/userContext';
+import LottieView from 'lottie-react-native';
+import { Audio } from 'expo-av';
+import Toast from 'react-native-toast-message';
+import robotAnimation from './robot.json';
+
+// Configuration Constants
+const AUDIO_URL = 'https://raw.githubusercontent.com/ShayLavi190/finalProject/main/model1/assets/Recordings/setup2.mp3';
+const MAX_LENGTHS = {
+  street: 100,
+  number: 10,
+  city: 50,
+  country: 50
+};
 
 const SetUp23 = ({ navigation, handleGlobalClick }) => {
+  // Context and State Management
   const { user, updateUser } = useUser();
-  const [street, setStreet] = useState("");
-  const [number, setNumber] = useState("");
-  const [city, setCity] = useState("");
-  const [country, setCountry] = useState("");
-  const [modalVisible, setModalVisible] = useState(false);
-  const [explanation, setExplanation] = useState("");
-  const [iconAnimation, setIconAnimation] = useState("");
-  // Added audio state variables
-  const [sound, setSound] = useState(null);
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [formData, setFormData] = useState({
+    street: user.street || '',
+    number: user.number || '',
+    city: user.city || '',
+    country: user.country || ''
+  });
+  const [modalState, setModalState] = useState({
+    visible: false,
+    explanation: '',
+    iconAnimation: ''
+  });
+  const [audioState, setAudioState] = useState({
+    sound: null,
+    isPlaying: false,
+    currentTime: 0
+  });
 
-  const modalRef = useRef(null);
+  // Refs
   const animatableRef = useRef(null);
+  const modalRef = useRef(null);
+  const audioRef = useRef(null);
 
-  useEffect(() => {
-    setCity(user.city);
-    setCountry(user.country);
-    setNumber(user.number);
-    setStreet(user.street);
-  }, [user]);
+  // Validation Functions
+  const validateInput = useCallback((field, value) => {
+    const trimmedValue = value.trim();
+    return trimmedValue.length > 0 && trimmedValue.length <= MAX_LENGTHS[field];
+  }, []);
 
-  // Function to stop audio playback
-  const stopAudio = async () => {
-    if (sound) {
-      await sound.stopAsync();
-      await sound.unloadAsync();
-      setSound(null);
-      setIsPlaying(false);
-    }
-  };
-
-  const handleIconPress = (field) => {
-    stopAudio(); // Stop audio when opening explanation modal
-
-    const fieldExplanations = {
-      street: "אנא הזן את שם הרחוב שלך.",
-      "number and apartment":
-        "אנא הזן את מספר הבית של ומספר דירה אם יש. זהו שדה חובה",
-      city: "אנא הזן את שם העיר שלך.",
-      country: "אנא הזן את שם המדינה שלך.",
-    };
-    setExplanation(fieldExplanations[field]);
-    setIconAnimation("pulse");
-    setModalVisible(true);
-    handleGlobalClick();
-  };
-
-  const validateInputs = () => {
+  const validateAllInputs = useCallback(() => {
     const errors = [];
-    if (!street.trim()) errors.push("רחוב נדרש. שדה זה חובה");
-    if (!number.trim()) errors.push("מספר בית ודירה אם יש נדרש. שדה זה חובה");
-    if (!city.trim())
-      errors.push("נא להזין את העיר בה אתה מתגורר. שדה זה חובה");
-    if (!country.trim())
-      errors.push("נא להזין את המדינה בה אתם גרים. שדה זה חובה");
-    if (errors.length > 0) {
-      Alert.alert("שגיאה", errors.join("\n"));
-      return false;
-    }
-    return true;
-  };
+    
+    Object.keys(formData).forEach(field => {
+      if (!validateInput(field, formData[field])) {
+        switch (field) {
+          case 'street':
+            errors.push('רחוב נדרש. שדה זה חובה');
+            break;
+          case 'number':
+            errors.push('מספר בית ודירה אם יש נדרש. שדה זה חובה');
+            break;
+          case 'city':
+            errors.push('נא להזין את העיר בה אתה מתגורר. שדה זה חובה');
+            break;
+          case 'country':
+            errors.push('נא להזין את המדינה בה אתם גרים. שדה זה חובה');
+            break;
+        }
+      }
+    });
 
-  // Updated to handle audio playback
-  const handleLottiePress = async () => {
-    handleGlobalClick();
-    if (sound && isPlaying) {
-      // If playing, pause the audio
-      await sound.pauseAsync();
-      setIsPlaying(false);
-    } else if (sound) {
-      // If paused, resume playing
-      await sound.playAsync();
-      setIsPlaying(true);
-    } else {
-      // Load and play new sound
+    return errors;
+  }, [formData, validateInput]);
+
+  // Audio Management
+  const stopAudio = useCallback(async () => {
+    if (Platform.OS === 'web') {
+      if (audioRef.current) {
+        setAudioState(prev => ({
+          ...prev,
+          currentTime: audioRef.current.currentTime,
+          isPlaying: false
+        }));
+        audioRef.current.pause();
+      }
+      return;
+    }
+    
+    if (audioState.sound) {
       try {
-        const { sound: newSound } = await Audio.Sound.createAsync(
-          require("../../../assets/Recordings/setup2.mp3"), // Make sure this file exists
-          { shouldPlay: true }
-        );
-        setSound(newSound);
-        setIsPlaying(true);
+        const status = await audioState.sound.getStatusAsync();
+        setAudioState(prev => ({
+          ...prev,
+          currentTime: status.positionMillis / 1000,
+          isPlaying: false
+        }));
+        await audioState.sound.pauseAsync();
       } catch (error) {
-        console.error("Error playing audio:", error);
-        Alert.alert("שגיאה בהפעלת ההקלטה", "לא ניתן להפעיל את ההקלטה כרגע.");
+        console.error('Error stopping audio:', error);
       }
     }
-  };
+  }, [audioState.sound]);
 
-  const handleMoveForward = () => {
-    stopAudio(); // Stop audio when navigating forward
+  // Navigation Handlers
+  const handleMoveForward = useCallback(() => {
+    if (audioState.isPlaying) {
+      stopAudio();
+    }
 
-    if (!validateInputs()) return;
+    const errors = validateAllInputs();
+    
+    if (errors.length > 0) {
+      Platform.OS === 'web' 
+        ? errors.forEach((error, index) => {
+            setTimeout(() => {
+              Toast.show({
+                type: 'error',
+                position: 'bottom',
+                text1: 'שגיאה',
+                text2: error,
+                visibilityTime: 4000,
+                autoHide: true,
+              });
+            }, index * 800);
+          })
+        : Alert.alert('שגיאה', errors.join('\n'));
+      return;
+    }
 
-    animatableRef.current.animate("fadeOutLeft", 500).then(() => {
+    animatableRef.current.animate('fadeOutLeft', 500).then(() => {
       updateUser({
         ...user,
-        street: street,
-        number: number,
-        city: city,
-        country: country,
+        ...formData
       });
-      navigation.navigate("SetUp33");
+      navigation.navigate('HomeSetUp');
     });
-  };
+  }, [
+    audioState.isPlaying, 
+    stopAudio, 
+    validateAllInputs, 
+    updateUser, 
+    user, 
+    navigation, 
+    formData
+  ]);
 
-  const handleGoBack = () => {
-    stopAudio(); // Stop audio when navigating back
+  const handleGoBack = useCallback(() => {
+    if (audioState.isPlaying) {
+      stopAudio();
+    }
 
-    animatableRef.current.animate("fadeOutRight", 500).then(() => {
+    animatableRef.current.animate('fadeOutRight', 500).then(() => {
       updateUser({
         ...user,
-        street: street,
-        number: number,
-        city: city,
-        country: country,
+        ...formData
       });
-      navigation.navigate("Setup3");
+      navigation.navigate('Setup33');
     });
-  };
+  }, [
+    audioState.isPlaying, 
+    stopAudio, 
+    updateUser, 
+    user, 
+    navigation, 
+    formData
+  ]);
 
-  const closeModal = () => {
-    stopAudio(); // Stop audio when closing modal
-
-    modalRef.current
-      .animate("fadeOutDown", 500)
-      .then(() => setModalVisible(false));
-    setIconAnimation("");
+  // Audio Playback Handler
+  const handleAudioPlayback = useCallback(async () => {
     handleGlobalClick();
-  };
 
-  // Cleanup audio on component unmount
+    if (Platform.OS === 'web') {
+      if (!audioRef.current) {
+        Toast.show({
+          type: 'error',
+          text1: 'שגיאה',
+          text2: 'לא ניתן להפעיל את ההקלטה',
+        });
+        return;
+      }
+
+      if (audioState.isPlaying) {
+        audioRef.current.pause();
+        setAudioState(prev => ({
+          ...prev,
+          isPlaying: false,
+          currentTime: audioRef.current.currentTime
+        }));
+      } else {
+        try {
+          audioRef.current.src = AUDIO_URL;
+          audioRef.current.currentTime = audioState.currentTime;
+          await audioRef.current.play();
+          
+          setAudioState(prev => ({
+            ...prev,
+            isPlaying: true,
+            sound: true
+          }));
+        } catch (error) {
+          console.error('Web audio error:', error);
+          Toast.show({
+            type: 'error',
+            text1: 'שגיאה',
+            text2: 'לא ניתן להפעיל את ההקלטה',
+          });
+        }
+      }
+      return;
+    }
+
+    try {
+      if (audioState.sound && audioState.isPlaying) {
+        await stopAudio();
+      } else if (audioState.sound) {
+        await audioState.sound.playFromPositionAsync(audioState.currentTime * 1000);
+        setAudioState(prev => ({ ...prev, isPlaying: true }));
+      } else {
+        const { sound } = await Audio.Sound.createAsync(
+          { uri: AUDIO_URL },
+          { 
+            shouldPlay: true,
+            positionMillis: 0
+          }
+        );
+
+        sound.setOnPlaybackStatusUpdate((status) => {
+          if (status.didJustFinish) {
+            setAudioState(prev => ({
+              ...prev,
+              isPlaying: false,
+              currentTime: 0
+            }));
+          }
+        });
+
+        setAudioState({
+          sound,
+          isPlaying: true,
+          currentTime: 0
+        });
+      }
+    } catch (error) {
+      console.error('Native audio error:', error);
+      Alert.alert('שגיאה', 'לא ניתן להפעיל את ההקלטה');
+    }
+  }, [
+    handleGlobalClick, 
+    audioState.isPlaying, 
+    audioState.sound, 
+    audioState.currentTime,
+    stopAudio
+  ]);
+
+  // Modal and Explanation Handlers
+  const handleExplanationModal = useCallback((field) => {
+    if (audioState.isPlaying) {
+      stopAudio();
+    }
+
+    const explanations = {
+      street: 'אנא הזן את שם הרחוב שלך.',
+      number: 'אנא הזן את מספר הבית של ומספר דירה אם יש. זהו שדה חובה',
+      city: 'אנא הזן את שם העיר שלך.',
+      country: 'אנא הזן את שם המדינה שלך.',
+    };
+
+    setModalState({
+      visible: true,
+      explanation: explanations[field],
+      iconAnimation: 'pulse'
+    });
+    handleGlobalClick();
+  }, [audioState.isPlaying, stopAudio, handleGlobalClick]);
+
+  const closeModal = useCallback(() => {
+    modalRef.current.animate('fadeOutDown', 500)
+      .then(() => setModalState(prev => ({
+        ...prev,
+        visible: false,
+        iconAnimation: ''
+      })));
+    handleGlobalClick();
+  }, [handleGlobalClick]);
+
+  // Cleanup Effects
   useEffect(() => {
     return () => {
-      stopAudio();
+      if (Platform.OS !== 'web' && audioState.sound) {
+        audioState.sound.unloadAsync();
+      }
     };
+  }, [audioState.sound]);
+
+  useEffect(() => {
+    if (Platform.OS === 'web' && audioRef.current) {
+      const trackTime = () => {
+        setAudioState(prev => ({
+          ...prev,
+          currentTime: audioRef.current.currentTime
+        }));
+      };
+
+      const audioElement = audioRef.current;
+      audioElement.addEventListener('timeupdate', trackTime);
+
+      return () => {
+        audioElement.removeEventListener('timeupdate', trackTime);
+      };
+    }
   }, []);
 
   return (
@@ -165,121 +330,87 @@ const SetUp23 = ({ navigation, handleGlobalClick }) => {
     >
       <KeyboardAvoidingView
         style={styles.container}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
+        <Toast />
+        
+        {Platform.OS === 'web' && (
+          <audio
+            ref={audioRef}
+            style={{ display: 'none' }}
+            onEnded={() => {
+              setAudioState(prev => ({
+                ...prev,
+                isPlaying: false,
+                currentTime: 0
+              }));
+            }}
+          />
+        )}
+        
         <View style={styles.card}>
-          <Text style={styles.title}> הגדרת כתובת לקוח</Text>
+          <Text style={styles.title}>הגדרת כתובת לקוח</Text>
           <Text style={styles.subtitle}>
             כדי שהרובוט המטפל יוכל להפעיל את שירותיו לטובך נצטרך את פרטי
             המגורים. כלל המידע נשמר בצורה מאובטחת ואינו משותף עם שום גורם חיצוני
             ללא ביצוע שירות ייעודי.
           </Text>
-          {/* Street Input */}
-          <View style={styles.inputContainer}>
-            <TouchableOpacity onPress={() => handleIconPress("street")}>
-              <Animatable.View
-                animation={iconAnimation}
-                style={styles.iconContainer}
-              >
-                <Entypo name="light-bulb" size={40} color="yellow" />
-              </Animatable.View>
-            </TouchableOpacity>
-            <TextInput
-              style={styles.input}
-              placeholder="רחוב"
-              value={street}
-              onChangeText={(value) => {
-                setStreet(value);
-              }}
-              onPress={() => handleGlobalClick()}
-            />
-          </View>
 
-          {/* Number Input */}
-          <View style={styles.inputContainer}>
-            <TouchableOpacity
-              onPress={() => handleIconPress("number and apartment")}
-            >
-              <Animatable.View
-                animation={iconAnimation}
-                style={styles.iconContainer}
+          {/* Inputs Rendering */}
+          {Object.keys(formData).map((field) => (
+            <View key={field} style={styles.inputContainer}>
+              <TouchableOpacity onPress={() => handleExplanationModal(field)}>
+                <Animatable.View
+                  animation={modalState.iconAnimation}
+                  style={styles.iconContainer}
+                >
+                  <Entypo name="light-bulb" size={40} color="yellow" />
+                </Animatable.View>
+              </TouchableOpacity>
+              <TextInput
+                style={styles.input}
+                placeholder={
+                  field === 'street' ? 'רחוב' :
+                  field === 'number' ? 'מספר בית ודירה אם יש' :
+                  field === 'city' ? 'עיר' :
+                  'מדינה'
+                }
+                value={formData[field]}
+                onChangeText={(value) => {
+                  // For number field, allow only digits
+                  const processedValue = field === 'number' 
+                    ? value.replace(/[^0-9]/g, '')
+                    : value;
+                  
+                  // Limit to max length
+                  const limitedValue = processedValue.slice(0, MAX_LENGTHS[field]);
+                  
+                  setFormData(prev => ({
+                    ...prev,
+                    [field]: limitedValue
+                  }));
+                }}
+                keyboardType={field === 'number' ? 'numeric' : 'default'}
+                maxLength={MAX_LENGTHS[field]}
+              />
+            </View>
+          ))}
+              <View style={{ alignItems: 'center' }}>
+              <TouchableOpacity
+                style={[{ backgroundColor: "green" }, styles.button]}
+                onPress={handleMoveForward}
               >
-                <Entypo name="light-bulb" size={40} color="yellow" />
-              </Animatable.View>
-            </TouchableOpacity>
-            <TextInput
-              style={styles.input}
-              placeholder="מספר רחוב ודירה אם יש"
-              value={number}
-              onChangeText={(value) => {
-                setNumber(value);
-              }}
-              onPress={() => handleGlobalClick()}
-              keyboardType="numeric"
-            />
-          </View>
-
-          {/* City Input */}
-          <View style={styles.inputContainer}>
-            <TouchableOpacity onPress={() => handleIconPress("city")}>
-              <Animatable.View
-                animation={iconAnimation}
-                style={styles.iconContainer}
-              >
-                <Entypo name="light-bulb" size={40} color="yellow" />
-              </Animatable.View>
-            </TouchableOpacity>
-            <TextInput
-              style={styles.input}
-              placeholder="עיר"
-              value={city}
-              onChangeText={(value) => {
-                setCity(value);
-              }}
-              onPress={() => handleGlobalClick()}
-            />
-          </View>
-
-          {/* Country Input */}
-          <View style={styles.inputContainer}>
-            <TouchableOpacity onPress={() => handleIconPress("country")}>
-              <Animatable.View
-                animation={iconAnimation}
-                style={styles.iconContainer}
-              >
-                <Entypo name="light-bulb" size={40} color="yellow" />
-              </Animatable.View>
-            </TouchableOpacity>
-            <TextInput
-              style={styles.input}
-              placeholder="מדינה"
-              value={country}
-              onChangeText={(value) => {
-                setCountry(value);
-              }}
-              onPress={() => handleGlobalClick()}
-            />
-          </View>
-
-          {/* Next Button */}
-          <View style={styles.buttonRow}>
-            <TouchableOpacity
-              style={[styles.button, styles.forwardBtn]}
-              onPress={handleMoveForward}
-            >
-              <Text style={styles.buttonText}>המשך</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.button, styles.backBtn]}
-              onPress={handleGoBack}
-            >
-              <Text style={styles.buttonText}>חזור</Text>
-            </TouchableOpacity>
-          </View>
+                <Text style={styles.buttonText}>שמור</Text>
+              </TouchableOpacity>
+            </View>
         </View>
 
-        {/* Modal */}
-        <Modal visible={modalVisible} transparent animationType="none">
+        {/* Explanation Modal */}
+        <Modal 
+          visible={modalState.visible} 
+          transparent 
+          animationType="none"
+        >
           <View style={styles.modalContainer}>
             <Animatable.View
               ref={modalRef}
@@ -287,7 +418,7 @@ const SetUp23 = ({ navigation, handleGlobalClick }) => {
               duration={500}
               style={styles.modalContent}
             >
-              <Text style={styles.fontex}>{explanation}</Text>
+              <Text style={styles.fontex}>{modalState.explanation}</Text>
               <TouchableOpacity
                 style={[styles.button, styles.closeBtn]}
                 onPress={closeModal}
@@ -300,13 +431,17 @@ const SetUp23 = ({ navigation, handleGlobalClick }) => {
         <View>
           <TouchableOpacity
             style={styles.lottieButton}
-            onPress={handleLottiePress}
+            onPress={handleAudioPlayback}
+            accessibilityLabel="לחץ לשמיעת הדרכה קולית"
           >
             <LottieView
-              source={require("./robot.json")}
+              source={robotAnimation}
               autoPlay
               loop
               style={styles.lottie}
+              rendererSettings={{
+                preserveAspectRatio: 'xMidYMid slice'
+              }}
             />
           </TouchableOpacity>
         </View>
@@ -322,6 +457,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 20,
+    marginBottom: 200,
   },
   card: {
     width: "90%",
@@ -334,7 +470,7 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     shadowOffset: { width: 0, height: 2 },
     elevation: 5,
-    marginBottom: 100,
+    marginBottom: 20,
   },
   title: {
     fontSize: 24,
@@ -424,14 +560,11 @@ const styles = StyleSheet.create({
   },
   lottieButton: {
     position: "absolute",
-    top: 0,
-    right: 110,
+    top: Platform.OS === 'web' ? 20 : 80,
+    right: Platform.OS === 'web' ? 50 : 110,
     width: 300,
     height: 300,
-    shadowColor: "black",
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.3,
-    shadowRadius: 2,
+    zIndex: 100,
   },
   lottie: {
     width: "100%",

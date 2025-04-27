@@ -10,8 +10,10 @@ import { useUser } from "../../Model2/userContext";
 import * as Animatable from "react-native-animatable";
 import LottieView from "lottie-react-native";
 import { Audio } from "expo-av";
+import robotAnimation from "../SetupScreens/robot.json";
+const AUDIO_URL = "https://raw.githubusercontent.com/ShayLavi190/finalProject/main/model1/assets/Recordings/homeScreen2.mp3";
 
-const Home23 = ({ navigation }) => {
+const Home23 = ({ navigation,handleGlobalClick }) => {
   const { user } = useUser();
   const animatableRef = useRef(null);
   const [sound, setSound] = useState(null);
@@ -21,12 +23,12 @@ const Home23 = ({ navigation }) => {
     { label: "בידור", route: "Entertainment3", backgroundColor: "#a39193" },
     {
       label: "עידכון פרטים אישיים",
-      route: "Setup3",
+      route: "HomeSetUp",
       backgroundColor: "#8db1fa",
     },
     {
       label: "הרשאות פרטיות",
-      route: "Premissions13",
+      route: "HomePermissions",
       backgroundColor: "#35223c",
     },
     { label: "ביצועים", route: "Performance3", backgroundColor: "#9dbda4" },
@@ -40,6 +42,7 @@ const Home23 = ({ navigation }) => {
   };
 
   const handleLottiePress = async () => {
+    handleGlobalClick();
     if (sound && isPlaying) {
       // If playing, pause the audio
       await sound.pauseAsync();
@@ -51,7 +54,7 @@ const Home23 = ({ navigation }) => {
     } else {
       // Load and play new sound
       const { sound: newSound } = await Audio.Sound.createAsync(
-        require("../../../assets/Recordings/homeScreen2.mp3"), // Ensure the file exists
+        { uri: AUDIO_URL },
         { shouldPlay: true }
       );
       setSound(newSound);
@@ -114,7 +117,7 @@ const Home23 = ({ navigation }) => {
             onPress={handleLottiePress}
           >
             <LottieView
-              source={require("../SetupScreens/robot.json")}
+              source={robotAnimation}
               autoPlay
               loop
               style={styles.lottie}
@@ -132,13 +135,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 20,
     backgroundColor: "#f2f2f2",
-    marginTop: 50,
   },
   titleContainer: {
     width: "100%",
     alignItems: "center",
     marginBottom: 50,
-    marginTop: 50,
+    marginTop: 20,
   },
   lottieButton: {
     position: "absolute",
@@ -146,10 +148,6 @@ const styles = StyleSheet.create({
     right: 110,
     width: 300,
     height: 300,
-    shadowColor: "black",
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.3,
-    shadowRadius: 2,
   },
   lottie: {
     width: "100%",

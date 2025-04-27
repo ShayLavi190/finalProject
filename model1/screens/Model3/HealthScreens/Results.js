@@ -6,37 +6,51 @@ import {
   TouchableOpacity,
   Modal,
   Image,
-  ScrollView,
+  Dimensions,
+  Platform,
   Alert,
 } from "react-native";
 import * as Animatable from "react-native-animatable";
 import LottieView from "lottie-react-native";
-import { Audio } from "expo-av"; // Added Audio import
+import { Audio } from "expo-av";
+import Toast from "react-native-toast-message";
+import robotAnimation from "../SetupScreens/robot.json";
 
-const Results3 = ({ navigation, handleGlobalClick }) => {
+// Audio URL
+const AUDIO_URL = "https://raw.githubusercontent.com/ShayLavi190/finalProject/main/model1/assets/Recordings/testResults.mp3";
+
+// ✅ Import images for Web compatibility
+import image1 from "../../HealthFund/assets/image1.jpg";
+import image2 from "../../HealthFund/assets/image2.jpg";
+import image3 from "../../HealthFund/assets/image3.jpg";
+import image4 from "../../HealthFund/assets/image4.jpg";
+
+// ✅ Handle images based on platform (Web vs. Mobile)
+const testResults = [
+  {
+    title: "בדיקה כללית",
+    images: Platform.OS === "web"
+      ? [image2, image3, image4]
+      : [require("../../HealthFund/assets/image2.jpg"), require("../../HealthFund/assets/image3.jpg"), require("../../HealthFund/assets/image4.jpg")],
+  },
+  {
+    title: "בדיקת דם",
+    images: Platform.OS === "web"
+      ? [image1]
+      : [require("../../HealthFund/assets/image1.jpg")],
+  },
+];
+
+const Results3 = ({ handleGlobalClick, navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedImages, setSelectedImages] = useState([]);
-  const backgroundColor = ["#52BFBF", "#af665f"];
+  const [currentIndex, setCurrentIndex] = useState(0);
   const animatableMainRef = useRef(null);
   const animatableModalRef = useRef(null);
-  // Added audio state variables
+  
+  // Audio state variables
   const [sound, setSound] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
-
-  const testResults = [
-    {
-      title: "בדיקה כללית",
-      images: [
-        require("../../HealthFund/assets/image2.jpg"),
-        require("../../HealthFund/assets/image3.jpg"),
-        require("../../HealthFund/assets/image4.jpg"),
-      ],
-    },
-    {
-      title: "בדיקת דם",
-      images: [require("../../HealthFund/assets/image1.jpg")],
-    },
-  ];
 
   // Function to stop audio playback
   const stopAudio = async () => {
@@ -48,33 +62,45 @@ const Results3 = ({ navigation, handleGlobalClick }) => {
     }
   };
 
-  const handleNavigate = (route, direction) => {
-    stopAudio(); // Stop audio when navigating
-
-    if (!animatableMainRef.current) return;
-    const animationType =
-      direction === "forward" ? "fadeOutLeft" : "fadeOutRight";
-
-    animatableMainRef.current
-      .animate(animationType, 500)
-      .then(() => {
-        navigation.navigate(route);
-      })
-      .catch((err) => {
-        console.error("Animation error:", err);
-        navigation.navigate(route);
-      });
-  };
-
+  // ✅ Open modal with selected images
   const openModal = (images, title) => {
     stopAudio(); // Stop audio when opening modal
     setSelectedImages(images);
     setModalVisible(true);
+    setCurrentIndex(0);
     handleGlobalClick(`פתיחת מודאל עבור: ${title}`);
   };
 
-  // Updated to handle audio
+  // ✅ Close modal with animation
+  const closeModal = () => {
+    stopAudio(); // Stop audio when closing modal
+    animatableModalRef.current?.animate("fadeOutDown", 500).then(() => {
+      setModalVisible(false);
+      setSelectedImages([]);
+      handleGlobalClick("סגירת מודאל");
+    });
+  };
+
+  // ✅ Navigation with animations
+  const handleNavigate = (route, direction) => {
+    stopAudio(); // Stop audio when navigating
+    
+    if (!animatableMainRef.current) return;
+    const animationType = direction === "forward" ? "fadeOutLeft" : "fadeOutRight";
+
+    animatableMainRef.current
+      ?.animate(animationType, 500)
+      .then(() => navigation.navigate(route))
+      .catch((error) => {
+        console.error("Animation error:", error);
+        navigation.navigate(route);
+      });
+  };
+
+  // Handle Lottie animation press
   const handleLottiePress = async () => {
+    handleGlobalClick("לחיצה על האנימציה");
+    
     if (sound && isPlaying) {
       // If playing, pause the audio
       await sound.pauseAsync();
@@ -87,26 +113,22 @@ const Results3 = ({ navigation, handleGlobalClick }) => {
       // Load and play new sound
       try {
         const { sound: newSound } = await Audio.Sound.createAsync(
-          require("../../../assets/Recordings/testResults.mp3"), // Make sure this file exists
+          { uri: AUDIO_URL },
           { shouldPlay: true }
         );
         setSound(newSound);
         setIsPlaying(true);
       } catch (error) {
         console.error("Error playing audio:", error);
-        Alert.alert("שגיאה בהפעלת ההקלטה", "לא ניתן להפעיל את ההקלטה כרגע.");
+        Toast.show({
+          type: "error",
+          position: "bottom",
+          text1: "שגיאה בהפעלת ההקלטה",
+          text2: "לא ניתן להפעיל את ההקלטה כרגע",
+          visibilityTime: 4000,
+        });
       }
     }
-  };
-
-  const closeModal = () => {
-    stopAudio(); // Stop audio when closing modal
-
-    animatableModalRef.current.animate("fadeOutDown", 500).then(() => {
-      setModalVisible(false);
-      setSelectedImages([]);
-      handleGlobalClick("סגירת מודאל");
-    });
   };
 
   // Cleanup audio on component unmount
@@ -119,97 +141,83 @@ const Results3 = ({ navigation, handleGlobalClick }) => {
   return (
     <Animatable.View
       ref={animatableMainRef}
-      style={{ flex: 1 }}
+      style={styles.container}
       animation="fadeInDown"
       duration={2000}
     >
-      <View style={styles.container}>
-        <Text style={styles.title}>תשובות בדיקות</Text>
-        <Text style={styles.subtitle}>
-          ברוך הבא למסך תשובות לבדיקות שביצעת. נא לבחור את סוג הבדיקה שביצעת
-          ויוצג לך מסמכי התשובות
-        </Text>
-        {testResults.map((test, index) => (
-          <TouchableOpacity
-            key={index}
-            style={[styles.card, { backgroundColor: backgroundColor[index] }]}
-            onPress={() => openModal(test.images, test.title)}
-          >
-            <Text style={styles.cardTitle}>{test.title}</Text>
-          </TouchableOpacity>
-        ))}
-        <View style={styles.buttonRow}>
-          <TouchableOpacity
-            style={[
-              styles.button,
-              styles.forwardButton,
-              { backgroundColor: "orange" },
-            ]}
-            onPress={() => handleNavigate("Home13", "forward")}
-          >
-            <Text style={styles.forwardButtonText}>מסך בית</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              styles.button,
-              styles.forwardButton,
-              { backgroundColor: "green" },
-            ]}
-            onPress={() => handleNavigate("Health3", "back")}
-          >
-            <Text style={styles.forwardButtonText}>שירותי בריאות</Text>
-          </TouchableOpacity>
-        </View>
-        <View>
-          <TouchableOpacity
-            style={styles.lottieButton}
-            onPress={handleLottiePress}
-          >
-            <LottieView
-              source={require("../SetupScreens/robot.json")}
-              autoPlay
-              loop
-              style={styles.lottie}
-            />
-          </TouchableOpacity>
-        </View>
-        <Modal visible={modalVisible} transparent animationType="none">
-          <Animatable.View
-            ref={animatableModalRef}
-            style={styles.modalContainer}
-            animation="fadeInUp"
-            duration={500}
-          >
-            <View style={styles.btn}>
-              <TouchableOpacity
-                style={styles.closeButton}
-                onPress={closeModal}
-                activeOpacity={0.7}
-              >
-                <Text style={styles.closeButtonText}>סגור</Text>
-              </TouchableOpacity>
-            </View>
-            <ScrollView
-              horizontal
-              pagingEnabled
-              showsHorizontalScrollIndicator={false}
-            >
-              {selectedImages.map((image, index) => (
-                <View key={index} style={styles.imageWrapper}>
-                  <Image
-                    source={image}
-                    style={styles.image}
-                    resizeMode="contain"
-                  />
-                </View>
-              ))}
-            </ScrollView>
-          </Animatable.View>
-        </Modal>
+      <Text style={styles.title}>תשובות בדיקות</Text>
+      <Text style={styles.subtitle}>
+        ברוך הבא למסך תשובות לבדיקות שביצעת. נא לבחור את סוג הבדיקה שביצעת
+        ויוצג לך מסמכי התשובות
+      </Text>
+
+      {testResults.map((test, index) => (
+        <TouchableOpacity
+          key={index}
+          style={[styles.card, { backgroundColor: index % 2 === 0 ? "#52BFBF" : "#af665f" }]}
+          onPress={() => openModal(test.images, test.title)}
+        >
+          <Text style={styles.cardTitle}>{test.title}</Text>
+        </TouchableOpacity>
+      ))}
+      <View style={styles.buttonRow}>
+        <TouchableOpacity
+          style={[styles.button, { backgroundColor: "orange" }]}
+          onPress={() => handleNavigate("Home13", "forward")}
+        >
+          <Text style={styles.buttonText}>מסך בית</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.button, { backgroundColor: "green" }]}
+          onPress={() => handleNavigate("Health3", "back")}
+        >
+          <Text style={styles.buttonText}>שירותי בריאות</Text>
+        </TouchableOpacity>
       </View>
+      <View>
+        <TouchableOpacity
+          style={styles.lottieButton}
+          onPress={handleLottiePress}
+        >
+          <LottieView
+            source={robotAnimation}
+            autoPlay
+            loop
+            style={styles.lottie}
+          />
+        </TouchableOpacity>
+      </View>
+      {/* ✅ Modal for Image Viewing */}
+      <Modal visible={modalVisible} transparent animationType="fade">
+        <Animatable.View ref={animatableModalRef} style={styles.modalContainer} animation="fadeInUp" duration={500}>
+          <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
+            <Text style={styles.closeButtonText}>סגור</Text>
+          </TouchableOpacity>
+
+          <View style={styles.imageNavigation}>
+            <TouchableOpacity onPress={() => setCurrentIndex((prev) => Math.max(prev - 1, 0))} style={styles.navButton}>
+              <Text style={styles.navButtonText}>⬅️</Text>
+            </TouchableOpacity>
+
+            <Image
+              source={Platform.OS === "web" ? { uri: selectedImages[currentIndex] } : selectedImages[currentIndex]}
+              style={styles.image}
+              resizeMode="contain"
+            />
+
+            <TouchableOpacity onPress={() => setCurrentIndex((prev) => Math.min(prev + 1, selectedImages.length - 1))} style={styles.navButton}>
+              <Text style={styles.navButtonText}>➡️</Text>
+            </TouchableOpacity>
+          </View>
+        </Animatable.View>
+      </Modal>
+      <Toast />
+      {/* Lottie Animation */}
     </Animatable.View>
   );
 };
+
+const { width } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   container: {
@@ -219,10 +227,17 @@ const styles = StyleSheet.create({
     backgroundColor: "#f2f2f2",
   },
   title: {
-    fontSize: 24,
+    fontSize: 35,
     fontWeight: "bold",
-    marginTop: 60,
-    marginBottom: 70,
+    marginTop: 10,
+    marginBottom: 50,
+  },
+  subtitle: {
+    fontSize: 24,
+    color: "#555",
+    textAlign: "center",
+    fontWeight: "bold",
+    marginBottom: 150,
   },
   card: {
     width: "90%",
@@ -231,10 +246,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     shadowColor: "#000",
     shadowOpacity: 0.1,
-    shadowColor: "black",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 2,
+    shadowRadius: 5,
+    shadowOffset: { width: 0, height: 2 },
     elevation: 3,
   },
   cardTitle: {
@@ -242,6 +255,30 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
     color: "white",
+  },
+  buttonRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
+    marginTop: 150,
+  },
+  button: {
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    borderRadius: 10,
+    alignItems: "center",
+    width: 150,
+    marginHorizontal: 10,
+    shadowColor: "black",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 2,
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold",
+    textAlign: "center",
   },
   modalContainer: {
     flex: 1,
@@ -254,86 +291,39 @@ const styles = StyleSheet.create({
     top: 50,
     right: 20,
     padding: 10,
-    backgroundColor: "#fff",
+    backgroundColor: "red",
     borderRadius: 5,
     zIndex: 10,
-    backgroundColor: "red",
   },
   closeButtonText: {
     fontSize: 16,
     fontWeight: "bold",
     color: "white",
   },
-  imageWrapper: {
-    width: 800,
-    height: 1000,
-    justifyContent: "center",
+  imageNavigation: {
+    flexDirection: "row",
     alignItems: "center",
-    marginHorizontal: 10,
+    justifyContent: "center",
+    marginTop: 40,
+  },
+  navButton: {
+    padding: 10,
+  },
+  navButtonText: {
+    fontSize: 30,
+    color: "white",
   },
   image: {
-    width: 800,
-    height: 900,
-  },
-  btn: {
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    alignItems: "center",
-    marginBottom: 40,
-    width: "100%",
-  },
-  subtitle: {
-    fontSize: 20,
-    color: "#555",
-    textAlign: "center",
-    fontWeight: "bold",
-    marginBottom: 180,
-  },
-  buttonRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "100%",
-    marginTop: 170,
-  },
-  button: {
-    paddingVertical: 30,
-    borderRadius: 10,
-    justifyContent: "center",
-    alignItems: "center",
-    elevation: 5,
-    marginBottom: 30,
-    marginTop: 10,
-    shadowColor: "black",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 2,
-  },
-  forwardButton: {
-    paddingVertical: 15,
-    paddingHorizontal: 30,
-    borderRadius: 10,
-    width: 230,
-    shadowColor: "black",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 2,
-  },
-  forwardButtonText: {
-    color: "#fff",
-    fontSize: 20,
-    fontWeight: "bold",
-    textAlign: "center",
+    width: width * 0.9,
+    height: 600,
+    marginHorizontal: 10,
   },
   lottieButton: {
     position: "absolute",
-    top: 0,
+    top: 20,
     right: 110,
     width: 300,
     height: 300,
-    shadowColor: "black",
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.3,
-    shadowRadius: 2,
   },
   lottie: {
     width: "100%",

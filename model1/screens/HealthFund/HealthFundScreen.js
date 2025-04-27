@@ -1,34 +1,44 @@
-import React from 'react';
+import React from "react";
 import {
   View,
   Text,
   TouchableOpacity,
   StyleSheet,
   ScrollView,
-  Alert,
-} from 'react-native';
+} from "react-native";
+import Toast from "react-native-toast-message";
 
 const HealthFundPage = ({ navigation, handleGlobalClick }) => {
   const buttons = [
-    { 
-      label: 'קביעת תור', 
-      route: 'Reservation', 
+    {
+      label: "קביעת תור",
+      route: "Reservation",
       action: () => {
-        navigation.navigate('Reservation');
+        handleGlobalClick();
+        navigation.navigate("Reservation");
       },
     },
-    { 
-      label: 'תשובות בדיקות', 
-      route: 'TestResults', 
+    {
+      label: "תשובות בדיקות",
+      route: "TestResults",
       action: () => {
-        navigation.navigate('TestResults');
+        handleGlobalClick();
+        navigation.navigate("TestResults");
       },
     },
-    { 
-      label: 'הזמנת תרופות קבועות', 
+    {
+      label: "הזמנת תרופות קבועות",
       action: () => {
-        handleGlobalClick?.('הזמנת תרופות קבועות');
-        Alert.alert('הזמנת תרופות', 'התרופות הוזמנו');
+        handleGlobalClick?.("הזמנת תרופות קבועות");
+        Toast.show({
+          type: "info",
+          text1: "💊 הזמנת תרופות",
+          text2: "התרופות הוזמנו בהצלחה!",
+          visibilityTime: 4000,
+          position: "right",
+          textStyle: { fontSize: 18 },
+          style: { width: "90%", backgroundColor: "#3498db", borderRadius: 10 },
+        });
       },
     },
   ];
@@ -52,6 +62,7 @@ const HealthFundPage = ({ navigation, handleGlobalClick }) => {
           </View>
         ))}
       </View>
+      <Toast />
     </ScrollView>
   );
 };
@@ -59,44 +70,44 @@ const HealthFundPage = ({ navigation, handleGlobalClick }) => {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    alignItems: 'center',
+    alignItems: "center",
     padding: 20,
-    backgroundColor: '#f2f2f2',
+    backgroundColor: "#f2f2f2",
   },
   titleContainer: {
-    width: '100%',
-    alignItems: 'center',
+    width: "100%",
+    alignItems: "center",
     marginBottom: 130,
     marginTop: 100,
   },
   title: {
     fontSize: 32,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
   },
   buttonRowContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    width: '100%',
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    width: "100%",
   },
   buttonWrapper: {
-    width: '48%',
+    width: "48%",
     marginBottom: 20,
   },
   button: {
     paddingVertical: 30,
-    backgroundColor: '#5d9592',
+    backgroundColor: "#5d9592",
     borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     elevation: 5,
   },
   buttonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 20,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
   },
 });
 
