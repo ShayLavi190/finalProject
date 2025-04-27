@@ -11,7 +11,6 @@ import TransferScreen from "./screens/Bank/TransferScreen";
 import ContactBankerScreen from "./screens/Bank/ContactBankerScreen";
 import HealthFundScreen from "./screens/HealthFund/HealthFundScreen";
 import AppointmentScreen from "./screens/HealthFund/ResevationScreen";
-import TestResultsScreen from "./screens/HealthFund/TestsResults";
 import EmergencyPage from "./screens/Emergency/EmergencyScreen";
 import SuperMarketPage from "./screens/SuperMarket/SuperMarketScreen";
 import EditCart from "./screens/SuperMarket/EditCart";

@@ -25,7 +25,6 @@ const SetupScreen = ({ navigation, handleGlobalClick }) => {
   const [bankBranchNumber, setBankBranchNumber] = useState(user.bankBranchNumber || "");
   const [healthFundAccountNumber, setHealthFundAccountNumber] = useState(user.healthFundAccountNumber || "");
 
-  // Important: Set these to different values to avoid conflict
   const [bankOpen, setBankOpen] = useState(false);
   const [selectedBank, setSelectedBank] = useState(user.selectedBank || "");
   const [bankItems, setBankItems] = useState([
@@ -40,9 +39,9 @@ const SetupScreen = ({ navigation, handleGlobalClick }) => {
     { label: "Citibank N.A", value: "22" },
     { label: "מזרחי טפחות", value: "20" },
     { label: "HSBC Bank plc", value: "23" },
-    { label: 'יובנק בע"מ', value: "26" },
+    { label: "יובנק בע\"מ", value: "26" },
     { label: "Barclays Bank PLC", value: "27" },
-    { label: 'בנק למסחר בע"מ', value: "30" },
+    { label: "בנק למסחר בע\"מ", value: "30" },
     { label: "הבינלאומי הראשון לישראל", value: "31" },
     { label: "SBI State Bank of India", value: "39" },
     { label: "מסד", value: "46" },
@@ -74,7 +73,6 @@ const SetupScreen = ({ navigation, handleGlobalClick }) => {
     if (!bankAccountNumber.trim()) errors.push("מספר חשבון בנק נדרש.");
     if (!bankBranchNumber.trim()) errors.push("מספר סניף בנק נדרש.");
     if (!selectedhealthFund) errors.push("נא לבחור קופת חולים.");
-    if (!healthFundAccountNumber.trim()) errors.push("מספר חשבון קופת חולים נדרש.");
 
     if (errors.length > 0) {
       errors.forEach((error, index) => {
@@ -85,12 +83,11 @@ const SetupScreen = ({ navigation, handleGlobalClick }) => {
             text2: error,
             visibilityTime: 4000,
             position: "top",
-            textStyle: { fontSize: 18, textAlign: "right" }, 
+            textStyle: { fontSize: 18, textAlign: "right" },
             style: { width: "90%", backgroundColor: "#ff4d4d", borderRadius: 10, alignSelf: "flex-end" },
           });
-        }, index * 800); 
+        }, index * 800);
       });
-  
       return false;
     }
     return true;
@@ -124,18 +121,22 @@ const SetupScreen = ({ navigation, handleGlobalClick }) => {
     navigation.navigate("Premission");
   };
 
-  // Structure the form to solve dropdown issues
   return (
-    <KeyboardAvoidingView 
-      style={styles.container} 
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       keyboardVerticalOffset={100}
     >
-      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={{ flexGrow: 1, paddingVertical: 30, paddingHorizontal: 20 }}
+        keyboardShouldPersistTaps="handled"
+        nestedScrollEnabled={true}
+      >
         <View style={styles.card}>
           <Text style={styles.title}>הגדרה ראשונית</Text>
           <Text style={styles.subtitle}>כדי להתחבר למערכת יש למלא את כלל הפרטים הבאים. חשוב להדגיש שהפרטיכם לא ישמרו ולא יעשה בהם שימוש.</Text>
-          
+
           {/* Personal Info Section */}
           <TextInput style={styles.input} placeholder="שם מלא" value={name} onChangeText={setName} />
           <TextInput style={styles.input} placeholder="מספר זיהוי משתתף" value={idr} onChangeText={(text) => /^\d*$/.test(text) && setIdr(text)} keyboardType="numeric" />
@@ -143,93 +144,65 @@ const SetupScreen = ({ navigation, handleGlobalClick }) => {
           <TextInput style={styles.input} placeholder="כתובת מגורים" value={address} onChangeText={setAddress} />
           <TextInput style={styles.input} placeholder="מספר טלפון" value={phone} onChangeText={(text) => /^\d*$/.test(text) && setPhone(text)} keyboardType="numeric" />
           <TextInput style={styles.input} placeholder="טלפון חירום" value={emergencyPhone} onChangeText={(text) => /^\d*$/.test(text) && setEmergencyPhone(text)} keyboardType="numeric" />
-          
+
           {/* Bank Section */}
-          <View style={styles.sectionContainer}>
-            {/* Bank Dropdown */}
-            <View style={styles.dropdownSection}>
+          <View style={{ zIndex: 5000 }}>
+            <DropDownPicker
+              open={bankOpen}
+              value={selectedBank}
+              items={bankItems}
+              setOpen={(open) => {
+                setBankOpen(open);
+                if (open) setHealthOpen(false);
+              }}
+              setValue={setSelectedBank}
+              setItems={setBankItems}
+              placeholder="בחר בנק..."
+              style={styles.dropdown}
+              textStyle={styles.dropdownText}
+              dropDownContainerStyle={styles.dropdownContainer}
+              listMode="SCROLLVIEW"
+              zIndex={5000}
+              zIndexInverse={0}
+              onPress={handleGlobalClick}
+              dropDownDirection="AUTO"
+            />
+          </View>
+
+          {!bankOpen && (
+            <>
+              <TextInput style={styles.input} placeholder="מספר חשבון בנק" value={bankAccountNumber} onChangeText={setBankAccountNumber} />
+              <TextInput style={styles.input} placeholder="מספר סניף בנק" value={bankBranchNumber} onChangeText={setBankBranchNumber} />
+            </>
+          )}
+
+          {/* Health Fund Section */}
+          {!bankOpen && (
+            <View style={{ zIndex: 4000 }}>
               <DropDownPicker
-                open={bankOpen}
-                value={selectedBank}
-                items={bankItems}
+                open={healthOpen}
+                value={selectedhealthFund}
+                items={healthItems}
                 setOpen={(open) => {
-                  setBankOpen(open);
-                  // Close other dropdown if this one is opening
-                  if (open) setHealthOpen(false);
+                  setHealthOpen(open);
+                  if (open) setBankOpen(false);
                 }}
-                setValue={setSelectedBank}
-                setItems={setBankItems}
-                placeholder="בחר בנק..."
+                setValue={setSelectedhealthFund}
+                setItems={setHealthItems}
+                placeholder="בחר קופת חולים..."
                 style={styles.dropdown}
                 textStyle={styles.dropdownText}
                 dropDownContainerStyle={styles.dropdownContainer}
                 listMode="SCROLLVIEW"
-                zIndex={3000}
-                zIndexInverse={1000}
+                zIndex={4000}
+                zIndexInverse={0}
                 onPress={handleGlobalClick}
+                dropDownDirection="AUTO"
               />
-            </View>
-            
-            {/* Only show these inputs if bank dropdown is closed */}
-            {!bankOpen && (
-              <>
-                <TextInput 
-                  style={styles.input} 
-                  placeholder="מספר חשבון בנק" 
-                  value={bankAccountNumber} 
-                  onChangeText={setBankAccountNumber} 
-                />
-                <TextInput 
-                  style={styles.input} 
-                  placeholder="מספר סניף בנק" 
-                  value={bankBranchNumber} 
-                  onChangeText={setBankBranchNumber} 
-                />
-              </>
-            )}
-          </View>
-
-          {/* Health Fund Section - Only show if bank dropdown is closed */}
-          {!bankOpen && (
-            <View style={styles.sectionContainer}>
-              {/* Health Fund Dropdown */}
-              <View style={styles.dropdownSection}>
-                <DropDownPicker
-                  open={healthOpen}
-                  value={selectedhealthFund}
-                  items={healthItems}
-                  setOpen={(open) => {
-                    setHealthOpen(open);
-                    // Close other dropdown if this one is opening
-                    if (open) setBankOpen(false);
-                  }}
-                  setValue={setSelectedhealthFund}
-                  setItems={setHealthItems}
-                  placeholder="בחר קופת חולים..."
-                  style={styles.dropdown}
-                  textStyle={styles.dropdownText}
-                  dropDownContainerStyle={styles.dropdownContainer}
-                  listMode="SCROLLVIEW"
-                  zIndex={2000}
-                  zIndexInverse={2000}
-                  onPress={handleGlobalClick}
-                />
-              </View>
-              
-              {/* Only show this input if health dropdown is closed */}
-              {!healthOpen && (
-                <TextInput 
-                  style={styles.input} 
-                  placeholder="מספר חשבון קופת חולים" 
-                  value={healthFundAccountNumber} 
-                  onChangeText={setHealthFundAccountNumber} 
-                />
-              )}
             </View>
           )}
 
-          {/* Button - Only show if both dropdowns are closed */}
-          {!bankOpen && !healthOpen && (
+          {!healthOpen && !bankOpen && (
             <View style={styles.buttonContainer}>
               <Button title="שמירה" onPress={handleSave} />
             </View>
@@ -243,73 +216,56 @@ const SetupScreen = ({ navigation, handleGlobalClick }) => {
 };
 
 const styles = StyleSheet.create({
-  container: { 
+  container: {
     flex: 1,
     backgroundColor: "#f2f2f2",
   },
-  scrollView: {
-    flex: 1,
-    width: "100%",
-  },
-  scrollContent: {
-    paddingVertical: 30,
-    paddingHorizontal: 20,
-  },  
-  card: { 
+  card: {
     alignSelf: "center",
-    width: "90%", 
-    maxWidth: 800, 
-    backgroundColor: "#fff", 
-    borderRadius: 10, 
-    padding: 20, 
+    width: "90%",
+    maxWidth: 800,
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    padding: 20,
     elevation: 5,
   },
-  
-  title: { 
-    fontSize: 24, 
-    fontWeight: "bold", 
-    textAlign: "center", 
-    marginBottom: 10 
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginBottom: 10,
   },
-  subtitle: { 
-    fontSize: 15, 
-    fontWeight: "bold", 
-    textAlign: "center", 
-    marginBottom: 10 
+  subtitle: {
+    fontSize: 15,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginBottom: 10,
   },
-  input: { 
-    borderWidth: 1, 
-    borderColor: "#ccc", 
-    borderRadius: 5, 
-    padding: 12, 
-    fontSize: 16, 
-    textAlign: "center", 
+  input: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 5,
+    padding: 12,
+    fontSize: 16,
+    textAlign: "center",
     marginBottom: 15,
   },
-  sectionContainer: {
-    marginBottom: 15,
-  },
-  dropdownSection: {
-    marginBottom: 15,
-    height: 50,
-    zIndex: 5000,
-  },
-  dropdown: { 
+  dropdown: {
     borderColor: "#ccc",
   },
   dropdownContainer: {
     borderColor: "#ccc",
-    elevation: 5, // for Android
-    shadowColor: "#000", // for iOS
+    elevation: 5,
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
   },
-  dropdownText: { 
-    textAlign: "center", 
-    fontSize: 16 
+  dropdownText: {
+    textAlign: "center",
+    fontSize: 16,
   },
-  buttonContainer: { 
+  buttonContainer: {
     marginTop: 20,
   },
 });

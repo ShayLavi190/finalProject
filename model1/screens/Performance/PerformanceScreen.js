@@ -115,6 +115,8 @@ const PerformanceGraphs = ({ globalTasks = [], setGlobalTasks }) => {
       <ScrollView
         contentContainerStyle={styles.scrollContainer}
         showsVerticalScrollIndicator
+        keyboardShouldPersistTaps="handled"
+        nestedScrollEnabled={true}
       >
         <View style={styles.titleContainer}>
           <Text style={styles.title}>Performance Metrics</Text>
@@ -180,10 +182,12 @@ const chartConfig = {
 const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
+    minHeight: "100%",
     paddingVertical: 20,
     paddingHorizontal: 10,
     backgroundColor: "#f2f2f2",
   },
+
   titleContainer: {
     marginBottom: 2,
     alignItems: "center",
