@@ -252,13 +252,11 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   scrollContent: {
-    flexGrow: 1,
-    justifyContent: "center",
-    alignItems: "center",
     paddingVertical: 30,
     paddingHorizontal: 20,
-  },
+  },  
   card: { 
+    alignSelf: "center",
     width: "90%", 
     maxWidth: 800, 
     backgroundColor: "#fff", 
@@ -266,6 +264,7 @@ const styles = StyleSheet.create({
     padding: 20, 
     elevation: 5,
   },
+  
   title: { 
     fontSize: 24, 
     fontWeight: "bold", 
