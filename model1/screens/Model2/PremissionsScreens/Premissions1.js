@@ -101,7 +101,7 @@ const Premissions1 = ({ navigation,handleGlobalClick }) => {
                 thumbColor={publicServices ? "#f5dd4b" : "#f4f3f4"}
                 width = "200"
                 ios_backgroundColor="#3e3e3e"
-                onValueChange={() => {setPublicServices((prevState) => !prevState); handleGlobalClick();}}
+                onValueChange={() => {setPublicServices((prevState) => !prevState);}}
                 value={publicServices}
             />
             <Text style={styles.input}>שימוש בשירותים ציבוריים</Text>
@@ -117,7 +117,7 @@ const Premissions1 = ({ navigation,handleGlobalClick }) => {
                 thumbColor={healthMonitoring ? "#f5dd4b" : "#f4f3f4"}
                 width = "200"
                 ios_backgroundColor="#3e3e3e"
-                onValueChange={() => {handleGlobalClick();setHealthMonitoring((prevState) => !prevState)}}
+                onValueChange={() => {setHealthMonitoring((prevState) => !prevState)}}
                 value={healthMonitoring}
             />
             <Text style={styles.input}>מעקב אחר מצב בריאותי</Text>
@@ -133,7 +133,7 @@ const Premissions1 = ({ navigation,handleGlobalClick }) => {
                 thumbColor={emergencyContacts ? "#f5dd4b" : "#f4f3f4"}
                 width = "200"
                 ios_backgroundColor="#3e3e3e"
-                onValueChange={() =>{handleGlobalClick(); setEmergencyContacts((prevState) => !prevState);}}
+                onValueChange={() =>{setEmergencyContacts((prevState) => !prevState);}}
                 value={emergencyContacts}
             />
             <Text style={styles.input}>גישה לפרטי איש קשר למקרה חירום</Text>
@@ -149,7 +149,7 @@ const Premissions1 = ({ navigation,handleGlobalClick }) => {
                 thumbColor={shareHealthInfo ? "#f5dd4b" : "#f4f3f4"}
                 width = "200"
                 ios_backgroundColor="#3e3e3e"
-                onValueChange={() => {handleGlobalClick(); setShareHealthInfo((prevState) => !prevState)}}
+                onValueChange={() => {setShareHealthInfo((prevState) => !prevState)}}
                 value={shareHealthInfo}
             />
             <Text style={styles.input}>שיתוף מידע עם גורמים בריאותיים</Text>
