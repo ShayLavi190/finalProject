@@ -139,8 +139,8 @@ const SetupScreen = ({ navigation, handleGlobalClick }) => {
 
           {/* Personal Info Section */}
           <TextInput style={styles.input} placeholder="שם מלא" value={name} onChangeText={setName} />
-          <TextInput style={styles.input} placeholder="מספר זיהוי משתתף" value={id} onChangeText={(text) => /^\d*$/.test(text) && setIdr(text)} keyboardType="numeric" />
-          <TextInput style={styles.input} placeholder="תעודת זהות" value={idr} onChangeText={(text) => /^\d*$/.test(text) && setId(text)} keyboardType="numeric" />
+          <TextInput style={styles.input} placeholder="מספר זיהוי משתתף" value={id} onChangeText={(text) => /^\d*$/.test(text) && setId(text)} keyboardType="numeric" />
+          <TextInput style={styles.input} placeholder="תעודת זהות" value={idr} onChangeText={(text) => /^\d*$/.test(text) && setIdr(text)} keyboardType="numeric" />
           <TextInput style={styles.input} placeholder="כתובת מגורים" value={address} onChangeText={setAddress} />
           <TextInput style={styles.input} placeholder="מספר טלפון" value={phone} onChangeText={(text) => /^\d*$/.test(text) && setPhone(text)} keyboardType="numeric" />
           <TextInput style={styles.input} placeholder="טלפון חירום" value={emergencyPhone} onChangeText={(text) => /^\d*$/.test(text) && setEmergencyPhone(text)} keyboardType="numeric" />
