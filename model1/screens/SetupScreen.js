@@ -65,7 +65,7 @@ const SetupScreen = ({ navigation, handleGlobalClick }) => {
 
     if (!name.trim()) errors.push("שם מלא נדרש.");
     if (!idr.trim()) errors.push("מספר זיהוי משתתף נדרש.");
-    if (!idr.trim() || id.length !== 9) errors.push("תעודת זהות חייבת להיות 9 ספרות.");
+    if (!idr.trim() || idr.length !== 9) errors.push("תעודת זהות חייבת להיות 9 ספרות.");
     if (!address.trim()) errors.push("כתובת מגורים נדרשת.");
     if (!phone.trim() || phone.length !== 10) errors.push("מספר טלפון חייב להיות 10 ספרות.");
     if (!emergencyPhone.trim() || emergencyPhone.length !== 10) errors.push("מספר חירום חייב להיות 10 ספרות.");
