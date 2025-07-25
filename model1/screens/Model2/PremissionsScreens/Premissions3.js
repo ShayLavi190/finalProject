@@ -122,7 +122,7 @@ const Premissions3 = ({ navigation,handleGlobalClick }) => {
                 thumbColor={socialInteraction ? "#f5dd4b" : "#f4f3f4"}
                 width = "200"
                 ios_backgroundColor="#3e3e3e"
-                onValueChange={() => {handleGlobalClick();setSocialInteraction((prevState) => !prevState);}}
+                onValueChange={() => {setSocialInteraction((prevState) => !prevState);}}
                 value={socialInteraction}
             />
             <Text style={styles.input}>הרשאה לניהול דו שיח</Text>
@@ -138,7 +138,7 @@ const Premissions3 = ({ navigation,handleGlobalClick }) => {
                 thumbColor={financialActions ? "#f5dd4b" : "#f4f3f4"}
                 width = "200"
                 ios_backgroundColor="#3e3e3e"
-                onValueChange={() => {handleGlobalClick();setFinancialActions((prevState) => !prevState);}}
+                onValueChange={() => {setFinancialActions((prevState) => !prevState);}}
                 value={financialActions}
             />
             <Text style={styles.input}>הרשאה לביצוע פעולות פיננסיות</Text>
@@ -154,7 +154,7 @@ const Premissions3 = ({ navigation,handleGlobalClick }) => {
                 thumbColor={automatedTasks ? "#f5dd4b" : "#f4f3f4"}
                 width = "200"
                 ios_backgroundColor="#3e3e3e"
-                onValueChange={() => {handleGlobalClick();setAutomatedTasks((prevState) => !prevState);}}
+                onValueChange={() => {setAutomatedTasks((prevState) => !prevState);}}
                 value={automatedTasks}
             />
             <Text style={styles.input}>הרשאה לביצוע משימות באופן אוטומטי</Text>
@@ -170,7 +170,7 @@ const Premissions3 = ({ navigation,handleGlobalClick }) => {
                 thumbColor={smartHomeControl ? "#f5dd4b" : "#f4f3f4"}
                 width = "200"
                 ios_backgroundColor="#3e3e3e"
-                onValueChange={() => {handleGlobalClick();setSmartHomeControl((prevState) => !prevState)}}
+                onValueChange={() => {setSmartHomeControl((prevState) => !prevState)}}
                 value={smartHomeControl}
             />
             <Text style={styles.input}>הרשאה לשליטה על מערכות בית חכם</Text>
@@ -186,7 +186,7 @@ const Premissions3 = ({ navigation,handleGlobalClick }) => {
                 thumbColor={familyUpdates ? "#f5dd4b" : "#f4f3f4"}
                 width = "200"
                 ios_backgroundColor="#3e3e3e"
-                onValueChange={() => {handleGlobalClick();setFamilyUpdates((prevState) => !prevState);}}
+                onValueChange={() => {setFamilyUpdates((prevState) => !prevState);}}
                 value={familyUpdates}
             />
             <Text style={styles.input}>הרשאה לעידכונים חשובים לאיש קשר שהוזן</Text>

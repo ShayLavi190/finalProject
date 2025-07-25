@@ -122,7 +122,7 @@ const Premissions2 = ({ navigation,handleGlobalClick }) => {
                 thumbColor={cameraAccess ? "#f5dd4b" : "#f4f3f4"}
                 width = "200"
                 ios_backgroundColor="#3e3e3e"
-                onValueChange={() => {handleGlobalClick();setCameraAccess((prevState) => !prevState);}}
+                onValueChange={() => {setCameraAccess((prevState) => !prevState);}}
                 value={cameraAccess}
             />
             <Text style={styles.input}>גישה למצלמה</Text>
@@ -138,7 +138,7 @@ const Premissions2 = ({ navigation,handleGlobalClick }) => {
                 thumbColor={robotTracking ? "#f5dd4b" : "#f4f3f4"}
                 width = "200"
                 ios_backgroundColor="#3e3e3e"
-                onValueChange={() => {handleGlobalClick();setRobotTracking((prevState) => !prevState);}}
+                onValueChange={() => {setRobotTracking((prevState) => !prevState);}}
                 value={robotTracking}
             />
             <Text style={styles.input}>מעקב פיזי של הרובוט אחריך</Text>
@@ -154,7 +154,7 @@ const Premissions2 = ({ navigation,handleGlobalClick }) => {
                 thumbColor={voiceRecognition ? "#f5dd4b" : "#f4f3f4"}
                 width = "200"
                 ios_backgroundColor="#3e3e3e"
-                onValueChange={() => {handleGlobalClick();setVoiceRecognition((prevState) => !prevState);}}
+                onValueChange={() => {setVoiceRecognition((prevState) => !prevState);}}
                 value={voiceRecognition}
             />
             <Text style={styles.input}>גישה למיקרופון וזיהוי קולי</Text>
@@ -170,7 +170,7 @@ const Premissions2 = ({ navigation,handleGlobalClick }) => {
                 thumbColor={customization ? "#f5dd4b" : "#f4f3f4"}
                 width = "200"
                 ios_backgroundColor="#3e3e3e"
-                onValueChange={() => {handleGlobalClick();setCustomization((prevState) => !prevState);}}
+                onValueChange={() => {setCustomization((prevState) => !prevState);}}
                 value={customization}
             />
             <Text style={styles.input}>גישה לשימוש במידע על שימושך באפליקציה</Text>
@@ -186,7 +186,7 @@ const Premissions2 = ({ navigation,handleGlobalClick }) => {
                 thumbColor={maintenance ? "#f5dd4b" : "#f4f3f4"}
                 width = "200"
                 ios_backgroundColor="#3e3e3e"
-                onValueChange={() => {handleGlobalClick();setMaintenance((prevState) => !prevState);}}
+                onValueChange={() => {setMaintenance((prevState) => !prevState);}}
                 value={maintenance}
             />
             <Text style={styles.input}>הרשאה לעידכוני מערכת אוטומטיים</Text>

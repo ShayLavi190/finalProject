@@ -75,7 +75,6 @@ const PremissionScreen = ({ navigation, handleGlobalClick }) => {
   };
 
   const toggleSwitch = (key) => {
-    handleGlobalClick();
     setPermissions((prevState) => ({
       ...prevState,
       [key]: !prevState[key],
