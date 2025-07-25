@@ -65,17 +65,17 @@ const SetUp23 = ({ navigation, handleGlobalClick }) => {
       if (!validateInput(field, formData[field])) {
         switch (field) {
           case 'street':
-            errors.push('רחוב נדרש. שדה זה חובה');
-            break;
+          errors.push('Street is required. This field is required');
+          break;
           case 'number':
-            errors.push('מספר בית ודירה אם יש נדרש. שדה זה חובה');
-            break;
+          errors.push('House and apartment number if any is required. This field is required');
+          break;
           case 'city':
-            errors.push('נא להזין את העיר בה אתה מתגורר. שדה זה חובה');
-            break;
+          errors.push('Please enter the city where you live. This field is required');
+          break;
           case 'country':
-            errors.push('נא להזין את המדינה בה אתם גרים. שדה זה חובה');
-            break;
+          errors.push('Please enter the country where you live. This field is required');
+          break;
         }
       }
     });
@@ -127,14 +127,14 @@ const SetUp23 = ({ navigation, handleGlobalClick }) => {
               Toast.show({
                 type: 'error',
                 position: 'bottom',
-                text1: 'שגיאה',
+                text1: 'Error',
                 text2: error,
                 visibilityTime: 4000,
                 autoHide: true,
               });
             }, index * 800);
           })
-        : Alert.alert('שגיאה', errors.join('\n'));
+        : Alert.alert('error', errors.join('\n'));
       return;
     }
 
@@ -184,8 +184,8 @@ const SetUp23 = ({ navigation, handleGlobalClick }) => {
       if (!audioRef.current) {
         Toast.show({
           type: 'error',
-          text1: 'שגיאה',
-          text2: 'לא ניתן להפעיל את ההקלטה',
+          text1: 'Error',
+          text2: 'Recording cannot be started',
         });
         return;
       }
@@ -212,8 +212,8 @@ const SetUp23 = ({ navigation, handleGlobalClick }) => {
           console.error('Web audio error:', error);
           Toast.show({
             type: 'error',
-            text1: 'שגיאה',
-            text2: 'לא ניתן להפעיל את ההקלטה',
+            text1: 'Error',
+            text2: 'Recording cannot be started',
           });
         }
       }
@@ -253,7 +253,7 @@ const SetUp23 = ({ navigation, handleGlobalClick }) => {
       }
     } catch (error) {
       console.error('Native audio error:', error);
-      Alert.alert('שגיאה', 'לא ניתן להפעיל את ההקלטה');
+      Alert.alert('Error', 'Cannot play recording');
     }
   }, [
     handleGlobalClick, 
@@ -270,10 +270,10 @@ const SetUp23 = ({ navigation, handleGlobalClick }) => {
     }
 
     const explanations = {
-      street: 'אנא הזן את שם הרחוב שלך.',
-      number: 'אנא הזן את מספר הבית של ומספר דירה אם יש. זהו שדה חובה',
-      city: 'אנא הזן את שם העיר שלך.',
-      country: 'אנא הזן את שם המדינה שלך.',
+      street: 'Please enter your street name.',
+      number: 'Please enter the house number and apartment number if applicable. This is a required field.',
+      city: 'Please enter your city name.',
+      country: 'Please enter your country name.',
     };
 
     setModalState({
@@ -349,12 +349,12 @@ const SetUp23 = ({ navigation, handleGlobalClick }) => {
         )}
         
         <View style={styles.card}>
-          <Text style={styles.title}>הגדרת כתובת לקוח</Text>
-          <Text style={styles.subtitle}>
-            כדי שהרובוט המטפל יוכל להפעיל את שירותיו לטובך נצטרך את פרטי
-            המגורים. כלל המידע נשמר בצורה מאובטחת ואינו משותף עם שום גורם חיצוני
-            ללא ביצוע שירות ייעודי.
-          </Text>
+        <Text style={styles.title}>Setting a Client Address</Text>
+        <Text style={styles.subtitle}>
+          In order for the robot caregiver to be able to operate its services for your benefit, we will need your residential
+          details. All information is stored securely and is not shared with any external
+          party without performing a dedicated service.
+        </Text>
 
           {/* Inputs Rendering */}
           {Object.keys(formData).map((field) => (
@@ -370,10 +370,10 @@ const SetUp23 = ({ navigation, handleGlobalClick }) => {
               <TextInput
                 style={styles.input}
                 placeholder={
-                  field === 'street' ? 'רחוב' :
-                  field === 'number' ? 'מספר בית ודירה אם יש' :
-                  field === 'city' ? 'עיר' :
-                  'מדינה'
+                  field === 'street' ? 'Street' :
+                  field === 'number' ? 'House number and apartment if applicable' :
+                  field === 'city' ? 'City' :
+                  'Country'
                 }
                 value={formData[field]}
                 onChangeText={(value) => {
@@ -400,7 +400,7 @@ const SetUp23 = ({ navigation, handleGlobalClick }) => {
                 style={[{ backgroundColor: "green" }, styles.button]}
                 onPress={handleMoveForward}
               >
-                <Text style={styles.buttonText}>שמור</Text>
+                <Text style={styles.buttonText}>Save</Text>
               </TouchableOpacity>
             </View>
         </View>
@@ -423,7 +423,7 @@ const SetUp23 = ({ navigation, handleGlobalClick }) => {
                 style={[styles.button, styles.closeBtn]}
                 onPress={closeModal}
               >
-                <Text style={styles.buttonText}>סגור</Text>
+                <Text style={styles.buttonText}>Close</Text>
               </TouchableOpacity>
             </Animatable.View>
           </View>
@@ -432,7 +432,7 @@ const SetUp23 = ({ navigation, handleGlobalClick }) => {
           <TouchableOpacity
             style={styles.lottieButton}
             onPress={handleAudioPlayback}
-            accessibilityLabel="לחץ לשמיעת הדרכה קולית"
+            accessibilityLabel="Click to hear audio guidance"
           >
             <LottieView
               source={robotAnimation}

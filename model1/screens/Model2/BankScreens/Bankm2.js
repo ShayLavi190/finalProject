@@ -29,7 +29,7 @@ const Bankm2 = ({ navigation,handleGlobalClick }) => {
   const handelBank = () => {
     Toast.show({
       type: "success",
-      text1: "הועברת למצב חשבון",
+      text1: "You have been transferred to account status",
       visibilityTime: 4000,
       position: "top",
       textStyle: { fontSize: 18, textAlign: "right" }, 
@@ -52,29 +52,29 @@ const Bankm2 = ({ navigation,handleGlobalClick }) => {
       <ScrollView contentContainerStyle={styles.container}>
       <Toast/>
         <View style={styles.titleContainer}>
-          <Text style={styles.title}>ברוך הבא לשירותי הבנק</Text>
+          <Text style={styles.title}>Welcome to the bank's services</Text>
         </View>
         <View>
-          <Text style={styles.subtitle}>
-            כדי לנווט בין השירותים השונים ניתן לעבור למסך העברה משם לשאר השירותים
-            שניתנים. למצב חשבון ניתן ללחוץ על המקש במסך זה
-          </Text>
+        <Text style={styles.subtitle}>
+        To navigate between the various services, you can go to the Transfer screen and from there to the other services
+        provided. For account status, you can press the key on this screen
+        </Text>
         </View>
         <TouchableOpacity style={[styles.button, styles.forwardButton,{backgroundColor:'#52bfbf',marginTop:'150'}]} onPress={handelBank}>
-            <Text style={styles.forwardButtonText}>מצב חשבון</Text>
+        <Text style={styles.forwardButtonText}>Account Status</Text>
         </TouchableOpacity>
         <View style={styles.buttonRow}>
         <TouchableOpacity
             style={[styles.button, styles.forwardButton,{backgroundColor:'orange'}]}
             onPress={() => handleNavigate("Transaction", "forward")}
           >
-            <Text style={styles.forwardButtonText}>העברה</Text>
+            <Text style={styles.forwardButtonText}>Bank Transfer</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.button, styles.forwardButton,{backgroundColor:'green'}]}
             onPress={() => handleNavigate("Home1", "back")}
           >
-            <Text style={styles.forwardButtonText}>מסך בית</Text>
+            <Text style={styles.forwardButtonText}>Home Page</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

@@ -17,31 +17,31 @@ const AUDIO_URL = "https://raw.githubusercontent.com/ShayLavi190/finalProject/ma
 const games = [
   {
     id: "1",
-    name: "משחק זיכרון",
+    name: "Memory Game",
     backgroundColor: "#ffd358",
     link: "https://www.memozor.com/memory-games",
   },
   {
     id: "2",
-    name: "סודוקו",
+    name: "Sudoku",
     backgroundColor: "#809682",
     link: "https://www.websudoku.com/",
   },
   {
     id: "3",
-    name: "טריוויה",
+    name: "Trivia",
     backgroundColor: "#193952",
     link: "https://www.funtrivia.com/",
   },
   {
     id: "4",
-    name: "שחמט",
+    name: "Chess",
     backgroundColor: "#fbe9d5",
     link: "https://www.chess.com/play",
   },
   {
     id: "5",
-    name: "חידון גיאוגרפיה",
+    name: "Geography Quiz",
     backgroundColor: "#b79d7f",
     link: "https://geoguessr.com/",
   },
@@ -60,13 +60,13 @@ const Games3 = ({ handleGlobalClick, navigation }) => {
       const canOpen = await Linking.canOpenURL(url);
       if (canOpen) {
         await Linking.openURL(url);
-        showToast("נפתח בדפדפן", `מעבר ל${name}`);
+        showToast("Open in browser", `Go to ${name}`);
         handleGlobalClick("Opened external link: " + url);
       } else {
-        showToast("שגיאה", "לא ניתן לפתוח את הקישור");
+        showToast("Error", "Cannot open link");
       }
     } catch (error) {
-      showToast("שגיאה", "אירעה שגיאה בפתיחת הקישור");
+      showToast("Error", "An error occurred while opening the link");
       console.error("Error opening URL:", error);
     }
   };
@@ -145,9 +145,9 @@ const Games3 = ({ handleGlobalClick, navigation }) => {
       <View style={styles.container}>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <Toast />
-          <Text style={styles.title}>משחקים</Text>
+          <Text style={styles.title}>Games</Text>
           <Text style={styles.subtitle}>
-            על מנת לשחק במשחקים לחץ על משחק שברצונך לשחק
+            To play games click on the game you want to play
           </Text>
           <View style={styles.buttonRowContainer}>
             {games.map((game) => (
@@ -172,7 +172,7 @@ const Games3 = ({ handleGlobalClick, navigation }) => {
               ]}
               onPress={() => handleNavigate("Home13", "back")}
             >
-              <Text style={styles.forwardButtonText}>מסך בית</Text>
+              <Text style={styles.forwardButtonText}>Home screen</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[
@@ -182,7 +182,7 @@ const Games3 = ({ handleGlobalClick, navigation }) => {
               ]}
               onPress={() => handleNavigate("Entertainment3", "back")}
             >
-              <Text style={styles.forwardButtonText}>שירותי בידור</Text>
+              <Text style={styles.forwardButtonText}>Entertainment Services</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>

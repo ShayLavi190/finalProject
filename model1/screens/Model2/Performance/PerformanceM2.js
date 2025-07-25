@@ -32,7 +32,7 @@ const PerformanceM2 = ({ globalTasks = [], setGlobalTasks, navigation }) => {
     const indicators = [];
 
     const taskOptimalModel1 = [
-      { clicks: 26, pagesChanges: 2 },
+      { clicks: 12, pagesChanges: 7 },
       { clicks: 4, pagesChanges: 2 },
       { clicks: 3, pagesChanges: 2 },
     ];
@@ -192,21 +192,21 @@ const PerformanceM2 = ({ globalTasks = [], setGlobalTasks, navigation }) => {
         >
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
-              <Text style={styles.modalTitle}>אזהרה</Text>
-              <Text style={styles.modalText}>האם אתה בטוח שברצונך לאפס את נתוני הביצועים?</Text>
+                <Text style={styles.modalTitle}>Warning</Text>
+                <Text style={styles.modalText}>Are you sure you want to reset performance data?</Text>
               <View style={styles.modalButtons}>
                 <Pressable
                   style={[styles.button, styles.buttonCancel]}
                   onPress={() => setConfirmModalVisible(false)}
                 >
-                  <Text style={styles.textStyle}>ביטול</Text>
+                  <Text style={styles.textStyle}>Cancel</Text>
                 </Pressable>
                 <Pressable
                   style={[styles.button, styles.buttonConfirm]}
                   onPress={resetPerformance}
                   disabled={isResetting}
                 >
-                  <Text style={styles.textStyle}>אפס</Text>
+                  <Text style={styles.textStyle}>Reset</Text>
                 </Pressable>
               </View>
             </View>

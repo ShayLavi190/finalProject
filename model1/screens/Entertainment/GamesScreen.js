@@ -11,11 +11,11 @@ import {
 import { WebView } from "react-native-webview";
 
 const games = [
-  { id: "1", name: "משחק זיכרון", link: "https://www.memozor.com/memory-games" },
-  { id: "2", name: "סודוקו", link: "https://www.websudoku.com/" },
-  { id: "3", name: "טריוויה", link: "https://www.funtrivia.com/" },
-  { id: "4", name: "שחמט", link: "https://www.chess.com/play" },
-  { id: "5", name: "חידון גיאוגרפיה", link: "https://geoguessr.com/" },
+  { id: "1", name: "Memory Game", link: "https://www.memozor.com/memory-games" },
+  { id: "2", name: "Sudoku", link: "https://www.websudoku.com/" },
+  { id: "3", name: "Trivia", link: "https://www.funtrivia.com/" },
+  { id: "4", name: "Chess", link: "https://www.chess.com/play" },
+  { id: "5", name: "Geography Quiz", link: "https://geoguessr.com/" },
 ];
 
 const GamesPage = ({ handleGlobalClick }) => {
@@ -23,7 +23,7 @@ const GamesPage = ({ handleGlobalClick }) => {
   const [isWebViewVisible, setWebViewVisible] = useState(false);
 
   const openGame = (url) => {
-    handleGlobalClick(`פתיחת משחק: ${url}`);
+    handleGlobalClick(`Open game: ${url}`);
 
     if (Platform.OS === "web") {
       Linking.openURL(url);
@@ -36,7 +36,7 @@ const GamesPage = ({ handleGlobalClick }) => {
   const closeWebView = () => {
     setCurrentUrl("");
     setWebViewVisible(false);
-    handleGlobalClick("סגירת משחק");
+    handleGlobalClick("Close game");
   };
 
   return (
@@ -44,13 +44,13 @@ const GamesPage = ({ handleGlobalClick }) => {
       {isWebViewVisible ? (
         <View style={styles.webviewContainer}>
           <TouchableOpacity style={styles.closeButton} onPress={closeWebView}>
-            <Text style={styles.closeButtonText}>סגור</Text>
+            <Text style={styles.closeButtonText}>Close</Text>
           </TouchableOpacity>
           <WebView source={{ uri: currentUrl }} style={styles.webview} />
         </View>
       ) : (
         <ScrollView contentContainerStyle={styles.scrollContainer}>
-          <Text style={styles.title}>משחקים</Text>
+          <Text style={styles.title}>Games</Text>
           <View style={styles.buttonRowContainer}>
             {games.map((game) => (
               <TouchableOpacity

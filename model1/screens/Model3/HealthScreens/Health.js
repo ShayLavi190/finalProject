@@ -37,15 +37,14 @@ const Health3 = ({ navigation, handleGlobalClick }) => {
 
   const handelBuy = () => {
     stopAudio(); // Add this line to stop audio when starting conversation
-        Toast.show({
-          type: "info",
-          text1: "הזמנת תרופות",
-          text2: "התרופות הוזמנו",
-          visibilityTime: 4000,
-          position: "bottom",
-          textStyle: { fontSize: 18 },
-        });    
-        handleGlobalClick();    Alert.alert("התרופות הוזמנו");
+    Toast.show({
+      type: "info",
+      text1: "Order medication",
+      text2: "Medicines ordered",
+      visibilityTime: 4000,
+      position: "bottom",
+      textStyle: { fontSize: 18 },
+    }); 
     handleGlobalClick();
   };
 
@@ -93,12 +92,12 @@ const Health3 = ({ navigation, handleGlobalClick }) => {
       <ScrollView contentContainerStyle={styles.container}>
         <Toast />
         <View style={styles.titleContainer}>
-          <Text style={styles.title}>ברוך הבא לשירותי קופת חולים</Text>
+          <Text style={styles.title}>Welcome to Health Insurance Services</Text>
         </View>
         <View>
           <Text style={styles.subtitle}>
-            כדי לנווט בין השירותים השונים לחץ על הכפתור המתאים לשירות שברצונך
-            להשתמש בו
+            To navigate between the different services, click on the button corresponding to the service you want
+            to use
           </Text>
         </View>
         <View style={styles.buttonRow}>
@@ -110,7 +109,7 @@ const Health3 = ({ navigation, handleGlobalClick }) => {
             ]}
             onPress={() => handleNavigate("Results3", "forward")}
           >
-            <Text style={styles.forwardButtonText}>תוצאות בדיקות</Text>
+            <Text style={styles.forwardButtonText}>Test results</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[
@@ -120,7 +119,7 @@ const Health3 = ({ navigation, handleGlobalClick }) => {
             ]}
             onPress={handelBuy}
           >
-            <Text style={styles.forwardButtonText}>הזמנת סל תרופות</Text>
+            <Text style={styles.forwardButtonText}>Order a basket of medicines</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.buttonRow}>
@@ -132,7 +131,7 @@ const Health3 = ({ navigation, handleGlobalClick }) => {
             ]}
             onPress={() => handleNavigate("Schedule3", "forward")}
           >
-            <Text style={styles.forwardButtonText}>קביעת תור</Text>
+            <Text style={styles.forwardButtonText}>Schedule an appointment</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[
@@ -142,7 +141,7 @@ const Health3 = ({ navigation, handleGlobalClick }) => {
             ]}
             onPress={() => handleNavigate("Home13", "back")}
           >
-            <Text style={styles.forwardButtonText}>מסך בית</Text>
+            <Text style={styles.forwardButtonText}>Home screen</Text>
           </TouchableOpacity>
         </View>
         <View>

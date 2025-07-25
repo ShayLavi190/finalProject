@@ -107,17 +107,17 @@ const Setup31 = ({ navigation, handleGlobalClick }) => {
     const errors = [];
     
     if (!validateInput('name', formData.name)) {
-      errors.push("שם מלא נדרש ואינו יכול להיות ריק.");
+      errors.push("Full name is required and cannot be empty.");
     }
     if (!validateInput('id', formData.id)) {
-      errors.push("מספר זיהוי משתתף נדרש.");
+      errors.push("Participant ID number is required.");
     }
     if (!validateInput('idr', formData.idr)) {
-      errors.push("תעודת זהות חייבת להיות 9 ספרות.");
+      errors.push("ID number must be 9 digits.");
     }
     
     if (!validateInput('phone', formData.phone)) {
-      errors.push("מספר טלפון חייב להיות באורך 10 ספרות.");
+      errors.push("Phone number must be 10 digits long.");
     }
 
     return errors;
@@ -131,7 +131,7 @@ const Setup31 = ({ navigation, handleGlobalClick }) => {
           Toast.show({
             type: "error",
             position: "bottom",
-            text1: "שגיאה",
+            text1: "Error",
             text2: error,
             visibilityTime: 4000,
             autoHide: true,
@@ -139,7 +139,7 @@ const Setup31 = ({ navigation, handleGlobalClick }) => {
         }, index * 800);
       });
     } else {
-      Alert.alert("שגיאה", errors.join("\n"));
+      Alert.alert("Error", errors.join("\n"));
     }
   }, []);
 
@@ -189,8 +189,8 @@ const Setup31 = ({ navigation, handleGlobalClick }) => {
       if (!audioRef.current) {
         Toast.show({
           type: "error",
-          text1: "שגיאה",
-          text2: "לא ניתן להפעיל את ההקלטה",
+          text1: "Error",
+          text2: "Cannot play recording",
         });
         return;
       }
@@ -219,8 +219,8 @@ const Setup31 = ({ navigation, handleGlobalClick }) => {
           console.error("Web audio error:", error);
           Toast.show({
             type: "error",
-            text1: "שגיאה",
-            text2: "לא ניתן להפעיל את ההקלטה",
+            text1: "Error",
+            text2: "Cannot play recording",
           });
         }
       }
@@ -264,7 +264,7 @@ const Setup31 = ({ navigation, handleGlobalClick }) => {
       }
     } catch (error) {
       console.error("Native audio error:", error);
-      Alert.alert("שגיאה", "לא ניתן להפעיל את ההקלטה");
+      Alert.alert("Error", "Cannot start recording");
     }
   }, [
     handleGlobalClick, 
@@ -309,10 +309,10 @@ const Setup31 = ({ navigation, handleGlobalClick }) => {
     }
 
     const explanations = {
-      name: "אנא הזן את שמך המלא כפי שמופיע בתעודת זהות. זהו שדה חובה",
-      id: "אנא הזן את מספר זיהוי משתתף. זהו שדה חובה",
-      idr: "אנא הזן את מספר תעודת הזהות שלך (9 ספרות). זהו שדה חובה",
-      phone: "אנא הזן את מספר הטלפון שלך (10 ספרות). זהו שדה חובה",
+      name: "Please enter your full name as it appears on your ID. This is a required field",
+      id: "Please enter your Participant ID Number. This is a required field",
+      idr: "Please enter your ID number (9 digits). This is a required field",
+      phone: "Please enter your phone number (10 digits). This is a required field",
     };
 
     setModalState({
@@ -363,12 +363,12 @@ const Setup31 = ({ navigation, handleGlobalClick }) => {
         )}
         
         <View style={styles.card}>
-          <Text style={styles.title}>הגדרת פרטים אישיים</Text>
-          <Text style={styles.subtitle}>
-            כדי שהרובוט המטפל יוכל להפעיל את שירותיו לטובך נצטרך את פרטיך
-            האישיים. כלל המידע נשמר בצורה מאובטחת ואינו משותף עם שום גורם חיצוני
-            ללא ביצוע שירות ייעודי.
-          </Text>
+        <Text style={styles.title}>Defining personal details</Text>
+        <Text style={styles.subtitle}>
+          In order for the care robot to be able to operate its services for your benefit, we will need your personal
+          details. All information is stored securely and is not shared with any external
+          party without performing a dedicated service.
+        </Text>
           <View style={styles.inputContainer}>
             <TouchableOpacity onPress={() => handleExplanationModal("id")}>
               <Animatable.View
@@ -380,7 +380,7 @@ const Setup31 = ({ navigation, handleGlobalClick }) => {
             </TouchableOpacity>
             <TextInput
               style={styles.input}
-              placeholder="מספר זיהוי משתתף"
+              placeholder="Participant ID Number"
               value={formData.id}
               onChangeText={(text) =>
                 /^\d*$/.test(text) && handleInputChange('id', text)
@@ -401,7 +401,7 @@ const Setup31 = ({ navigation, handleGlobalClick }) => {
             </TouchableOpacity>
             <TextInput
               style={styles.input}
-              placeholder="שם מלא"
+              placeholder="Full name"
               value={formData.name}
               onChangeText={(value) => handleInputChange('name', value)}
               maxLength={MAX_NAME_LENGTH}
@@ -420,7 +420,7 @@ const Setup31 = ({ navigation, handleGlobalClick }) => {
             </TouchableOpacity>
             <TextInput
               style={styles.input}
-              placeholder="תעודת זהות"
+              placeholder="ID number"
               value={formData.idr}
               onChangeText={(text) => 
                 /^\d*$/.test(text) && 
@@ -444,7 +444,7 @@ const Setup31 = ({ navigation, handleGlobalClick }) => {
             </TouchableOpacity>
             <TextInput
               style={styles.input}
-              placeholder="מספר טלפון"
+              placeholder="Phone number"
               value={formData.phone}
               onChangeText={(text) => 
                 /^\d*$/.test(text) && 
@@ -461,7 +461,7 @@ const Setup31 = ({ navigation, handleGlobalClick }) => {
             style={[{ backgroundColor: "green" }, styles.button]}
             onPress={handleMoveForward}
           >
-            <Text style={styles.buttonText}>שמור</Text>
+            <Text style={styles.buttonText}>Save</Text>
           </TouchableOpacity>
         </View>
 
@@ -483,7 +483,7 @@ const Setup31 = ({ navigation, handleGlobalClick }) => {
                 style={[styles.button, { backgroundColor: "red" }]}
                 onPress={closeModal}
               >
-                <Text style={styles.buttonText}>סגור</Text>
+                <Text style={styles.buttonText}>Close</Text>
               </TouchableOpacity>
             </Animatable.View>
           </View>
@@ -494,7 +494,7 @@ const Setup31 = ({ navigation, handleGlobalClick }) => {
           <TouchableOpacity
             style={styles.lottieButton}
             onPress={handleAudioPlayback}
-            accessibilityLabel="לחץ לשמיעת הדרכה קולית"
+            accessibilityLabel="Click to hear audio guidance"
           >
             <LottieView
               source={robotAnimation}

@@ -10,11 +10,11 @@ import {
 import * as Animatable from "react-native-animatable";
 
 const games = [
-    { id: '1', name: 'משחק זיכרון', backgroundColor:'#ffd358', link: 'https://www.memozor.com/memory-games' },
-    { id: '2', name: 'סודוקו', backgroundColor:'#809682', link: 'https://www.websudoku.com/' },
-    { id: '3', name: 'טריוויה', backgroundColor:'#193952', link: 'https://www.funtrivia.com/' },
-    { id: '4', name: 'שחמט', backgroundColor:'#fbe9d5', link: 'https://www.chess.com/play' },
-    { id: '5', name: 'חידון גיאוגרפיה', backgroundColor:'#b79d7f', link: 'https://geoguessr.com/' },
+  { id: '1', name: 'Memory Game', backgroundColor:'#ffd358', link: 'https://www.memozor.com/memory-games' },
+  { id: '2', name: 'Sudoku', backgroundColor:'#809682', link: 'https://www.websudoku.com/' },
+  { id: '3', name: 'Trivia', backgroundColor:'#193952', link: 'https://www.funtrivia.com/' },
+  { id: '4', name: 'Chess', backgroundColor:'#fbe9d5', link: 'https://www.chess.com/play' },
+  { id: '5', name: 'Geography Quiz', backgroundColor:'#b79d7f', link: 'https://geoguessr.com/' },
 ];
 
 const GamesM2 = ({ handleGlobalClick, navigation }) => {
@@ -41,8 +41,8 @@ const GamesM2 = ({ handleGlobalClick, navigation }) => {
     <Animatable.View ref={animatableRef} style={{ flex: 1 }} animation="fadeInDown" duration={2000}>
       <View style={styles.container}>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
-          <Text style={styles.title}>משחקים</Text>
-          <Text style={styles.subtitle}>על מנת לשחק במשחקים לחץ על משחק שברצונך לשחק</Text>
+          <Text style={styles.title}>Games</Text>
+          <Text style={styles.subtitle}>To play games click on the game you want to play</Text>
           <View style={styles.buttonRowContainer}>
             {games.map((game) => (
               <TouchableOpacity
@@ -59,13 +59,13 @@ const GamesM2 = ({ handleGlobalClick, navigation }) => {
               style={[styles.button, styles.forwardButton, { backgroundColor: 'orange' }]}
               onPress={() => handleNavigate("NewsPapersM2", "forward")}
             >
-              <Text style={styles.forwardButtonText}>עיתונים</Text>
+              <Text style={styles.forwardButtonText}>Newspapers</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.button, styles.forwardButton, { backgroundColor: 'green' }]}
               onPress={() => handleNavigate("Home1", "back")}
             >
-              <Text style={styles.forwardButtonText}>מסך בית</Text>
+              <Text style={styles.forwardButtonText}>Home screen</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>

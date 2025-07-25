@@ -10,17 +10,17 @@ import Toast from "react-native-toast-message";
 
 const EntertainmentPage = ({ navigation, handleGlobalClick }) => {
   const buttons = [
-    { label: "עיתונים", route: "Newspaper" },
-    { label: "חדשות", route: "NewsChannels" },
-    { label: "משחקים", route: "Games" },
+    { label: "Newspapers", route: "Newspaper" },
+    { label: "News Channels", route: "NewsChannels" },
+    { label: "Games", route: "Games" },
     {
-      label: "דו שיח",
+      label: "Dialogue",
       action: () => {
-        handleGlobalClick("דו שיח");
+        handleGlobalClick("Dialogue");
         Toast.show({
           type: "info",
-          text1: "💬 דו שיח",
-          text2: "אתה מועבר לדף דו שיח",
+          text1: "Dialogue",
+          text2: "You are being redirected to the dialogue page.",
           visibilityTime: 4000,
           position: "top",
           textStyle: { fontSize: 18 },
@@ -40,7 +40,7 @@ const EntertainmentPage = ({ navigation, handleGlobalClick }) => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.titleContainer}>
-        <Text style={styles.title}>בידור</Text>
+        <Text style={styles.title}>Entertainment</Text>
       </View>
       <View style={styles.buttonRowContainer}>
         {buttons.map((button, index) => (

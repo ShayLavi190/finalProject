@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -13,8 +13,8 @@ import Entypo from "react-native-vector-icons/Entypo";
 import * as Animatable from "react-native-animatable";
 import { useUser } from "../userContext";
 
-const Premissions1 = ({ navigation,handleGlobalClick }) => {
-  const { user, updateUser } = useUser(); 
+const Permissions1 = ({ navigation, handleGlobalClick }) => {
+  const { user, updateUser } = useUser();
   const [publicServices, setPublicServices] = useState(false);
   const [emergencyContacts, setEmergencyContacts] = useState(false);
   const [shareHealthInfo, setShareHealthInfo] = useState(false);
@@ -22,22 +22,26 @@ const Premissions1 = ({ navigation,handleGlobalClick }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [explanation, setExplanation] = useState("");
   const [iconAnimation, setIconAnimation] = useState("");
-  const modalRef = useRef(null); 
-  const animatableRef = useRef(null); 
-  
+  const modalRef = useRef(null);
+  const animatableRef = useRef(null);
+
   useEffect(() => {
     setPublicServices(user.permissions.publicServices);
     setEmergencyContacts(user.permissions.emergencyContacts);
     setShareHealthInfo(user.permissions.shareHealthInfo);
-    setHealthMonitoring(user.permissions.healthMonitoring)
+    setHealthMonitoring(user.permissions.healthMonitoring);
   }, [user]);
 
   const handleIconPress = (field) => {
     const fieldExplanations = {
-      publicServices: "ללא הרשאה זו לא נוכל להשתמש במידע שהזנת לשירותים ציבוריים כגון בנק, קופת חולים וסופרמרקט",
-      emergencyContacts: "ללא הרשאה זו לא נוכל להתקשר לאיש הקשר שלך במקרה חירום",
-      shareHealthInfo: "ללא הרשאה זו לא נוכל להשתמש במידע הרפואי שלך לשירותים של קופת חולים ולא תוכל להשתמש בשירות זה באופן כללי",
-      healthMonitoring: "ללא הרשאה זו לא נוכל לנתר את מצבך הרפואי מהתקנים שיש לך בהם שימוש כגון שעון חכם"
+      publicServices:
+        "Without this permission, we won't be able to use your provided information for public services such as banks, healthcare providers, and supermarkets.",
+      emergencyContacts:
+        "Without this permission, we won't be able to contact your emergency contact in case of need.",
+      shareHealthInfo:
+        "Without this permission, we can't use your medical information for healthcare-related services, and you won't be able to use this service at all.",
+      healthMonitoring:
+        "Without this permission, we cannot monitor your medical condition using devices such as a smartwatch.",
     };
     setExplanation(fieldExplanations[field]);
     setIconAnimation("pulse");
@@ -46,137 +50,121 @@ const Premissions1 = ({ navigation,handleGlobalClick }) => {
   };
 
   const handleMoveForward = () => {
-    animatableRef.current
-    .animate("fadeOutLeft", 500) 
-    .then(() => {
+    animatableRef.current.animate("fadeOutLeft", 500).then(() => {
       updateUser({
         ...user,
         permissions: {
           ...user.permissions,
-          publicServices: publicServices,
-          emergencyContacts: emergencyContacts,
-          shareHealthInfo: shareHealthInfo,
-          healthMonitoring: healthMonitoring,
+          publicServices,
+          emergencyContacts,
+          shareHealthInfo,
+          healthMonitoring,
         },
       });
-      navigation.navigate("Premissions2");
+      navigation.navigate("Permissions2");
     });
   };
 
   const closeModal = () => {
-    modalRef.current
-      .animate("fadeOutDown", 500)
-      .then(() => setModalVisible(false));
+    modalRef.current.animate("fadeOutDown", 500).then(() => setModalVisible(false));
     setIconAnimation("");
     handleGlobalClick();
   };
-  
 
   return (
-    <Animatable.View
-    animation="fadeInDown" 
-    duration={2000} 
-    style={{ flex: 1 }}
-    ref={animatableRef}
-    >
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
-      <View style={styles.card}>
-        <Text style={styles.title}>הגדרת הרשאות לשירותי הבריאות ושירותים ציבוריים</Text>
-        <Text style={styles.subtitle}>
-          כדי שהרובוט המטפל יוכל להפעיל את שירותיו לטובך נצטרך את אישורך לפעולות מסויימות . כלל המידע נשמר בצורה מאובטחת ואינו
-          משותף עם שום גורם חיצוני ללא ביצוע שירות ייעודי.
-        </Text>
+    <Animatable.View animation="fadeInDown" duration={2000} style={{ flex: 1 }} ref={animatableRef}>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
+        <View style={styles.card}>
+          <Text style={styles.title}>Set Permissions for Public and Health Services</Text>
+          <Text style={styles.subtitle}>
+            In order for the caregiving robot to provide its services for your benefit, we need your
+            consent for certain actions. All information is securely stored and not shared with any
+            external party unless for specific services.
+          </Text>
 
-        <View style={styles.inputContainer}>
-          <TouchableOpacity onPress={() => handleIconPress("publicServices")}>
-            <Animatable.View animation={iconAnimation} style={styles.iconContainer}>
-              <Entypo name="light-bulb" size={40} color="yellow" />
-            </Animatable.View>
-          </TouchableOpacity>
-            <Switch
-                trackColor={{ false: "#767577", true: "#81b0ff" }}
-                thumbColor={publicServices ? "#f5dd4b" : "#f4f3f4"}
-                width = "200"
-                ios_backgroundColor="#3e3e3e"
-                onValueChange={() => {setPublicServices((prevState) => !prevState);}}
-                value={publicServices}
-            />
-            <Text style={styles.input}>שימוש בשירותים ציבוריים</Text>
-        </View>
-        <View style={styles.inputContainer}>
-          <TouchableOpacity onPress={() => handleIconPress("healthMonitoring")}>
-            <Animatable.View animation={iconAnimation} style={styles.iconContainer}>
-              <Entypo name="light-bulb" size={40} color="yellow" />
-            </Animatable.View>
-          </TouchableOpacity>
-            <Switch
-                trackColor={{ false: "#767577", true: "#81b0ff" }}
-                thumbColor={healthMonitoring ? "#f5dd4b" : "#f4f3f4"}
-                width = "200"
-                ios_backgroundColor="#3e3e3e"
-                onValueChange={() => {setHealthMonitoring((prevState) => !prevState)}}
-                value={healthMonitoring}
-            />
-            <Text style={styles.input}>מעקב אחר מצב בריאותי</Text>
-        </View>
-        <View style={styles.inputContainer}>
-          <TouchableOpacity onPress={() => handleIconPress("emergencyContacts")}>
-            <Animatable.View animation={iconAnimation} style={styles.iconContainer}>
-              <Entypo name="light-bulb" size={40} color="yellow" />
-            </Animatable.View>
-          </TouchableOpacity>
-            <Switch
-                trackColor={{ false: "#767577", true: "#81b0ff" }}
-                thumbColor={emergencyContacts ? "#f5dd4b" : "#f4f3f4"}
-                width = "200"
-                ios_backgroundColor="#3e3e3e"
-                onValueChange={() =>{setEmergencyContacts((prevState) => !prevState);}}
-                value={emergencyContacts}
-            />
-            <Text style={styles.input}>גישה לפרטי איש קשר למקרה חירום</Text>
-        </View>
-        <View style={styles.inputContainer}>
-          <TouchableOpacity onPress={() => handleIconPress("shareHealthInfo")}>
-            <Animatable.View animation={iconAnimation} style={styles.iconContainer}>
-              <Entypo name="light-bulb" size={40} color="yellow" />
-            </Animatable.View>
-          </TouchableOpacity>
-            <Switch
-                trackColor={{ false: "#767577", true: "#81b0ff" }}
-                thumbColor={shareHealthInfo ? "#f5dd4b" : "#f4f3f4"}
-                width = "200"
-                ios_backgroundColor="#3e3e3e"
-                onValueChange={() => {setShareHealthInfo((prevState) => !prevState)}}
-                value={shareHealthInfo}
-            />
-            <Text style={styles.input}>שיתוף מידע עם גורמים בריאותיים</Text>
-        </View>
-
-        {/* Next Button */}
-        <TouchableOpacity style={[{backgroundColor:'green'},styles.button]} onPress={handleMoveForward}>
-          <Text style={styles.buttonText}>המשך</Text>
-        </TouchableOpacity>
-      </View>
-      <Modal visible={modalVisible} transparent animationType="none">
-        <View style={styles.modalContainer}>
-          <Animatable.View
-            ref={modalRef} 
-            animation="fadeInUp"
-            duration={500} 
-            style={styles.modalContent}
-          >
-            <Text style={styles.fontex}>{explanation}</Text>
-            <TouchableOpacity style={[styles.button,{backgroundColor:'red'}]} onPress={closeModal}>
-              <Text style={styles.buttonText}>סגור</Text>
+          <View style={styles.inputContainer}>
+            <TouchableOpacity onPress={() => handleIconPress("publicServices")}>
+              <Animatable.View animation={iconAnimation} style={styles.iconContainer}>
+                <Entypo name="light-bulb" size={40} color="yellow" />
+              </Animatable.View>
             </TouchableOpacity>
-          </Animatable.View>
-        </View>
-      </Modal>
+            <Switch
+              trackColor={{ false: "#767577", true: "#81b0ff" }}
+              thumbColor={publicServices ? "#f5dd4b" : "#f4f3f4"}
+              ios_backgroundColor="#3e3e3e"
+              onValueChange={() => setPublicServices((prev) => !prev)}
+              value={publicServices}
+            />
+            <Text style={styles.input}>Use of Public Services</Text>
+          </View>
 
-    </KeyboardAvoidingView>
+          <View style={styles.inputContainer}>
+            <TouchableOpacity onPress={() => handleIconPress("healthMonitoring")}>
+              <Animatable.View animation={iconAnimation} style={styles.iconContainer}>
+                <Entypo name="light-bulb" size={40} color="yellow" />
+              </Animatable.View>
+            </TouchableOpacity>
+            <Switch
+              trackColor={{ false: "#767577", true: "#81b0ff" }}
+              thumbColor={healthMonitoring ? "#f5dd4b" : "#f4f3f4"}
+              ios_backgroundColor="#3e3e3e"
+              onValueChange={() => setHealthMonitoring((prev) => !prev)}
+              value={healthMonitoring}
+            />
+            <Text style={styles.input}>Health Monitoring</Text>
+          </View>
+
+          <View style={styles.inputContainer}>
+            <TouchableOpacity onPress={() => handleIconPress("emergencyContacts")}>
+              <Animatable.View animation={iconAnimation} style={styles.iconContainer}>
+                <Entypo name="light-bulb" size={40} color="yellow" />
+              </Animatable.View>
+            </TouchableOpacity>
+            <Switch
+              trackColor={{ false: "#767577", true: "#81b0ff" }}
+              thumbColor={emergencyContacts ? "#f5dd4b" : "#f4f3f4"}
+              ios_backgroundColor="#3e3e3e"
+              onValueChange={() => setEmergencyContacts((prev) => !prev)}
+              value={emergencyContacts}
+            />
+            <Text style={styles.input}>Access to Emergency Contact</Text>
+          </View>
+
+          <View style={styles.inputContainer}>
+            <TouchableOpacity onPress={() => handleIconPress("shareHealthInfo")}>
+              <Animatable.View animation={iconAnimation} style={styles.iconContainer}>
+                <Entypo name="light-bulb" size={40} color="yellow" />
+              </Animatable.View>
+            </TouchableOpacity>
+            <Switch
+              trackColor={{ false: "#767577", true: "#81b0ff" }}
+              thumbColor={shareHealthInfo ? "#f5dd4b" : "#f4f3f4"}
+              ios_backgroundColor="#3e3e3e"
+              onValueChange={() => setShareHealthInfo((prev) => !prev)}
+              value={shareHealthInfo}
+            />
+            <Text style={styles.input}>Share Health Information</Text>
+          </View>
+
+          <TouchableOpacity style={[{ backgroundColor: "green" }, styles.button]} onPress={handleMoveForward}>
+            <Text style={styles.buttonText}>Continue</Text>
+          </TouchableOpacity>
+        </View>
+
+        <Modal visible={modalVisible} transparent animationType="none">
+          <View style={styles.modalContainer}>
+            <Animatable.View ref={modalRef} animation="fadeInUp" duration={500} style={styles.modalContent}>
+              <Text style={styles.fontex}>{explanation}</Text>
+              <TouchableOpacity style={[styles.button, { backgroundColor: "red" }]} onPress={closeModal}>
+                <Text style={styles.buttonText}>Close</Text>
+              </TouchableOpacity>
+            </Animatable.View>
+          </View>
+        </Modal>
+      </KeyboardAvoidingView>
     </Animatable.View>
   );
 };
@@ -188,7 +176,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 20,
-    marginBottom:90
+    marginBottom: 90,
   },
   card: {
     width: "90%",
@@ -218,12 +206,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 15,
-    width:600
+    width: 600,
   },
   input: {
     flex: 1,
     textAlign: "right",
-    marginRight:20,
+    marginRight: 20,
     padding: 10,
     fontSize: 20,
   },
@@ -238,7 +226,7 @@ const styles = StyleSheet.create({
     shadowColor: "yellow",
     shadowRadius: 3,
     shadowOpacity: 1,
-    marginLeft:70
+    marginLeft: 70,
   },
   button: {
     paddingVertical: 12,
@@ -257,25 +245,22 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "transperent",
+    backgroundColor: "transparent",
   },
-  
   modalContent: {
-    backgroundColor: "#fff",
+    backgroundColor: "whitesmoke",
     padding: 20,
     borderRadius: 10,
     alignItems: "center",
-    backgroundColor:"whitesmoke",
-    borderEndColor:'black',
-    borderBottomEndRadius:'2'
+    borderColor: "black",
   },
   fontex: {
     fontSize: 20,
     marginBottom: 15,
-    fontWeight:'bold',
-    color:'black',
-    textAlign:'center'
+    fontWeight: "bold",
+    color: "black",
+    textAlign: "center",
   },
 });
 
-export default Premissions1;
+export default Permissions1;

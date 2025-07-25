@@ -14,27 +14,27 @@ const ContactBankerScreen = ({ navigation, handleGlobalClick }) => {
   const [description, setDescription] = useState("");
   const [subjectOpen, setSubjectOpen] = useState(false);
   const [subjectItems, setSubjectItems] = useState([
-    { label: "בקשה למידע נוסף", value: "בקשה למידע נוסף" },
-    { label: "תלונה", value: "תלונה" },
-    { label: "שירות לקוחות", value: "שירות לקוחות" },
-    { label: "פעולה", value: "פעולה" },
-    { label: "הגדלת מסגרת", value: "הגדלת מסגרת" },
-    { label: "הלוואה", value: "הלוואה" },
-    { label: "אחר", value: "אחר" },
+    { label: "Request for Additional Information", value: "Request for Additional Information" },
+    { label: "Complaint", value: "Complaint" },
+    { label: "Customer Service", value: "Customer Service" },
+    { label: "Action", value: "Action" },
+    { label: "Credit Limit Increase", value: "Credit Limit Increase" },
+    { label: "Loan", value: "Loan" },
+    { label: "Other", value: "Other" },    
   ]);
 
   const validateInputs = () => {
     const errors = [];
 
-    if (!subject) errors.push("⚠️ יש לבחור נושא.");
-    if (!description.trim()) errors.push("⚠️ יש להזין תיאור.");
+    if (!subject) errors.push("You must select a subject.");
+    if (!description.trim()) errors.push("You must enter a description.");
 
     if (errors.length > 0) {
       errors.forEach((error, index) => {
         setTimeout(() => {
           Toast.show({
             type: "error",
-            text1: "שגיאה",
+            text1: "Error",
             text2: error,
             visibilityTime: 4000,
             position: "right",
@@ -56,8 +56,8 @@ const ContactBankerScreen = ({ navigation, handleGlobalClick }) => {
 
     Toast.show({
       type: "success",
-      text1: "הצלחה",
-      text2: "ההודעה נשלחה בהצלחה!",
+      text1: "Success",
+      text2: "Your message has been sent successfully.",
       visibilityTime: 5000,
       position: "right",
       textStyle: { fontSize: 18 },
@@ -71,7 +71,7 @@ const ContactBankerScreen = ({ navigation, handleGlobalClick }) => {
   return (
     <View style={styles.container}>
       <View style={styles.titleContainer}>
-        <Text style={styles.title}>צור קשר עם הבנקאי</Text>
+        <Text style={styles.title}>Contact To Banker</Text>
       </View>
 
       <DropDownPicker
@@ -87,14 +87,14 @@ const ContactBankerScreen = ({ navigation, handleGlobalClick }) => {
           handleGlobalClick();
         }}
         setItems={setSubjectItems}
-        placeholder="בחר נושא..."
+        placeholder="Select Subject"
         style={styles.dropdown}
         textStyle={styles.dropdownText}
       />
 
       <TextInput
         style={[styles.desc, styles.textRight]}
-        placeholder="תיאור"
+        placeholder="Enter your message here..."
         value={description}
         onChangeText={setDescription}
         multiline
@@ -103,7 +103,7 @@ const ContactBankerScreen = ({ navigation, handleGlobalClick }) => {
       />
 
       <View style={styles.buttonContainer}>
-        <Button title="שליחה" onPress={() => { handleSubmit(); handleGlobalClick(); }} />
+        <Button title="Send" onPress={() => { handleSubmit(); handleGlobalClick(); }} />
       </View>
 
       {/* Toast Component */}

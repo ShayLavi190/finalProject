@@ -39,13 +39,13 @@ const TestResultsScreen = ({ handleGlobalClick }) => {
     setSelectedImages(images);
     setModalVisible(true);
     setCurrentIndex(0);
-    handleGlobalClick(`פתיחת מודאל עבור: ${title}`);
+    handleGlobalClick(`Opening modal for: ${title}`);
   };
 
   const closeModal = () => {
     setModalVisible(false);
     setSelectedImages([]);
-    handleGlobalClick("סגירת מודאל");
+    handleGlobalClick("Closing modal");
   };
 
   const nextImage = () => {
@@ -62,7 +62,7 @@ const TestResultsScreen = ({ handleGlobalClick }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>תשובות בדיקות</Text>
+      <Text style={styles.title}>Test Results</Text>
 
       {testResults.map((test, index) => (
         <TouchableOpacity
@@ -77,7 +77,7 @@ const TestResultsScreen = ({ handleGlobalClick }) => {
       <Modal visible={modalVisible} transparent={true} animationType="fade">
         <View style={styles.modalContainer}>
           <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
-            <Text style={styles.closeButtonText}>סגור</Text>
+            <Text style={styles.closeButtonText}>Close</Text>
           </TouchableOpacity>
 
           <View style={styles.imageNavigation}>

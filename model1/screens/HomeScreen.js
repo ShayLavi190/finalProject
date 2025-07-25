@@ -11,20 +11,20 @@ import {
 const HomePage = ({ navigation,handleGlobalClick }) => {
 
   const buttons = [
-    { label: 'בנק', route: 'Bank' },
-    { label: 'קופת חולים', route: 'HealthFund' },
-    { label: 'בידור', route: 'Entertainment' },
-    { label: 'סופרמרקט', route: 'SuperMarket' },
-    { label: 'חירום', route: 'Emergency' },
-    { label: 'ביצועים', route: 'Performance' },
-    { label: 'הרשאות פרטיות', route: 'Premission' },
-    { label: 'עידכון פרטים אישיים', route: 'Setup' },
+    { label: 'Bank', route: 'Bank' },
+    { label: 'Health Fund', route: 'HealthFund' },
+    { label: 'Entertainment', route: 'Entertainment' },
+    { label: 'SuperMarket', route: 'SuperMarket' },
+    { label: 'Emergency', route: 'Emergency' },
+    { label: 'Performance', route: 'Performance' },
+    { label: 'Premissions', route: 'Premission' },
+    { label: 'Personal Information', route: 'Setup' },
   ];
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.titleContainer}>
-        <Text style={styles.title}>ברוך הבא</Text>
+        <Text style={styles.title}>Welcome Back</Text>
       </View>
       <View style={styles.buttonRowContainer}>
         {buttons.map((button, index) => (

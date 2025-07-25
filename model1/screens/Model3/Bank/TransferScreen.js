@@ -41,27 +41,27 @@ const Transaction3 = ({ navigation, handleGlobalClick }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   
   const [items, setItems] = useState([
-    { label: "לאומי", value: "10" },
-    { label: "פועלים", value: "12" },
-    { label: "דיסקונט", value: "11" },
-    { label: "יהב", value: "4" },
-    { label: "בנק הדואר", value: "9" },
-    { label: "אגוד", value: "13" },
-    { label: "אוצר החייל", value: "14" },
-    { label: "מרכנתיל", value: "17" },
+    { label: "Bank Leumi", value: "10" },
+    { label: "Bank Hapoalim", value: "12" },
+    { label: "Israel Discount Bank", value: "11" },
+    { label: "Yahav Bank", value: "4" },
+    { label: "Postal Bank", value: "9" },
+    { label: "Igud Bank", value: "13" },
+    { label: "Otsar HaChayal Bank", value: "14" },
+    { label: "Mercantile Bank", value: "17" },
     { label: "Citibank N.A", value: "22" },
-    { label: "מזרחי טפחות", value: "20" },
+    { label: "Mizrahi Tefahot Bank", value: "20" },
     { label: "HSBC Bank plc", value: "23" },
-    { label: 'יובנק בע"מ', value: "26" },
+    { label: "U.Bank Ltd.", value: "26" },
     { label: "Barclays Bank PLC", value: "27" },
-    { label: 'בנק למסחר בע"מ', value: "30" },
-    { label: "הבינלאומי הראשון לישראל", value: "31" },
+    { label: "Bank for Trade Ltd.", value: "30" },
+    { label: "First International Bank of Israel", value: "31" },
     { label: "SBI State Bank of India", value: "39" },
-    { label: "מסד", value: "46" },
-    { label: "מרכז סליקה בנקאי", value: "50" },
-    { label: "פועלי אגודת ישראל", value: "52" },
-    { label: "חסך קופת חסכון לחינוך", value: "65" },
-    { label: "בנק ישראל", value: "99" },
+    { label: "Masad Bank", value: "46" },
+    { label: "Banking Clearing Center", value: "50" },
+    { label: "Poalei Agudat Israel Bank", value: "52" },
+    { label: "Hessed Savings Fund for Education", value: "65" },
+    { label: "Bank of Israel", value: "99" },
   ]);
   const animatableRef = useRef(null);
   const modalRef = useRef(null);
@@ -91,8 +91,8 @@ const Transaction3 = ({ navigation, handleGlobalClick }) => {
         Toast.show({
           type: 'error',
           position: 'bottom',
-          text1: 'שגיאה בהפעלת ההקלטה',
-          text2: 'לא ניתן להפעיל את ההקלטה כרגע',
+          text1: 'Error playing recording',
+          text2: 'Recording cannot be played at this time',
           visibilityTime: 4000,
         });
       }
@@ -126,11 +126,11 @@ const Transaction3 = ({ navigation, handleGlobalClick }) => {
     stopAudio(); // Stop audio when opening explanation
     
     const fieldExplanations = {
-      bank: "אנא בחר בנק מהרשימה.",
-      account: "אנא הזן את מספר חשבון הבנק שלך.",
-      branch: "אנא הזן את מספר סניף הבנק שלך.",
-      money: "אנא הזן את הסכום שברצונך להעביר.",
-      reason: "אנא הזן את מטרת העברה.",
+      bank: "Please select a bank from the list.",
+      account: "Please enter your bank account number.",
+      branch: "Please enter your bank branch number.",
+      money: "Please enter the amount you want to transfer.",
+      reason: "Please enter the purpose of the transfer.",
     };
     setExplanation(fieldExplanations[field]);
     setIconAnimation("pulse");
@@ -174,8 +174,8 @@ const Transaction3 = ({ navigation, handleGlobalClick }) => {
         Toast.show({
           type: 'success',
           position: 'bottom',
-          text1: 'הצלחה',
-          text2: 'העברה בוצעה בהצלחה',
+          text1: 'success',
+          text2: 'Transfer successful',
           visibilityTime: 4000,
         });
       }, 100);
@@ -194,8 +194,8 @@ const Transaction3 = ({ navigation, handleGlobalClick }) => {
         Toast.show({
           type: 'error',
           position: 'bottom',
-          text1: 'שגיאה',
-          text2: 'לא כל השדות מולאו. מלא/י את כלל השדות',
+          text1: 'Error',
+          text2: 'Not all fields are filled in. Fill in all fields',
           visibilityTime: 4000,
         });
       }, 100);
@@ -224,10 +224,10 @@ const Transaction3 = ({ navigation, handleGlobalClick }) => {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         <View style={[styles.card, open || open2 ? { zIndex: 100 } : {}]}>
-          <Text style={styles.title}>ביצוע העברה בנקאית</Text>
-          <Text style={styles.subtitle}>
-            המידע נשמר בצורה מאובטחת. מלא את כלל הפרטים כדי לבצע העברה.
-          </Text>
+        <Text style={styles.title}>Make a bank transfer</Text>
+        <Text style={styles.subtitle}>
+          Your information is stored securely. Fill in all the details to make a transfer.
+        </Text>
 
           {/* Sender's bank section */}
           <View style={[styles.inputContainer, { zIndex: 3000 }]}>
@@ -250,7 +250,7 @@ const Transaction3 = ({ navigation, handleGlobalClick }) => {
               }}
               setValue={setSelectedBank}
               setItems={setItems}
-              placeholder="בחר בנק..."
+              placeholder="Select a bank..."
               style={styles.dropdown}
               textStyle={styles.dropdownText}
               dropDownDirection="BOTTOM"
@@ -268,7 +268,7 @@ const Transaction3 = ({ navigation, handleGlobalClick }) => {
             </TouchableOpacity>
             <TextInput
               style={styles.input}
-              placeholder="מספר חשבון בנק"
+              placeholder="Bank account number"
               value={bankAccountNumber}
               onPress={handleGlobalClick}
               onChangeText={(text) => {
@@ -287,7 +287,7 @@ const Transaction3 = ({ navigation, handleGlobalClick }) => {
             </TouchableOpacity>
             <TextInput
               style={styles.input}
-              placeholder="מספר סניף בנק"
+              placeholder="Bank branch number"
               value={bankBranchNumber}
               onPress={handleGlobalClick}
               onChangeText={(text) => {
@@ -319,7 +319,7 @@ const Transaction3 = ({ navigation, handleGlobalClick }) => {
               }}
               setValue={setSelectedBankReciver}
               setItems={setItems}
-              placeholder="בחר בנק של המקבל..."
+              placeholder="Select recipient's bank..."
               style={styles.dropdown}
               textStyle={styles.dropdownText}
               zIndex={2000}
@@ -335,7 +335,7 @@ const Transaction3 = ({ navigation, handleGlobalClick }) => {
             </TouchableOpacity>
             <TextInput
               style={styles.input}
-              placeholder="מספר חשבון בנק של המקבל"
+              placeholder="Recipient's bank account number"
               value={bankAccountNumberReciver}
               onPress={handleGlobalClick}
               onChangeText={(text) => {
@@ -354,7 +354,7 @@ const Transaction3 = ({ navigation, handleGlobalClick }) => {
             </TouchableOpacity>
             <TextInput
               style={styles.input}
-              placeholder="מספר סניף בנק של המקבל"
+              placeholder="Recipient's bank branch number"
               value={bankBranchNumberReciver}
               onPress={handleGlobalClick}
               onChangeText={(text) => {
@@ -373,7 +373,7 @@ const Transaction3 = ({ navigation, handleGlobalClick }) => {
             </TouchableOpacity>
             <TextInput
               style={styles.input}
-              placeholder="סיבת העברה"
+              placeholder="Reason for transfer"
               value={reason}
               onPress={handleGlobalClick}
               onChangeText={(val) => {
@@ -391,7 +391,7 @@ const Transaction3 = ({ navigation, handleGlobalClick }) => {
             </TouchableOpacity>
             <TextInput
               style={styles.input}
-              placeholder="סכום העברה"
+              placeholder="Transfer amount"
               value={money}
               onPress={handleGlobalClick}
               onChangeText={(text) => {
@@ -409,7 +409,7 @@ const Transaction3 = ({ navigation, handleGlobalClick }) => {
               style={[styles.button, styles.sendBtn]}
               onPress={handelSend}
             >
-              <Text style={styles.buttonText}>ביצוע העברה</Text>
+              <Text style={styles.buttonText}>Make a transfer</Text>
             </TouchableOpacity>
           </View>
 
@@ -419,13 +419,13 @@ const Transaction3 = ({ navigation, handleGlobalClick }) => {
               style={[styles.button, styles.forwardBtn]}
               onPress={() => handleNavigate("Bank3", "forward")}
             >
-              <Text style={styles.buttonText}>פעולות בנקאיות</Text>
+              <Text style={styles.buttonText}>Banking Services</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.button, styles.backBtn]}
               onPress={() => handleNavigate("Home13", "back")}
             >
-              <Text style={styles.buttonText}>מסך בית</Text>
+              <Text style={styles.buttonText}>Home screen</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -443,7 +443,7 @@ const Transaction3 = ({ navigation, handleGlobalClick }) => {
                 style={[styles.button, styles.closeBtn]}
                 onPress={closeModal}
               >
-                <Text style={styles.buttonText}>סגור</Text>
+                <Text style={styles.buttonText}>Close</Text>
               </TouchableOpacity>
             </Animatable.View>
           </View>

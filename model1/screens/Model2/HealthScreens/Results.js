@@ -21,13 +21,13 @@ import image4 from "../../HealthFund/assets/image4.jpg";
 // ✅ Handle images based on platform (Web vs. Mobile)
 const testResults = [
   {
-    title: "בדיקה כללית",
+    title: "General inspection",
     images: Platform.OS === "web"
       ? [image2, image3, image4]
       : [require("../../HealthFund/assets/image2.jpg"), require("../../HealthFund/assets/image3.jpg"), require("../../HealthFund/assets/image4.jpg")],
   },
   {
-    title: "בדיקת דם",
+    title: "Blood test",
     images: Platform.OS === "web"
       ? [image1]
       : [require("../../HealthFund/assets/image1.jpg")],
@@ -76,11 +76,11 @@ const Results = ({ handleGlobalClick, navigation }) => {
       animation="fadeInDown"
       duration={2000}
     >
-      <Text style={styles.title}>תשובות בדיקות</Text>
-      <Text style={styles.subtitle}>
-        ברוך הבא למסך תשובות לבדיקות שביצעת. נא לבחור את סוג הבדיקה שביצעת
-        ויוצג לך מסמכי התשובות
-      </Text>
+    <Text style={styles.title}>Test Answers</Text>
+    <Text style={styles.subtitle}>
+      Welcome to the Test Answers screen. Please select the type of test you took
+      and you will be shown the answer documents
+    </Text>
 
       {testResults.map((test, index) => (
         <TouchableOpacity
@@ -97,13 +97,13 @@ const Results = ({ handleGlobalClick, navigation }) => {
           style={[styles.button, { backgroundColor: "orange" }]}
           onPress={() => handleNavigate("Home1", "forward")}
         >
-          <Text style={styles.buttonText}>מסך בית</Text>
+          <Text style={styles.buttonText}>Home screen</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.button, { backgroundColor: "green" }]}
           onPress={() => handleNavigate("Schedule", "back")}
         >
-          <Text style={styles.buttonText}>קביעת תור</Text>
+          <Text style={styles.buttonText}>Schedule an appointment</Text>
         </TouchableOpacity>
       </View>
 
@@ -111,7 +111,7 @@ const Results = ({ handleGlobalClick, navigation }) => {
       <Modal visible={modalVisible} transparent animationType="fade">
         <Animatable.View ref={animatableModalRef} style={styles.modalContainer} animation="fadeInUp" duration={500}>
           <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
-            <Text style={styles.closeButtonText}>סגור</Text>
+            <Text style={styles.closeButtonText}>Close</Text>
           </TouchableOpacity>
 
           <View style={styles.imageNavigation}>

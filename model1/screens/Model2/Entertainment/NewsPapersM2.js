@@ -10,11 +10,11 @@ import {
 import * as Animatable from "react-native-animatable";
 
 const newspapers = [
-    { id: '1', name: 'הארץ', backgroundColor: '#00315c', link: 'https://www.haaretz.co.il/' },
-    { id: '2', name: 'ידיעות אחרונות', backgroundColor: '#b2e1d6', link: 'https://www.yediot.co.il/' },
-    { id: '3', name: 'מעריב', backgroundColor: '#5486b4', link: 'https://www.maariv.co.il/' },
-    { id: '4', name: 'The Marker', backgroundColor: '#ded0ab', link: 'https://www.themarker.com/' },
-    { id: '5', name: 'גלובס', backgroundColor: '#ff8c00', link: 'https://www.globes.co.il/' },
+  { id: '1', name: 'Haaretz', backgroundColor: '#00315c', link: 'https://www.haaretz.co.il/' },
+  { id: '2', name: 'Yediot Ahronoth', backgroundColor: '#b2e1d6', link: 'https://www.yediot.co.il/' },
+  { id: '3', name: 'Maariv', backgroundColor: '#5486b4', link: 'https://www.maariv.co.il/' },
+  { id: '4', name: 'The Marker', backgroundColor: '#ded0ab', link: 'https://www.themarker.com/' },
+  { id: '5', name: 'Globes', backgroundColor: '#ff8c00', link: 'https://www.globes.co.il/' },
 ];
 
 const NewsPapersM2 = ({ handleGlobalClick, navigation }) => {
@@ -41,8 +41,8 @@ const NewsPapersM2 = ({ handleGlobalClick, navigation }) => {
     <Animatable.View ref={animatableRef} style={{ flex: 1 }} animation="fadeInDown" duration={2000}>
       <View style={styles.container}>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
-          <Text style={styles.title}>עיתונים</Text>
-          <Text style={styles.subtitle}>על מנת לקרוא עיתונים לחץ על העיתון לקרוא. כדי לעבור לשאר המסכים לחץ על לחצן משחקים</Text>
+        <Text style={styles.title}>Newspapers</Text>
+        <Text style={styles.subtitle}>To read newspapers, click on the newspaper to read. To move to the other screens, click on the Games button</Text>
           <View style={styles.buttonRowContainer}>
             {newspapers.map((paper) => (
               <TouchableOpacity
@@ -59,13 +59,13 @@ const NewsPapersM2 = ({ handleGlobalClick, navigation }) => {
               style={[styles.button, styles.forwardButton, { backgroundColor: 'orange' }]}
               onPress={() => handleNavigate("GamesM2", "forward")}
             >
-              <Text style={styles.forwardButtonText}>משחקים</Text>
+              <Text style={styles.forwardButtonText}>Games</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.button, styles.forwardButton, { backgroundColor: 'green' }]}
               onPress={() => handleNavigate("NewsChannelsM2", "back")}
             >
-              <Text style={styles.forwardButtonText}>חדשות</Text>
+              <Text style={styles.forwardButtonText}>News Channels</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>

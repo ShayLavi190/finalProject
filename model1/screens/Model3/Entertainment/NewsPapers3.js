@@ -18,19 +18,19 @@ const AUDIO_URL = "https://raw.githubusercontent.com/ShayLavi190/finalProject/ma
 const newspapers = [
   {
     id: "1",
-    name: "הארץ",
+    name: "Haaretz",
     backgroundColor: "#00315c",
     link: "https://www.haaretz.co.il/",
   },
   {
     id: "2",
-    name: "ידיעות אחרונות",
+    name: "Yedioth Ahronoth",
     backgroundColor: "#b2e1d6",
     link: "https://www.yediot.co.il/",
   },
   {
     id: "3",
-    name: "מעריב",
+    name: "Maariv",
     backgroundColor: "#5486b4",
     link: "https://www.maariv.co.il/",
   },
@@ -42,7 +42,7 @@ const newspapers = [
   },
   {
     id: "5",
-    name: "גלובס",
+    name: "Globes",
     backgroundColor: "#ff8c00",
     link: "https://www.globes.co.il/",
   },
@@ -59,13 +59,13 @@ const NewsPapers3 = ({ handleGlobalClick, navigation }) => {
       const canOpen = await Linking.canOpenURL(url);
       if (canOpen) {
         await Linking.openURL(url);
-        showToast("נפתח בדפדפן", `מעבר ל${name}`);
+        showToast("Open in browser", `Go to ${name}`);
         handleGlobalClick("Opened external link: " + url);
       } else {
-        showToast("שגיאה", "לא ניתן לפתוח את הקישור");
+        showToast("Error", "Cannot open link");
       }
     } catch (error) {
-      showToast("שגיאה", "אירעה שגיאה בפתיחת הקישור");
+      showToast("Error", "An error occurred while opening the link");
       console.error("Error opening URL:", error);
     }
   };
@@ -143,10 +143,9 @@ const NewsPapers3 = ({ handleGlobalClick, navigation }) => {
       <View style={styles.container}>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <Toast />
-          <Text style={styles.title}>עיתונים</Text>
+          <Text style={styles.title}>Newspapers</Text>
           <Text style={styles.subtitle}>
-            לחץ על עיתון לקריאה. כדי לעבור למסכים נוספים לחץ על כפתור שירותי
-            בידור
+            Click on a newspaper to read. To go to additional screens, click on the Services Entertainment
           </Text>
           <View style={styles.buttonRowContainer}>
             {newspapers.map((paper) => (
@@ -171,7 +170,7 @@ const NewsPapers3 = ({ handleGlobalClick, navigation }) => {
               ]}
               onPress={() => handleNavigate("Home13", "back")}
             >
-              <Text style={styles.forwardButtonText}>מסך בית</Text>
+              <Text style={styles.forwardButtonText}>Home screen</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[
@@ -181,7 +180,7 @@ const NewsPapers3 = ({ handleGlobalClick, navigation }) => {
               ]}
               onPress={() => handleNavigate("Entertainment3", "back")}
             >
-              <Text style={styles.forwardButtonText}>שירותי בידור</Text>
+              <Text style={styles.forwardButtonText}>Entertainment Services</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>

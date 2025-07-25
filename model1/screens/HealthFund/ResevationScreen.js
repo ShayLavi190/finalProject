@@ -15,18 +15,19 @@ const AppointmentScreen = ({ navigation, handleGlobalClick }) => {
 
   const [typeOpen, setTypeOpen] = useState(false);
   const [typeItems, setTypeItems] = useState([
-    { label: "בדיקה כללית", value: "בדיקה כללית" },
-    { label: "רופא משפחה", value: "רופא משפחה" },
-    { label: "בדיקות דם", value: "בדיקות דם" },
+    { label: "General Checkup", value: "General Checkup" },
+    { label: "Family Doctor", value: "Family Doctor" },
+    { label: "Blood Tests", value: "Blood Tests" },
+    
   ]);
 
   const handleSchedule = () => {
     if (!time || !date || !appointmentType) {
-      ["תאריך נדרש.", "שעה נדרשת.", "בחר סוג תור"].forEach((error, index) => {
+      ["Date is required.", "Time is required.", "Please select an appointment type"].forEach((error, index) => {
         setTimeout(() => {
           Toast.show({
             type: "error",
-            text1: "⚠️ שגיאה",
+            text1: "⚠️ Error",
             text2: error,
             visibilityTime: 4000,
             position: "right",
@@ -37,15 +38,15 @@ const AppointmentScreen = ({ navigation, handleGlobalClick }) => {
       return;
     }
 
-    handleGlobalClick("קביעת תור");
+    handleGlobalClick("Appointment Booking");
     Toast.show({
       type: "success",
-      text1: "✅ הצלחה",
-      text2: "אישור התור ישלח לטלפון הנייד שלך.",
+      text1: "✅ Success",
+      text2: "Your appointment confirmation will be sent to your mobile phone.",
       visibilityTime: 5000,
       position: "right",
       textStyle: { fontSize: 18 },
-    });
+    });    
 
     setTimeout(() => {
       navigation.navigate("HealthFund");
@@ -55,34 +56,34 @@ const AppointmentScreen = ({ navigation, handleGlobalClick }) => {
   return (
     <View style={styles.container}>
       <View style={styles.titleContainer}>
-        <Text style={styles.title}>קביעת תור</Text>
+        <Text style={styles.title}>Appointment Booking</Text>
       </View>
-
-      {/* בורר תאריך */}
-      <Text style={styles.label}>בחר תאריך</Text>
+  
+      {/* Date Picker */}
+      <Text style={styles.label}>Select Date</Text>
       <input
         type="date"
         style={styles.input}
         value={date}
         onChange={(e) => {
           setDate(e.target.value);
-          handleGlobalClick("תאריך נבחר");
+          handleGlobalClick("Date Selected");
         }}
       />
-
-      {/* בורר שעה */}
-      <Text style={styles.label}>בחר שעה</Text>
+  
+      {/* Time Picker */}
+      <Text style={styles.label}>Select Time</Text>
       <input
         type="time"
         style={styles.input}
         value={time}
         onChange={(e) => {
           setTime(e.target.value);
-          handleGlobalClick("שעה נבחרה");
+          handleGlobalClick("Time Selected");
         }}
       />
-
-      <Text style={styles.label}>בחר סוג תור</Text>
+  
+      <Text style={styles.label}>Select Appointment Type</Text>
       <DropDownPicker
         open={typeOpen}
         value={appointmentType}
@@ -94,18 +95,19 @@ const AppointmentScreen = ({ navigation, handleGlobalClick }) => {
           handleGlobalClick();
         }}
         setItems={setTypeItems}
-        placeholder="בחר סוג תור..."
+        placeholder="Select appointment type..."
         style={styles.dropdown}
         textStyle={styles.dropdownText}
       />
-
+  
       <View style={styles.buttonContainer}>
-        <Button title="הזמנה" onPress={handleSchedule} />
+        <Button title="Book" onPress={handleSchedule} />
       </View>
-
+  
       <Toast />
     </View>
   );
+  
 };
 
 const styles = StyleSheet.create({

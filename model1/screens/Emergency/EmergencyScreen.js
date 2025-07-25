@@ -10,17 +10,17 @@ import Toast from "react-native-toast-message";
 
 const EmergencyPage = ({ navigation, handleGlobalClick }) => {
   const emergencyActions = [
-    { label: "חיוג למשטרה", message: "📞 מחייג למשטרה" },
-    { label: "חיוג מכבי אש", message: "📞 מחייג למכבי אש" },
-    { label: "חיוג למגן דוד אדום", message: "📞 מחייג למגן דוד אדום" },
-    { label: "חיוג לאיש קשר", message: "📞 מחייג לאיש קשר" },
+    { label: "Call Police Department", message: "Calling the police" },
+    { label: "Call Fire Department", message: "Calling Fire Department" },
+    { label: "Call Ambulance", message: "Calling Ambulance" },
+    { label: "Contact Person", message: "Calling Person" }
   ];
 
   const handleEmergencyCall = (message) => {
     handleGlobalClick();
     Toast.show({
       type: "info",
-      text1: "🚨 מצב חירום",
+      text1: "Emergency Call",
       text2: message,
       visibilityTime: 5000,
       position: "top",
@@ -31,7 +31,7 @@ const EmergencyPage = ({ navigation, handleGlobalClick }) => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.titleContainer}>
-        <Text style={styles.title}>חירום</Text>
+        <Text style={styles.title}>Emergency</Text>
       </View>
       <View style={styles.buttonRowContainer}>
         {emergencyActions.map((button, index) => (

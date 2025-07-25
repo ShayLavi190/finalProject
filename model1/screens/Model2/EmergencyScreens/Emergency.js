@@ -14,36 +14,36 @@ const Emergency = ({ navigation,handleGlobalClick }) => {
   const animatableRef = useRef(null);
   const buttons = [
     { 
-      label: 'חיוג למשטרה',
-      backgroundColor: '#1f5eff',
-      action: () => {
-        makeToast('חירום', 'מחייג למשטרה');
-        handleGlobalClick();
-      }
+    label: 'Call the police',
+    backgroundColor: '#1f5eff',
+    action: () => {
+    makeToast('Emergency', 'Calling the police');
+    handleGlobalClick();
+    }
     },
     { 
-      label: 'חיוג מכבי אש',
-      backgroundColor: '#ffd900',
-      action: () => {
-        makeToast('חירום', 'מחייג למכבי אש'); 
-        handleGlobalClick();
-      }
+    label: 'Call the fire department',
+    backgroundColor: '#ffd900',
+    action: () => {
+    makeToast('Emergency', 'Calling the fire department'); 
+    handleGlobalClick();
+    }
     },
     { 
-      label: 'חיוג למגן דוד אדום',
-      backgroundColor: '#f44336',
-      action: () => {
-        makeToast('חירום', 'מחייג למגן דוד אדום'); 
-        handleGlobalClick();
-      }
+    label: 'Call the Magen David Adom',
+    backgroundColor: '#f44336',
+    action: () => {
+    makeToast('Emergency', 'Calling the Magen David Adom'); 
+    handleGlobalClick();
+    }
     },
     { 
-      label: 'חיוג לאיש קשר',
-      backgroundColor: '#6aa84f',
-      action: () => {
-        makeToast('חירום', 'מחייג לאיש קשר');
-        handleGlobalClick();
-      }
+    label: 'Call Contact',
+    backgroundColor: '#6aa84f',
+    action: () => {
+    makeToast('Emergency', 'Calling Contact');
+    handleGlobalClick();
+    }
     }
   ];
   
@@ -69,9 +69,9 @@ const Emergency = ({ navigation,handleGlobalClick }) => {
         <ScrollView contentContainerStyle={styles.container}>
         <Toast/>
         <View style={styles.titleContainer}>
-            <Text style={styles.title}>חירום</Text>
-            <Text style={styles.subtitle}>דף זה מאפשר לך להתקשר לגופי ביטחון והצלה ובנוסף לאיש קשר למקרה חירום שהזנת במערכת. כדי להתקשר לחץ על הכפתור המתאים</Text>
-        </View>      
+          <Text style={styles.title}>Emergency</Text>
+          <Text style={styles.subtitle}>This page allows you to call security and rescue agencies as well as an emergency contact you have entered in the system. To call, click the appropriate button</Text>
+        </View>  
         <View style={styles.buttonRowContainer}>
             {buttons.map((button, index) => (
             <View key={button.label} style={[styles.buttonWrapper]}>
@@ -85,7 +85,7 @@ const Emergency = ({ navigation,handleGlobalClick }) => {
             ))}
         </View>
         <TouchableOpacity style={styles.forwardButton} onPress={() => handleNavigate("Home1")}>
-            <Text style={styles.forwardButtonText}>מסך בית</Text>
+            <Text style={styles.forwardButtonText}>Home Screen</Text>
             </TouchableOpacity>
         </ScrollView>
     </Animatable.View>

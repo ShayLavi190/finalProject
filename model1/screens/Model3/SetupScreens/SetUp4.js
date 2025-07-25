@@ -35,10 +35,10 @@ const SetUp43 = ({ navigation, handleGlobalClick }) => {
   const [sound, setSound] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [items, setItems] = useState([
-    { label: "מכבי", value: "מכבי" },
-    { label: "כללית", value: "כללית" },
-    { label: "מאוחדת", value: "מאוחדת" },
-    { label: "לאומית", value: "לאומית" },
+    { label: "Maccabi Healthcare Services", value: "Maccabi Healthcare Services" },
+    { label: "Clalit Health Services", value: "Clalit Health Services" },
+    { label: "Meuhedet Health Services", value: "Meuhedet Health Services" },
+    { label: "Leumit Health Services", value: "Leumit Health Services" },
   ]);
 
   const animatableRef = useRef(null);
@@ -65,9 +65,9 @@ const SetUp43 = ({ navigation, handleGlobalClick }) => {
     stopAudio(); // Stop audio when opening explanation modal
 
     const fieldExplanations = {
-      healthFund: "אנא בחר קופת חולים מהרשימה.",
-      account: "אנא הזן את מספר החשבון שלך.",
-      phone: "אנא הזן את מספר הטלפון לאיש קשר למקרה חירום.",
+      healthFund: "Please select a health fund from the list.",
+      account: "Please enter your account number.",
+      phone: "Please enter the emergency contact phone number.",
     };
     setExplanation(fieldExplanations[field]);
     setIconAnimation("pulse");
@@ -130,7 +130,7 @@ const SetUp43 = ({ navigation, handleGlobalClick }) => {
         setIsPlaying(true);
       } catch (error) {
         console.error("Error playing audio:", error);
-        Alert.alert("שגיאה בהפעלת ההקלטה", "לא ניתן להפעיל את ההקלטה כרגע.");
+        Alert.alert("Error playing recording", "Recording cannot be played at this time.");
       }
     }
   };
@@ -164,13 +164,10 @@ const SetUp43 = ({ navigation, handleGlobalClick }) => {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         <View style={styles.card}>
-          <Text style={styles.title}>הגדרת פרטי חשבון קופת חולים ואיש קשר</Text>
-          <Text style={styles.subtitle}>
-            .כדי שהרובוט המטפל יוכל להפעיל את שירותיו לטובך, נצטרך את פרטי קופת
-            החולים שלך ומספר טלפון לאיש קשר למקרה חירום. קיימת אפשרות לא להזין
-            את פרטי חשבונך אך לא תוכל להשתמש בשירותי קופת החולים או להתקשר לאיש
-            קשר במקרה חירום. המידע נשמר בצורה מאובטחת.
-          </Text>
+        <Text style={styles.title}>Setting up your health insurance account details and contact person</Text>
+        <Text style={styles.subtitle}>
+          In order for the robot therapist to be able to operate its services for your benefit, we will need your health insurance details and an emergency contact phone number. You can choose not to enter your account details, but you will not be able to use your health insurance services or call your emergency contact person. The information is stored securely.
+        </Text>
           {/* Health Fund Picker */}
           <View style={[styles.inputContainer, { zIndex: 9999 }]}>
             {/* Icon and Label */}
@@ -191,7 +188,7 @@ const SetUp43 = ({ navigation, handleGlobalClick }) => {
                 onPress={()=>handleGlobalClick()}
                 setValue={setSelectedhealthFund}
                 setItems={setItems}
-                placeholder="בחר קופת חולים..."
+                placeholder="Select a health fund..."
                 textStyle={{ textAlign: "center" }}
                 style={styles.dropdown}
                 dropDownContainerStyle={styles.dropdownContainer}
@@ -214,7 +211,7 @@ const SetUp43 = ({ navigation, handleGlobalClick }) => {
             </TouchableOpacity>
             <TextInput
               style={styles.input}
-              placeholder="מספר חשבון קופת חולים"
+              placeholder="Health fund account number"
               value={healthFundAccountNumber}
               onChangeText={(text) => {
                 const numericText = text.replace(/[^0-9]/g, "");
@@ -237,7 +234,7 @@ const SetUp43 = ({ navigation, handleGlobalClick }) => {
             </TouchableOpacity>
             <TextInput
               style={styles.input}
-              placeholder="מספר טלפון לאיש קשר במקרה חירום"
+              placeholder="Emergency contact phone number"
               value={emergencyPhone}
               onChangeText={(text) => {
                 const numericText = text.replace(/[^0-9]/g, "");
@@ -252,7 +249,7 @@ const SetUp43 = ({ navigation, handleGlobalClick }) => {
                 style={[{ backgroundColor: "green" }, styles.button]}
                 onPress={handleMoveForward}
               >
-                <Text style={styles.buttonText}>שמור</Text>
+                <Text style={styles.buttonText}>Save</Text>
               </TouchableOpacity>
             </View>
         </View>
@@ -271,7 +268,7 @@ const SetUp43 = ({ navigation, handleGlobalClick }) => {
                 style={[styles.button, styles.closeBtn]}
                 onPress={closeModal}
               >
-                <Text style={styles.buttonText}>סגור</Text>
+                <Text style={styles.buttonText}>Close</Text>
               </TouchableOpacity>
             </Animatable.View>
           </View>

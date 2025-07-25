@@ -32,7 +32,7 @@ const Performance3 = ({ globalTasks = [], setGlobalTasks, navigation }) => {
     const indicators = [];
 
     const taskOptimalModel3 = [
-      { clicks: 36, pagesChanges: 7 },
+      { clicks: 22, pagesChanges: 4 },
       { clicks: 10, pagesChanges: 9 },
       { clicks: 6, pagesChanges: 5 },
     ];
@@ -63,8 +63,8 @@ const Performance3 = ({ globalTasks = [], setGlobalTasks, navigation }) => {
       Toast.show({
         type: "error",
         position: "bottom",
-        text1: "שגיאה",
-        text2: "מזהה משתמש לא נמצא",
+        text1: "Error",
+        text2: "User ID not found",
         visibilityTime: 4000,
         autoHide: true,
       });
@@ -105,8 +105,8 @@ const Performance3 = ({ globalTasks = [], setGlobalTasks, navigation }) => {
       Toast.show({
         type: "success",
         position: "bottom",
-        text1: "הצלחה",
-        text2: `נתוני הביצועים נשמרו בהצלחה כ-${newUserId}`,
+        text1: "success",
+        text2: `Performance data saved successfully as ${newUserId}`,
         visibilityTime: 4000,
         autoHide: true,
       });
@@ -119,8 +119,8 @@ const Performance3 = ({ globalTasks = [], setGlobalTasks, navigation }) => {
       Toast.show({
         type: "error",
         position: "bottom",
-        text1: "שגיאה",
-        text2: "אירעה שגיאה באיפוס נתוני הביצועים",
+        text1: "Error",
+        text2: "An error occurred while resetting performance data",
         visibilityTime: 4000,
         autoHide: true,
       });
@@ -178,7 +178,7 @@ const Performance3 = ({ globalTasks = [], setGlobalTasks, navigation }) => {
           </View>
           <View style={styles.forwardButtonContainer}>
             <TouchableOpacity style={styles.forwardButton} onPress={() => handleNavigate("Home13")}>
-              <Text style={styles.forwardButtonText}>חזור</Text>
+              <Text style={styles.forwardButtonText}>Back</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
@@ -192,21 +192,21 @@ const Performance3 = ({ globalTasks = [], setGlobalTasks, navigation }) => {
         >
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
-              <Text style={styles.modalTitle}>אזהרה</Text>
-              <Text style={styles.modalText}>האם אתה בטוח שברצונך לאפס את נתוני הביצועים?</Text>
+            <Text style={styles.modalTitle}>Warning</Text>
+            <Text style={styles.modalText}>Are you sure you want to reset performance data ?</Text>
               <View style={styles.modalButtons}>
                 <Pressable
                   style={[styles.button, styles.buttonCancel]}
                   onPress={() => setConfirmModalVisible(false)}
                 >
-                  <Text style={styles.textStyle}>ביטול</Text>
+                  <Text style={styles.textStyle}>Cancel</Text>
                 </Pressable>
                 <Pressable
                   style={[styles.button, styles.buttonConfirm]}
                   onPress={resetPerformance}
                   disabled={isResetting}
                 >
-                  <Text style={styles.textStyle}>אפס</Text>
+                  <Text style={styles.textStyle}>Reset</Text>
                 </Pressable>
               </View>
             </View>

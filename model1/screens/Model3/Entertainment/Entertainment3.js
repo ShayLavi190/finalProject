@@ -36,15 +36,15 @@ const Entertainment3 = ({ navigation, handleGlobalClick }) => {
 
   const handelConversation = () => {
     stopAudio(); // Add this line to stop audio when starting conversation
-        Toast.show({
-          type: "info",
-          text1: "💬 דו שיח",
-          text2: "אתה מועבר לדף דו שיח",
-          visibilityTime: 4000,
-          position: "bottom",
-          textStyle: { fontSize: 18 },
-        });    
-        handleGlobalClick();
+    Toast.show({
+      type: "info",
+      text1: "💬 Conversation",
+      text2: "You are being redirected to the conversation page",
+      visibilityTime: 4000,
+      position: "bottom",
+      textStyle: { fontSize: 18 },
+      });
+      handleGlobalClick();
   };
 
   // Play / Pause Audio
@@ -91,13 +91,13 @@ const Entertainment3 = ({ navigation, handleGlobalClick }) => {
       <ScrollView contentContainerStyle={styles.container}>
         <Toast />
         <View style={styles.titleContainer}>
-          <Text style={styles.title}>ברוך הבא לשירותי הבידור</Text>
+          <Text style={styles.title}>Welcome to Entertainment Services</Text>
         </View>
         <View>
-          <Text style={styles.subtitle}>
-            כדי לנווט בין השירותים השונים לחץ על הכפתור המתאים לשירות שברצונך
-            להשתמש בו
-          </Text>
+        <Text style={styles.subtitle}>
+          To navigate between the different services, click on the button corresponding to the service you want
+          to use
+        </Text>
         </View>
         <View style={styles.buttonRow}>
           <TouchableOpacity
@@ -108,7 +108,7 @@ const Entertainment3 = ({ navigation, handleGlobalClick }) => {
             ]}
             onPress={handelConversation}
           >
-            <Text style={styles.forwardButtonText}>דו שיח</Text>
+            <Text style={styles.forwardButtonText}>Dialog</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[
@@ -118,7 +118,7 @@ const Entertainment3 = ({ navigation, handleGlobalClick }) => {
             ]}
             onPress={() => handleNavigate("NewsChannels3", "forward")}
           >
-            <Text style={styles.forwardButtonText}>ערוצי חדשות</Text>
+            <Text style={styles.forwardButtonText}>News Channels</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.buttonRow}>
@@ -130,7 +130,7 @@ const Entertainment3 = ({ navigation, handleGlobalClick }) => {
             ]}
             onPress={() => handleNavigate("NewsPapers3", "forward")}
           >
-            <Text style={styles.forwardButtonText}>עיתונים</Text>
+            <Text style={styles.forwardButtonText}>Newspapers</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[
@@ -140,7 +140,7 @@ const Entertainment3 = ({ navigation, handleGlobalClick }) => {
             ]}
             onPress={() => handleNavigate("Games3", "forward")}
           >
-            <Text style={styles.forwardButtonText}>משחקים</Text>
+            <Text style={styles.forwardButtonText}>Games</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[
@@ -150,7 +150,7 @@ const Entertainment3 = ({ navigation, handleGlobalClick }) => {
             ]}
             onPress={() => handleNavigate("Home13", "back")}
           >
-            <Text style={styles.forwardButtonText}>מסך בית</Text>
+            <Text style={styles.forwardButtonText}>Home screen</Text>
           </TouchableOpacity>
         </View>
         <View>

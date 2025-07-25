@@ -36,11 +36,11 @@ const Premissions2 = ({ navigation,handleGlobalClick }) => {
 
   const handleIconPress = (field) => {
     const fieldExplanations = {
-        cameraAccess: "ללא הרשאה זו לא נוכל לבצע המון פעולות כגון מעקב אחרי הלקוח, זיהוי מקרי חירום או תזוז של הרובוט. מומלץ להפעיל",
-        voiceRecognition: "ללא הרשאה זו לא נוכל לנהל איתך דו שיח",
-        robotTracking: "ללא הרשאה זו הרובוט לא יוכל לעקוב פיזית אחריך",
-        customization: "שדה זה הוא חובה לטובת הניסוי",
-        maintenance:"ללא הרשאה זו תצטרכ/י לעשות את עידכוני התוכנה בצורה ידנית"
+      cameraAccess: "Without this permission we will not be able to perform many actions such as tracking the customer, identifying emergencies or moving the robot. It is recommended to enable it",
+      voiceRecognition: "Without this permission we will not be able to have a conversation with you",
+      robotTracking: "Without this permission the robot will not be able to physically follow you",
+      customization: "This field is required for the sake of the experiment",
+      maintenance: "Without this permission you will need to do the software updates manually"
     };
     setExplanation(fieldExplanations[field]);
     setIconAnimation("pulse");
@@ -105,11 +105,11 @@ const Premissions2 = ({ navigation,handleGlobalClick }) => {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <View style={styles.card}>
-        <Text style={styles.title}>הגדרת הרשאות למערכת הרובוט המטפל</Text>
-        <Text style={styles.subtitle}>
-          כדי שהרובוט המטפל יוכל להפעיל את שירותיו לטובך נצטרך את אישורך לפעולות מסויימות . כלל המידע נשמר בצורה מאובטחת ואינו
-          משותף עם שום גורם חיצוני ללא ביצוע שירות ייעודי.
-        </Text>
+      <Text style={styles.title}>Setting permissions for the care robot system</Text>
+      <Text style={styles.subtitle}>
+        In order for the care robot to be able to operate its services for your benefit, we will need your permission for certain actions. All information is stored securely and is not
+        shared with any external party without performing a dedicated service.
+      </Text>
 
         <View style={styles.inputContainer}>
           <TouchableOpacity onPress={() => handleIconPress("cameraAccess")}>
@@ -125,7 +125,7 @@ const Premissions2 = ({ navigation,handleGlobalClick }) => {
                 onValueChange={() => {setCameraAccess((prevState) => !prevState);}}
                 value={cameraAccess}
             />
-            <Text style={styles.input}>גישה למצלמה</Text>
+            <Text style={styles.input}>Camera access</Text>
         </View>
         <View style={styles.inputContainer}>
           <TouchableOpacity onPress={() => handleIconPress("robotTracking")}>
@@ -141,7 +141,7 @@ const Premissions2 = ({ navigation,handleGlobalClick }) => {
                 onValueChange={() => {setRobotTracking((prevState) => !prevState);}}
                 value={robotTracking}
             />
-            <Text style={styles.input}>מעקב פיזי של הרובוט אחריך</Text>
+            <Text style={styles.input}>The robot physically follows you</Text>
         </View>
         <View style={styles.inputContainer}>
           <TouchableOpacity onPress={() => handleIconPress("voiceRecognition")}>
@@ -157,7 +157,7 @@ const Premissions2 = ({ navigation,handleGlobalClick }) => {
                 onValueChange={() => {setVoiceRecognition((prevState) => !prevState);}}
                 value={voiceRecognition}
             />
-            <Text style={styles.input}>גישה למיקרופון וזיהוי קולי</Text>
+            <Text style={styles.input}>Microphone access and voice recognition</Text>
         </View>
         <View style={styles.inputContainer}>
           <TouchableOpacity onPress={() => handleIconPress("customization")}>
@@ -173,7 +173,7 @@ const Premissions2 = ({ navigation,handleGlobalClick }) => {
                 onValueChange={() => {setCustomization((prevState) => !prevState);}}
                 value={customization}
             />
-            <Text style={styles.input}>גישה לשימוש במידע על שימושך באפליקציה</Text>
+            <Text style={styles.input}>Access to information about your use of the app</Text>
         </View>
         <View style={styles.inputContainer}>
           <TouchableOpacity onPress={() => handleIconPress("maintenance")}>
@@ -189,15 +189,15 @@ const Premissions2 = ({ navigation,handleGlobalClick }) => {
                 onValueChange={() => {setMaintenance((prevState) => !prevState);}}
                 value={maintenance}
             />
-            <Text style={styles.input}>הרשאה לעידכוני מערכת אוטומטיים</Text>
+            <Text style={styles.input}>Permission for automatic system updates</Text>
         </View>
 
         <View style={styles.buttonRow}>
           <TouchableOpacity style={[styles.button,styles.forwardBtn]} onPress={handleMoveForward}>
-            <Text style={styles.buttonText}>המשך</Text>
+            <Text style={styles.buttonText}>Next</Text>
           </TouchableOpacity>
           <TouchableOpacity style={[styles.button,styles.backBtn]} onPress={handleGoBack}>
-            <Text style={styles.buttonText}>חזור</Text>
+            <Text style={styles.buttonText}>Back</Text>
           </TouchableOpacity>
         </View>
 
@@ -212,7 +212,7 @@ const Premissions2 = ({ navigation,handleGlobalClick }) => {
           >
             <Text style={styles.fontex}>{explanation}</Text>
             <TouchableOpacity style={[styles.button,{backgroundColor:'red'}]} onPress={closeModal}>
-              <Text style={styles.buttonText}>סגור</Text>
+              <Text style={styles.buttonText}>Close</Text>
             </TouchableOpacity>
           </Animatable.View>
         </View>

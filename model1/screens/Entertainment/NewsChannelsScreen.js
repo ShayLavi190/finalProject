@@ -14,10 +14,10 @@ import { WebView } from "react-native-webview";
 import Toast from "react-native-toast-message";
 
 const channels = [
-  { id: "1", name: "ערוץ 12 - חדשות", link: "https://www.mako.co.il/mako-vod-live-tv/VOD-6540b8dcb64fd31006.htm" },
-  { id: "2", name: "ערוץ 13 - רשת", link: "https://13tv.co.il/live/" },
-  { id: "3", name: "ערוץ 11 - כאן", link: "https://www.kan.org.il/live/tv.aspx?stationId=2" },
-  { id: "4", name: "ערוץ 14 - עכשיו 14", link: "https://now14.co.il/live/" },
+  { id: "1", name: "Channel 12", link: "https://www.mako.co.il/mako-vod-live-tv/VOD-6540b8dcb64fd31006.htm" },
+  { id: "2", name: "Channel 13", link: "https://13tv.co.il/live/" },
+  { id: "3", name: "Channel 11", link: "https://www.kan.org.il/live/tv.aspx?stationId=2" },
+  { id: "4", name: "Channel 14", link: "https://now14.co.il/live/" },
 ];
 
 const NewsChannelsPage = ({ handleGlobalClick }) => {
@@ -26,7 +26,7 @@ const NewsChannelsPage = ({ handleGlobalClick }) => {
   const [loading, setLoading] = useState(false);
 
   const openChannel = (url) => {
-    handleGlobalClick(`פתיחת ערוץ: ${url}`);
+    handleGlobalClick(`Open Channel ${url}`);
 
     if (Platform.OS === "web") {
       Linking.openURL(url);
@@ -37,14 +37,14 @@ const NewsChannelsPage = ({ handleGlobalClick }) => {
   };
 
   const closeModal = () => {
-    handleGlobalClick("סגירת ערוץ");
+    handleGlobalClick("Close Channel");
     setModalVisible(false);
     setCurrentUrl("");
 
     Toast.show({
       type: "success",
-      text1: "סגירת ערוץ",
-      text2: "הערוץ נסגר בהצלחה",
+      text1: "Closeing Channel",
+      text2: "The channel has been closed successfully.",
       visibilityTime: 2000,
       position: "top",
     });
@@ -53,7 +53,7 @@ const NewsChannelsPage = ({ handleGlobalClick }) => {
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <Text style={styles.title}>ערוצי חדשות</Text>
+        <Text style={styles.title}>News Channels</Text>
         <View style={styles.buttonRowContainer}>
           {channels.map((channel) => (
             <TouchableOpacity
@@ -71,7 +71,7 @@ const NewsChannelsPage = ({ handleGlobalClick }) => {
         <Modal visible={isModalVisible} transparent={false} animationType="slide">
           <View style={styles.modalContainer}>
             <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
-              <Text style={styles.closeButtonText}>סגור</Text>
+              <Text style={styles.closeButtonText}>Close</Text>
             </TouchableOpacity>
             {loading && (
               <ActivityIndicator size="large" color="#0000ff" style={styles.loader} />

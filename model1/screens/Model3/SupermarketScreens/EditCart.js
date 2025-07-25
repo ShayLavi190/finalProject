@@ -30,9 +30,9 @@ const EditCart3 = ({ navigation, handleGlobalClick }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   
   const DEFAULT_CART = [
-    { id: '1', name: 'חלב', quantity: 1 },
-    { id: '2', name: 'לחם', quantity: 2 },
-    { id: '3', name: 'ביצים', quantity: 1 },
+    { id: '1', name: 'Milk', quantity: 1 },
+    { id: '2', name: 'Bread', quantity: 2 },
+    { id: '3', name: 'Eggs', quantity: 1 },
   ];
 
   // Function to stop audio playback
@@ -67,7 +67,7 @@ const EditCart3 = ({ navigation, handleGlobalClick }) => {
         setIsPlaying(true);
       } catch (error) {
         console.error("Error playing audio:", error);
-        showToast('error', 'שגיאה', 'לא ניתן להפעיל את ההקלטה כרגע');
+        showToast('error', 'Error', 'Recording cannot be started at this time');
       }
     }
   };
@@ -101,15 +101,15 @@ const EditCart3 = ({ navigation, handleGlobalClick }) => {
       const storedCart = await AsyncStorage.getItem('cart');
       if (storedCart) {
         setCartItems(JSON.parse(storedCart));
-        showToast('success', 'הצלחה', 'עגלה נטענה בהצלחה!');
+        showToast('success', 'Success', 'Cart loaded successfully!');
       } else {
         setCartItems(DEFAULT_CART);
-        showToast('info', 'מידע', 'אין נתונים שמורים, נטען ברירת מחדל.');
+        showToast('info', 'Information', 'No data saved, default loaded.');
       }
     } catch (error) {
       console.error('שגיאה בטעינת העגלה:', error);
       setCartItems(DEFAULT_CART); // fallback במקרה של שגיאה
-      showToast('error', 'שגיאה', 'שגיאה בטעינת העגלה.');
+      showToast('error', 'Error', 'Error loading cart.');
     }
   };
 
@@ -121,7 +121,7 @@ const EditCart3 = ({ navigation, handleGlobalClick }) => {
     stopAudio(); // Stop audio when changing quantity
     
     if (newQuantity < 1) {
-      showToast('error', 'שגיאה', 'הכמות חייבת להיות לפחות 1.');
+      showToast('error', 'Error', 'Quantity must be at least 1.');
       return;
     }
     
@@ -138,18 +138,18 @@ const EditCart3 = ({ navigation, handleGlobalClick }) => {
     
     setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
     handleGlobalClick(`הסרת פריט ${id}`);
-    showToast('success', 'הצלחה', 'המוצר הוסר מהעגלה');
+    showToast('success', 'Success', 'Product removed from cart');
   };
 
   const handleAddItem = () => {
     stopAudio(); // Stop audio when adding item
     
     if (!selectedProduct) {
-      showToast('error', 'שגיאה', 'אנא בחר מוצר.');
+      showToast('error', 'Error', 'Please select a product.');
       return;
     }
     if (productQuantity < 1) {
-      showToast('error', 'שגיאה', 'אנא בחר כמות גדולה מ-1.');
+      showToast('error', 'Error', 'Please select a quantity greater than 1.');
       return;
     }
     
@@ -164,7 +164,7 @@ const EditCart3 = ({ navigation, handleGlobalClick }) => {
     setSelectedProduct('');
     setProductQuantity(1);
     handleGlobalClick(`הוספת פריט ${selectedProduct}`);
-    showToast('success', 'הצלחה', 'המוצר נוסף לעגלה');
+    showToast('success', 'success', 'product added to cart');
   };
 
   const saveCartToStorage = async () => {
@@ -172,10 +172,10 @@ const EditCart3 = ({ navigation, handleGlobalClick }) => {
     
     try {
       await AsyncStorage.setItem('cart', JSON.stringify(cartItems));
-      showToast('success', 'הצלחה', 'העגלה נשמרה בהצלחה!');
+      showToast('success', 'Success', 'Cart saved successfully!');
     } catch (error) {
       console.error('שגיאה בשמירת העגלה:', error);
-      showToast('error', 'שגיאה', 'שגיאה בשמירת העגלה.');
+      showToast('error', 'Error', 'Error saving cart.');
     }
   };
 
@@ -217,7 +217,7 @@ const EditCart3 = ({ navigation, handleGlobalClick }) => {
         style={styles.removeButton}
         onPress={() => handleRemoveItem(item.id)}
       >
-        <Text style={styles.removeButtonText}>הסר</Text>
+        <Text style={styles.removeButtonText}>Delete</Text>
       </TouchableOpacity>
     </View>
   );
@@ -231,10 +231,10 @@ const EditCart3 = ({ navigation, handleGlobalClick }) => {
     >
       <View style={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.title}>עגלת הקניות שלך</Text>
-          <Text style={styles.subtitle}>
-            ניתן לראות את רשימת המוצרים בסל. הוספת מוצר היא דרך לחיצה על בחירות מוצר, בחירת כמו ואז לחיצה על הוספת מוצר. כדי להסידר מוצר יש ללחות על כפתור הסר. לשמירה לוחצים על הכפתור היעודי
-          </Text>
+        <Text style={styles.title}>Your Shopping Cart</Text>
+        <Text style={styles.subtitle}>
+          You can see the list of products in the cart. Adding a product is done by clicking on Product Selections, selecting Like and then clicking on Add Product. To remove a product, click on the Remove button. To save, click on the dedicated button
+        </Text>
         </View>
         <View style={[styles.row, { zIndex: 3000 }]}>
           <View style={styles.quantityWrapper}>
@@ -254,7 +254,7 @@ const EditCart3 = ({ navigation, handleGlobalClick }) => {
               setOpen={(value) => {setOpen(value); handleGlobalClick();}}
               setValue={setSelectedProduct}
               setItems={setItems}
-              placeholder="בחר מוצר"
+              placeholder="Select product"
               textStyle={{ textAlign: 'center', fontSize: 16 }}
               style={styles.dropdown}
               dropDownContainerStyle={styles.dropdownContainer}
@@ -267,26 +267,26 @@ const EditCart3 = ({ navigation, handleGlobalClick }) => {
           style={[styles.addButton, { zIndex: open ? 1 : 10 }]} 
           onPress={handleAddItem}
         >
-          <Text style={styles.addButtonText}>הוסף מוצר</Text>
+          <Text style={styles.addButtonText}>Add Product</Text>
         </TouchableOpacity>
         <View style={[{ flex: 1 }, { zIndex: open ? 1 : 10 }]}>
           <FlatList
             data={cartItems}
             keyExtractor={(item) => item.id}
             renderItem={renderItem}
-            ListEmptyComponent={<Text style={styles.emptyCart}>העגלה ריקה</Text>}
+            ListEmptyComponent={<Text style={styles.emptyCart}>Cart is empty</Text>}
             contentContainerStyle={styles.listContainer}
           />
 
           {cartItems.length > 0 && (
             <TouchableOpacity style={styles.checkoutButton} onPress={handleCheckout}>
-              <Text style={styles.checkoutButtonText}>שמור</Text>
+              <Text style={styles.checkoutButtonText}>Save</Text>
             </TouchableOpacity>
           )}
 
           <View style={styles.buttonRow}>
             <TouchableOpacity style={styles.forwardButton} onPress={() => handleNavigate('Supermarket3')}>
-              <Text style={styles.forwardButtonText}>חזור</Text>
+              <Text style={styles.forwardButtonText}>Back</Text>
             </TouchableOpacity>
           </View>
         </View>

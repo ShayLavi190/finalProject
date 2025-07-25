@@ -20,39 +20,39 @@ const Emergency3 = ({ navigation, handleGlobalClick }) => {
 
   const buttons = [
     {
-      label: "חיוג למשטרה",
+      label: "Calling the police",
       backgroundColor: "#1f5eff",
       action: () => {
-        stopAudio(); // Add this line
-        showToast("חירום", "מחייג למשטרה");
-        handleGlobalClick();
+      stopAudio(); // Add this line
+      showToast("Emergency", "Calling the police");
+      handleGlobalClick();
       },
     },
     {
-      label: "חיוג מכבי אש",
+      label: "Calling Fire Department",
       backgroundColor: "#ffd900",
       action: () => {
-        stopAudio(); // Add this line
-        showToast("חירום", "מחייג למכבי אש");
-        handleGlobalClick();
+      stopAudio(); // Add this line
+      showToast("Emergency", "Calling Fire Department");
+      handleGlobalClick();
       },
     },
     {
-      label: "חיוג למגן דוד אדום",
+      label: "Calling Magen David Adom",
       backgroundColor: "#f44336",
       action: () => {
-        stopAudio(); // Add this line
-        showToast("חירום", "מחייג למגן דוד אדום");
-        handleGlobalClick();
+      stopAudio(); // Add this line
+      showToast("Emergency", "Calling Magen David Adom");
+      handleGlobalClick();
       },
     },
     {
-      label: "חיוג לאיש קשר",
+      label: "Calling a contact",
       backgroundColor: "#6aa84f",
       action: () => {
-        stopAudio(); // Add this line
-        showToast("חירום", "מחייג לאיש קשר");
-        handleGlobalClick();
+      stopAudio(); // Add this line
+      showToast("Emergency", "Calling a contact");
+      handleGlobalClick();
       },
     },
   ];
@@ -120,11 +120,11 @@ const Emergency3 = ({ navigation, handleGlobalClick }) => {
       <ScrollView contentContainerStyle={styles.container}>
         <Toast />
         <View style={styles.titleContainer}>
-          <Text style={styles.title}>חירום</Text>
-          <Text style={styles.subtitle}>
-            דף זה מאפשר לך להתקשר לגופי ביטחון והצלה ובנוסף לאיש קשר למקרה חירום
-            שהזנת במערכת. כדי להתקשר לחץ על הכפתור המתאים
-          </Text>
+        <Text style={styles.title}>Emergency</Text>
+        <Text style={styles.subtitle}>
+          This page allows you to call security and rescue services as well as an emergency contact
+          that you have entered in the system. To call, click on the appropriate button
+        </Text>
         </View>
 
         <View style={styles.buttonRowContainer}>
@@ -144,7 +144,7 @@ const Emergency3 = ({ navigation, handleGlobalClick }) => {
           style={styles.forwardButton}
           onPress={() => handleNavigate("Home13")}
         >
-          <Text style={styles.forwardButtonText}>מסך בית</Text>
+          <Text style={styles.forwardButtonText}>Home screen</Text>
         </TouchableOpacity>
 
         <View>

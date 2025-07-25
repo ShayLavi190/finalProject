@@ -43,33 +43,33 @@ const SetUp33 = ({ navigation, handleGlobalClick }) => {
   const modalRef = useRef(null);
 
   const [items, setItems] = useState([
-    { label: "לאומי", value: "10" },
-    { label: "פועלים", value: "12" },
-    { label: "דיסקונט", value: "11" },
-    { label: "יהב", value: "4" },
-    { label: "בנק הדואר", value: "9" },
-    { label: "אגוד", value: "13" },
-    { label: "אוצר החייל", value: "14" },
-    { label: "מרכנתיל", value: "17" },
+    { label: "Bank Leumi", value: "10" },
+    { label: "Bank Hapoalim", value: "12" },
+    { label: "Israel Discount Bank", value: "11" },
+    { label: "Yahav Bank", value: "4" },
+    { label: "Postal Bank", value: "9" },
+    { label: "Igud Bank", value: "13" },
+    { label: "Otsar HaChayal Bank", value: "14" },
+    { label: "Mercantile Bank", value: "17" },
     { label: "Citibank N.A", value: "22" },
-    { label: "מזרחי טפחות", value: "20" },
+    { label: "Mizrahi Tefahot Bank", value: "20" },
     { label: "HSBC Bank plc", value: "23" },
-    { label: 'יובנק בע"מ', value: "26" },
+    { label: "U.Bank Ltd.", value: "26" },
     { label: "Barclays Bank PLC", value: "27" },
-    { label: 'בנק למסחר בע"מ', value: "30" },
-    { label: "הבינלאומי הראשון לישראל", value: "31" },
+    { label: "Bank for Trade Ltd.", value: "30" },
+    { label: "First International Bank of Israel", value: "31" },
     { label: "SBI State Bank of India", value: "39" },
-    { label: "מסד", value: "46" },
-    { label: "מרכז סליקה בנקאי", value: "50" },
-    { label: "פועלי אגודת ישראל", value: "52" },
-    { label: "חסך קופת חסכון לחינוך", value: "65" },
-    { label: "בנק ישראל", value: "99" },
+    { label: "Masad Bank", value: "46" },
+    { label: "Banking Clearing Center", value: "50" },
+    { label: "Poalei Agudat Israel Bank", value: "52" },
+    { label: "Hessed Savings Fund for Education", value: "65" },
+    { label: "Bank of Israel", value: "99" },
   ]);
 
   const explanations = {
-    bank: "אנא בחר את הבנק שלך מהרשימה.",
-    account: "אנא הזן את מספר החשבון שלך.",
-    branch: "אנא הזן את מספר סניף הבנק שלך.",
+    bank: "Please select your bank from the list.",
+    account: "Please enter your account number.",
+    branch: "Please enter your bank branch number.",
   };
 
   const stopAudio = useCallback(async () => {
@@ -154,12 +154,12 @@ const SetUp33 = ({ navigation, handleGlobalClick }) => {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         <View style={styles.card}>
-          <Text style={styles.title}>הגדרת פרטי חשבון בנק</Text>
-          <Text style={styles.subtitle}>
-            .כדי שהרובוט המטפל יוכל להפעיל את שירותיו לטובך, נצטרך את פרטי הבנק
-            שלך. קיימת אפשרות לא להזין את פרטי חשבונך אך לא תוכל להשתמש בשירותי
-            הבנק. המידע נשמר בצורה מאובטחת.
-          </Text>          
+        <Text style={styles.title}>Setting up bank account details</Text>
+        <Text style={styles.subtitle}>
+          In order for the robot to operate its services for you, we will need your bank
+          details. You can choose not to enter your account details, but you will not be able to use the bank
+          services. The information is stored securely.
+        </Text>     
           {/* Bank Picker with Bulb Icon */}
           <View style={[styles.inputContainer, { zIndex: 9999 }]}>
             <TouchableOpacity onPress={() => handleExplanationModal("bank")}>
@@ -178,7 +178,7 @@ const SetUp33 = ({ navigation, handleGlobalClick }) => {
                 setOpen={setOpenPicker}
                 setValue={setSelectedBank}
                 onPress={()=>handleGlobalClick()}
-                placeholder="בחר בנק..."
+                placeholder="Select a bank..."
                 textStyle={{ textAlign: "center" }}
                 style={styles.dropdown}
                 dropDownContainerStyle={styles.dropdownContainer}
@@ -200,7 +200,7 @@ const SetUp33 = ({ navigation, handleGlobalClick }) => {
               </Animatable.View>
             </TouchableOpacity>
             <TextInput
-              placeholder="מספר חשבון"
+              placeholder="Account number"
               keyboardType="numeric"
               value={bankAccountNumber}
               style={styles.input}
@@ -219,7 +219,7 @@ const SetUp33 = ({ navigation, handleGlobalClick }) => {
               </Animatable.View>
             </TouchableOpacity>
             <TextInput
-              placeholder="מספר סניף"
+              placeholder="Branch number"
               keyboardType="numeric"
               value={bankBranchNumber}
               style={styles.input}
@@ -231,7 +231,7 @@ const SetUp33 = ({ navigation, handleGlobalClick }) => {
                 style={[{ backgroundColor: "green" }, styles.button]}
                 onPress={handleMoveForward}
               >
-                <Text style={styles.buttonText}>שמור</Text>
+                <Text style={styles.buttonText}>Save</Text>
               </TouchableOpacity>
             </View>
         </View>
@@ -241,7 +241,7 @@ const SetUp33 = ({ navigation, handleGlobalClick }) => {
             <Animatable.View ref={modalRef} animation="fadeInUp" duration={500} style={styles.modalContent}>
               <Text style={styles.fontex}>{explanation}</Text>
               <TouchableOpacity style={[styles.button, styles.closeBtn]} onPress={closeModal}>
-                <Text style={styles.buttonText}>סגור</Text>
+                <Text style={styles.buttonText}>Close</Text>
               </TouchableOpacity>
             </Animatable.View>
           </View>
@@ -250,7 +250,7 @@ const SetUp33 = ({ navigation, handleGlobalClick }) => {
           <TouchableOpacity
             style={styles.lottieButton}
             onPress={handleAudioPlayback}
-            accessibilityLabel="לחץ לשמיעת הדרכה קולית"
+            accessibilityLabel="Click to hear audio guidance"
           >
             <LottieView
               source={robotAnimation}

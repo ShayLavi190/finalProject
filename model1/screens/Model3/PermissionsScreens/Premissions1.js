@@ -55,13 +55,13 @@ const Premissions13 = ({ navigation, handleGlobalClick }) => {
 
     const fieldExplanations = {
       publicServices:
-        "ללא הרשאה זו לא נוכל להשתמש במידע שהזנת לשירותים ציבוריים כגון בנק, קופת חולים וסופרמרקט",
+        "Without this authorization, we will not be able to use the information you entered for public services such as bank, health fund, and supermarket",
       emergencyContacts:
-        "ללא הרשאה זו לא נוכל להתקשר לאיש הקשר שלך במקרה חירום",
+        "Without this authorization, we will not be able to contact your emergency contact in case of emergency",
       shareHealthInfo:
-        "ללא הרשאה זו לא נוכל להשתמש במידע הרפואי שלך לשירותים של קופת חולים ולא תוכל להשתמש בשירות זה באופן כללי",
+        "Without this authorization, we will not be able to use your medical information for health fund services and you will not be able to use this service in general",
       healthMonitoring:
-        "ללא הרשאה זו לא נוכל לנתר את מצבך הרפואי מהתקנים שיש לך בהם שימוש כגון שעון חכם",
+        "Without this authorization, we will not be able to monitor your medical condition from devices you use such as a smartwatch",
     };
     setExplanation(fieldExplanations[field]);
     setIconAnimation("pulse");
@@ -109,7 +109,7 @@ const Premissions13 = ({ navigation, handleGlobalClick }) => {
         setIsPlaying(true);
       } catch (error) {
         console.error("Error playing audio:", error);
-        Alert.alert("שגיאה בהפעלת ההקלטה", "לא ניתן להפעיל את ההקלטה כרגע.");
+        Alert.alert("Error playing recording", "Recording cannot be played at this time.");
       }
     }
   };
@@ -143,14 +143,14 @@ const Premissions13 = ({ navigation, handleGlobalClick }) => {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         <View style={styles.card}>
-          <Text style={styles.title}>
-            הגדרת הרשאות לשירותי הבריאות ושירותים ציבוריים
-          </Text>
-          <Text style={styles.subtitle}>
-            כדי שהרובוט המטפל יוכל להפעיל את שירותיו לטובך נצטרך את אישורך
-            לפעולות מסויימות . כלל המידע נשמר בצורה מאובטחת ואינו משותף עם שום
-            גורם חיצוני ללא ביצוע שירות ייעודי.
-          </Text>
+        <Text style={styles.title}>
+          Setting permissions for health and public services
+        </Text>
+        <Text style={styles.subtitle}>
+          In order for the care robot to be able to operate its services for your benefit, we will need your permission
+          for certain actions. All information is stored securely and is not shared with any
+          external party without performing a dedicated service.
+        </Text>
 
           <View style={styles.inputContainer}>
             <TouchableOpacity onPress={() => handleIconPress("publicServices")}>
@@ -171,7 +171,7 @@ const Premissions13 = ({ navigation, handleGlobalClick }) => {
               }}
               value={publicServices}
             />
-            <Text style={styles.input}>שימוש בשירותים ציבוריים</Text>
+            <Text style={styles.input}>Using public services</Text>
           </View>
           <View style={styles.inputContainer}>
             <TouchableOpacity
@@ -194,7 +194,7 @@ const Premissions13 = ({ navigation, handleGlobalClick }) => {
               }}
               value={healthMonitoring}
             />
-            <Text style={styles.input}>מעקב אחר מצב בריאותי</Text>
+            <Text style={styles.input}>Health monitoring</Text>
           </View>
           <View style={styles.inputContainer}>
             <TouchableOpacity
@@ -217,7 +217,7 @@ const Premissions13 = ({ navigation, handleGlobalClick }) => {
               }}
               value={emergencyContacts}
             />
-            <Text style={styles.input}>גישה לפרטי איש קשר למקרה חירום</Text>
+            <Text style={styles.input}>Access to emergency contact information</Text>
           </View>
           <View style={styles.inputContainer}>
             <TouchableOpacity
@@ -240,7 +240,7 @@ const Premissions13 = ({ navigation, handleGlobalClick }) => {
               }}
               value={shareHealthInfo}
             />
-            <Text style={styles.input}>שיתוף מידע עם גורמים בריאותיים</Text>
+            <Text style={styles.input}>Sharing information with health authorities</Text>
           </View>
 
           {/* Next Button */}
@@ -248,7 +248,7 @@ const Premissions13 = ({ navigation, handleGlobalClick }) => {
             style={[{ backgroundColor: "green" }, styles.button]}
             onPress={handleMoveForward}
           >
-            <Text style={styles.buttonText}>שמור</Text>
+            <Text style={styles.buttonText}>Save</Text>
           </TouchableOpacity>
         </View>
         <Modal visible={modalVisible} transparent animationType="none">
@@ -264,7 +264,7 @@ const Premissions13 = ({ navigation, handleGlobalClick }) => {
                 style={[styles.button, { backgroundColor: "red" }]}
                 onPress={closeModal}
               >
-                <Text style={styles.buttonText}>סגור</Text>
+                <Text style={styles.buttonText}>Close</Text>
               </TouchableOpacity>
             </Animatable.View>
           </View>

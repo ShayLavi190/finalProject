@@ -28,58 +28,58 @@ const SetupScreen = ({ navigation, handleGlobalClick }) => {
   const [bankOpen, setBankOpen] = useState(false);
   const [selectedBank, setSelectedBank] = useState(user.selectedBank || "");
   const [bankItems, setBankItems] = useState([
-    { label: "לאומי", value: "10" },
-    { label: "פועלים", value: "12" },
-    { label: "דיסקונט", value: "11" },
-    { label: "יהב", value: "4" },
-    { label: "בנק הדואר", value: "9" },
-    { label: "אגוד", value: "13" },
-    { label: "אוצר החייל", value: "14" },
-    { label: "מרכנתיל", value: "17" },
-    { label: "Citibank N.A", value: "22" },
-    { label: "מזרחי טפחות", value: "20" },
-    { label: "HSBC Bank plc", value: "23" },
-    { label: "יובנק בע\"מ", value: "26" },
-    { label: "Barclays Bank PLC", value: "27" },
-    { label: "בנק למסחר בע\"מ", value: "30" },
-    { label: "הבינלאומי הראשון לישראל", value: "31" },
-    { label: "SBI State Bank of India", value: "39" },
-    { label: "מסד", value: "46" },
-    { label: "מרכז סליקה בנקאי", value: "50" },
-    { label: "פועלי אגודת ישראל", value: "52" },
-    { label: "חסך קופת חסכון לחינוך", value: "65" },
-    { label: "בנק ישראל", value: "99" },
+      { label: "Bank Leumi", value: "10" },
+      { label: "Bank Hapoalim", value: "12" },
+      { label: "Israel Discount Bank", value: "11" },
+      { label: "Yahav Bank", value: "4" },
+      { label: "Postal Bank", value: "9" },
+      { label: "Igud Bank", value: "13" },
+      { label: "Otsar HaChayal Bank", value: "14" },
+      { label: "Mercantile Bank", value: "17" },
+      { label: "Citibank N.A", value: "22" },
+      { label: "Mizrahi Tefahot Bank", value: "20" },
+      { label: "HSBC Bank plc", value: "23" },
+      { label: "U.Bank Ltd.", value: "26" },
+      { label: "Barclays Bank PLC", value: "27" },
+      { label: "Bank for Trade Ltd.", value: "30" },
+      { label: "First International Bank of Israel", value: "31" },
+      { label: "SBI State Bank of India", value: "39" },
+      { label: "Masad Bank", value: "46" },
+      { label: "Banking Clearing Center", value: "50" },
+      { label: "Poalei Agudat Israel Bank", value: "52" },
+      { label: "Hessed Savings Fund for Education", value: "65" },
+      { label: "Bank of Israel", value: "99" },
   ]);
 
   const [healthOpen, setHealthOpen] = useState(false);
   const [selectedhealthFund, setSelectedhealthFund] = useState(user.selectedhealthFund || "");
   const [healthItems, setHealthItems] = useState([
-    { label: "מכבי", value: "מכבי" },
-    { label: "כללית", value: "כללית" },
-    { label: "מאוחדת", value: "מאוחדת" },
-    { label: "לאומית", value: "לאומית" },
+      { label: "Maccabi Healthcare Services", value: "Maccabi Healthcare Services" },
+      { label: "Clalit Health Services", value: "Clalit Health Services" },
+      { label: "Meuhedet Health Services", value: "Meuhedet Health Services" },
+      { label: "Leumit Health Services", value: "Leumit Health Services" },
   ]);
 
   const validateInputs = () => {
     const errors = [];
 
-    if (!name.trim()) errors.push("שם מלא נדרש.");
-    if (!idr.trim()) errors.push("מספר זיהוי משתתף נדרש.");
-    if (!idr.trim() || idr.length !== 9) errors.push("תעודת זהות חייבת להיות 9 ספרות.");
-    if (!address.trim()) errors.push("כתובת מגורים נדרשת.");
-    if (!phone.trim() || phone.length !== 10) errors.push("מספר טלפון חייב להיות 10 ספרות.");
-    if (!emergencyPhone.trim() || emergencyPhone.length !== 10) errors.push("מספר חירום חייב להיות 10 ספרות.");
-    if (!selectedBank) errors.push("נא לבחור בנק.");
-    if (!bankAccountNumber.trim()) errors.push("מספר חשבון בנק נדרש.");
-    if (!bankBranchNumber.trim()) errors.push("מספר סניף בנק נדרש.");
-    if (!selectedhealthFund) errors.push("נא לבחור קופת חולים.");
+    if (!name.trim()) errors.push("Full name is required.");
+    if (!idr.trim()) errors.push("Participant ID number is required.");
+    if (!idr.trim() || idr.length !== 9) errors.push("ID number must be 9 digits.");
+    if (!address.trim()) errors.push("Home address is required.");
+    if (!phone.trim() || phone.length !== 10) errors.push("Phone number must be 10 digits.");
+    if (!emergencyPhone.trim() || emergencyPhone.length !== 10) errors.push("Emergency phone number must be 10 digits.");
+    if (!selectedBank) errors.push("Please select a bank.");
+    if (!bankAccountNumber.trim()) errors.push("Bank account number is required.");
+    if (!bankBranchNumber.trim()) errors.push("Bank branch number is required.");
+    if (!selectedhealthFund) errors.push("Please select a health fund.");
 
     if (errors.length > 0) {
       errors.forEach((error, index) => {
         setTimeout(() => {
           Toast.show({
             type: "error",
-            text1: "שגיאה",
+            text1: "Error",
             text2: error,
             visibilityTime: 4000,
             position: "top",
@@ -112,8 +112,8 @@ const SetupScreen = ({ navigation, handleGlobalClick }) => {
 
     Toast.show({
       type: "success",
-      text1: "הצלחה",
-      text2: "הפרטים נשמרו בהצלחה!",
+      text1: "success",
+      text2: "Details saved successfully!",
       visibilityTime: 5000,
       textStyle: { fontSize: 18 },
     });
@@ -134,16 +134,16 @@ const SetupScreen = ({ navigation, handleGlobalClick }) => {
         nestedScrollEnabled={true}
       >
         <View style={styles.card}>
-          <Text style={styles.title}>הגדרה ראשונית</Text>
-          <Text style={styles.subtitle}>כדי להתחבר למערכת יש למלא את כלל הפרטים הבאים. חשוב להדגיש שהפרטיכם לא ישמרו ולא יעשה בהם שימוש.</Text>
+          <Text style={styles.title}>Initial Setup</Text>
+          <Text style={styles.subtitle}>To connect to the system, please fill in all the following details. It's important to emphasize that your information will not be saved and will not be used.</Text>
 
           {/* Personal Info Section */}
-          <TextInput style={styles.input} placeholder="שם מלא" value={name} onChangeText={setName} />
-          <TextInput style={styles.input} placeholder="מספר זיהוי משתתף" value={id} onChangeText={(text) => /^\d*$/.test(text) && setId(text)} keyboardType="numeric" />
-          <TextInput style={styles.input} placeholder="תעודת זהות" value={idr} onChangeText={(text) => /^\d*$/.test(text) && setIdr(text)} keyboardType="numeric" />
-          <TextInput style={styles.input} placeholder="כתובת מגורים" value={address} onChangeText={setAddress} />
-          <TextInput style={styles.input} placeholder="מספר טלפון" value={phone} onChangeText={(text) => /^\d*$/.test(text) && setPhone(text)} keyboardType="numeric" />
-          <TextInput style={styles.input} placeholder="טלפון חירום" value={emergencyPhone} onChangeText={(text) => /^\d*$/.test(text) && setEmergencyPhone(text)} keyboardType="numeric" />
+          <TextInput style={styles.input} placeholder="Full name" value={name} onChangeText={setName} />
+          <TextInput style={styles.input} placeholder="Participant ID number" value={id} onChangeText={(text) => /^\d*$/.test(text) && setId(text)} keyboardType="numeric" />
+          <TextInput style={styles.input} placeholder="ID number" value={idr} onChangeText={(text) => /^\d*$/.test(text) && setIdr(text)} keyboardType="numeric" />
+          <TextInput style={styles.input} placeholder="Home address" value={address} onChangeText={setAddress} />
+          <TextInput style={styles.input} placeholder="Phone number" value={phone} onChangeText={(text) => /^\d*$/.test(text) && setPhone(text)} keyboardType="numeric" />
+          <TextInput style={styles.input} placeholder="Emergency phone" value={emergencyPhone} onChangeText={(text) => /^\d*$/.test(text) && setEmergencyPhone(text)} keyboardType="numeric" />
 
           {/* Bank Section */}
           <View style={{ zIndex: 5000 }}>
@@ -157,7 +157,7 @@ const SetupScreen = ({ navigation, handleGlobalClick }) => {
               }}
               setValue={setSelectedBank}
               setItems={setBankItems}
-              placeholder="בחר בנק..."
+              placeholder="Select bank..."
               style={styles.dropdown}
               textStyle={styles.dropdownText}
               dropDownContainerStyle={styles.dropdownContainer}
@@ -171,8 +171,8 @@ const SetupScreen = ({ navigation, handleGlobalClick }) => {
 
           {!bankOpen && (
             <>
-              <TextInput style={styles.input} placeholder="מספר חשבון בנק" value={bankAccountNumber} onChangeText={setBankAccountNumber} />
-              <TextInput style={styles.input} placeholder="מספר סניף בנק" value={bankBranchNumber} onChangeText={setBankBranchNumber} />
+              <TextInput style={styles.input} placeholder="Bank account number" value={bankAccountNumber} onChangeText={setBankAccountNumber} />
+              <TextInput style={styles.input} placeholder="Bank branch number" value={bankBranchNumber} onChangeText={setBankBranchNumber} />
             </>
           )}
 
@@ -189,7 +189,7 @@ const SetupScreen = ({ navigation, handleGlobalClick }) => {
                 }}
                 setValue={setSelectedhealthFund}
                 setItems={setHealthItems}
-                placeholder="בחר קופת חולים..."
+                placeholder="Select health fund..."
                 style={styles.dropdown}
                 textStyle={styles.dropdownText}
                 dropDownContainerStyle={styles.dropdownContainer}
@@ -204,7 +204,7 @@ const SetupScreen = ({ navigation, handleGlobalClick }) => {
 
           {!healthOpen && !bankOpen && (
             <View style={styles.buttonContainer}>
-              <Button title="שמירה" onPress={handleSave} />
+              <Button title="Save" onPress={handleSave} />
             </View>
           )}
         </View>

@@ -6,7 +6,6 @@ import * as Animatable from 'react-native-animatable';
 import Toast from 'react-native-toast-message';
 import { useUser } from '../../Model2/userContext';
 
-// הפונקציה מקבלת את כל הפרופס בצורה תקינה
 const HomeSetUp = ({ handleGlobalClick }) => {
   const navigation = useNavigation();
   const route = useRoute();
@@ -21,28 +20,28 @@ const HomeSetUp = ({ handleGlobalClick }) => {
     } else {
       Toast.show({
         type: 'error',
-        text1: 'שגיאה',
-        text2: 'יש למלא את כל הפרטים האישיים',
+        text1: 'Error',
+        text2: 'All personal details must be filled in',
         position: 'top',
         visibilityTime: 2000,
       });
     }
   };
   const setupOptions = [
-    { title: 'פרטים אישיים', icon: 'person', screen: 'SetUp31', color: '#FFCDD2' },
-    { title: 'כתובת מגורים', icon: 'home', screen: 'SetUp23', color: '#BBDEFB' },
-    { title: 'פרטי בנק', icon: 'account-balance', screen: 'SetUp33', color: '#C8E6C9' },
-    { title: 'קופת חולים', icon: 'local-hospital', screen: 'SetUp43', color: '#FFF9C4' },
+    { title: 'Personal Details', icon: 'person', screen: 'SetUp31', color: '#FFCDD2' },
+    { title: 'Residential Address', icon: 'home', screen: 'SetUp23', color: '#BBDEFB' },
+    { title: 'Bank Details', icon: 'account-balance', screen: 'SetUp33', color: '#C8E6C9' },
+    { title: 'Health Insurance Fund', icon: 'local-hospital', screen: 'SetUp43', color: '#FFF9C4' },
   ];
 
   return (
     <View style={styles.container}>
-          <Text style={styles.title}>הגדרת פרטים אישיים</Text>
-          <Text style={styles.subtitle}>
-            כדי שהרובוט המטפל יוכל להפעיל את שירותיו לטובך נצטרך את פרטיך
-            האישיים. כלל המידע נשמר בצורה מאובטחת ואינו משותף עם שום גורם חיצוני
-            ללא ביצוע שירות ייעודי. יש להשלים את כל השלבים כדי לעבור לעמוד ההרשאות.
-          </Text>
+      <Text style={styles.title}>Setting up personal details</Text>
+      <Text style={styles.subtitle}>
+        In order for the care robot to be able to operate its services for your benefit, we will need your personal
+        details. All information is stored securely and is not shared with any external party
+        without performing a dedicated service. All steps must be completed to proceed to the permissions page.
+      </Text>
       {setupOptions.map((option, index) => (
         <Animatable.View
           key={index}
@@ -58,7 +57,7 @@ const HomeSetUp = ({ handleGlobalClick }) => {
       ))}
         <View>
             <TouchableOpacity style={styles.button} onPress={() =>handelMoveToNext()}>
-              <Text style={styles.buttonText}>המשך להגדרת הרשאות הפרטיות</Text>
+              <Text style={styles.buttonText}>Continue to set privacy permissions</Text>
             </TouchableOpacity>
         </View> 
         <Toast />

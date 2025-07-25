@@ -26,13 +26,13 @@ const ContactBanker3 = ({ navigation, handleGlobalClick }) => {
   const animatableRef = useRef(null);
   
   const items = [
-    { label: "בקשה למידע נוסף", value: "בקשה למידע נוסף" },
-    { label: "תלונה", value: "תלונה" },
-    { label: "שירות לקוחות", value: "שירות לקוחות" },
-    { label: "פעולה", value: "פעולה" },
-    { label: "הגדלת מסגרת", value: "הגדלת מסגרת" },
-    { label: "הלוואה", value: "הלוואה" },
-    { label: "אחר", value: "אחר" },
+    { label: "Request for more information", value: "Request for more information" },
+    { label: "Complaint", value: "Complaint" },
+    { label: "Customer service", value: "Customer service" },
+    { label: "Action", value: "Action" },
+    { label: "Increase frame", value: "Increase frame" },
+    { label: "Loan", value: "Loan" },
+    { label: "Other", value: "Other" },
   ];
 
   const handleNavigate = (route, direction) => {
@@ -71,8 +71,8 @@ const ContactBanker3 = ({ navigation, handleGlobalClick }) => {
         Toast.show({
           type: 'error',
           position: 'bottom',
-          text1: 'שגיאה בהפעלת ההקלטה',
-          text2: 'לא ניתן להפעיל את ההקלטה כרגע',
+          text1: 'Error playing recording',
+          text2: 'Recording cannot be played at this time',
           visibilityTime: 4000,
         });
       }
@@ -101,8 +101,8 @@ const ContactBanker3 = ({ navigation, handleGlobalClick }) => {
         Toast.show({
           type: 'success',
           position: 'bottom',
-          text1: 'הצלחה',
-          text2: 'הבקשה הועברה לבנקאי בהצלחה',
+          text1: 'Success',
+          text2: 'Request successfully transferred to banker',
           visibilityTime: 4000,
           autoHide: true,
         });
@@ -119,8 +119,8 @@ const ContactBanker3 = ({ navigation, handleGlobalClick }) => {
         Toast.show({
           type: 'error',
           position: 'bottom',
-          text1: 'שגיאה',
-          text2: 'לא כל השדות מולאו. מלא/י את כלל השדות',
+          text1: 'Error',
+          text2: 'Not all fields are filled in. Fill in all fields',
           visibilityTime: 4000,
           autoHide: true,
         });
@@ -148,13 +148,13 @@ const ContactBanker3 = ({ navigation, handleGlobalClick }) => {
       >
         <ScrollView contentContainerStyle={styles.container}>
           <View style={styles.titleContainer}>
-            <Text style={styles.title}>כתוב לבנקאי</Text>
+            <Text style={styles.title}>Write to the banker</Text>
           </View>
           
           <View>
-            <Text style={styles.subtitle}>
-              המידע נשמר בצורה מאובטחת. מלא את כלל הפרטים כדי ליצור קשר עם הבנקאי שלך.
-            </Text>
+          <Text style={styles.subtitle}>
+            Your information is stored securely. Fill in all the details to contact your banker.
+          </Text>
           </View>
           
           {/* Form Container */}
@@ -166,7 +166,7 @@ const ContactBanker3 = ({ navigation, handleGlobalClick }) => {
               items={items}
               setOpen={setOpen}
               setValue={setSelectedAction}
-              placeholder="בחר פעולה..."
+              placeholder="Select an action..."
               style={styles.dropdown}
               textStyle={styles.dropdownText}
               dropDownContainerStyle={styles.dropdownContainer}
@@ -177,7 +177,7 @@ const ContactBanker3 = ({ navigation, handleGlobalClick }) => {
             {/* Description Input */}
             <TextInput
               style={styles.textArea}
-              placeholder="הזן את תיאור הבקשה שלך כאן..."
+              placeholder="Enter your request description here..."
               value={info}
               onChangeText={setInfo}
               multiline
@@ -189,7 +189,7 @@ const ContactBanker3 = ({ navigation, handleGlobalClick }) => {
               style={styles.sendButton}
               onPress={handleSend}
             >
-              <Text style={styles.buttonText}>שליחת בקשה</Text>
+              <Text style={styles.buttonText}>Send request</Text>
             </TouchableOpacity>
           </View>
           
@@ -199,13 +199,13 @@ const ContactBanker3 = ({ navigation, handleGlobalClick }) => {
               style={[styles.button, { backgroundColor: "orange" }]}
               onPress={() => handleNavigate("Bank3", "forward")}
             >
-              <Text style={styles.buttonText}>פעולות בנקאיות</Text>
+              <Text style={styles.buttonText}>Banking operations</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.button, { backgroundColor: "green" }]}
               onPress={() => handleNavigate("Home13", "back")}
             >
-              <Text style={styles.buttonText}>מסך בית</Text>
+              <Text style={styles.buttonText}>Home screen</Text>
             </TouchableOpacity>
           </View>
           

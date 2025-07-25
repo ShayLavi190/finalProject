@@ -24,28 +24,28 @@ const SetUp3 = ({ navigation, handleGlobalClick }) => {
   const [iconAnimation, setIconAnimation] = useState("");
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState([
-    { label: "לאומי", value: "10" },
-    { label: "פועלים", value: "12" },
-    { label: "דיסקונט", value: "11" },
-    { label: "יהב", value: "4" },
-    { label: "בנק הדואר", value: "9" },
-    { label: "אגוד", value: "13" },
-    { label: "אוצר החייל", value: "14" },
-    { label: "מרכנתיל", value: "17" },
+    { label: "Bank Leumi", value: "10" },
+    { label: "Bank Hapoalim", value: "12" },
+    { label: "Israel Discount Bank", value: "11" },
+    { label: "Yahav Bank", value: "4" },
+    { label: "Postal Bank", value: "9" },
+    { label: "Igud Bank", value: "13" },
+    { label: "Otsar HaChayal Bank", value: "14" },
+    { label: "Mercantile Bank", value: "17" },
     { label: "Citibank N.A", value: "22" },
-    { label: "מזרחי טפחות", value: "20" },
+    { label: "Mizrahi Tefahot Bank", value: "20" },
     { label: "HSBC Bank plc", value: "23" },
-    { label: 'יובנק בע"מ', value: "26" },
+    { label: "U.Bank Ltd.", value: "26" },
     { label: "Barclays Bank PLC", value: "27" },
-    { label: 'בנק למסחר בע"מ', value: "30" },
-    { label: "הבינלאומי הראשון לישראל", value: "31" },
+    { label: "Bank for Trade Ltd.", value: "30" },
+    { label: "First International Bank of Israel", value: "31" },
     { label: "SBI State Bank of India", value: "39" },
-    { label: "מסד", value: "46" },
-    { label: "מרכז סליקה בנקאי", value: "50" },
-    { label: "פועלי אגודת ישראל", value: "52" },
-    { label: "חסך קופת חסכון לחינוך", value: "65" },
-    { label: "בנק ישראל", value: "99" },
-  ]);
+    { label: "Masad Bank", value: "46" },
+    { label: "Banking Clearing Center", value: "50" },
+    { label: "Poalei Agudat Israel Bank", value: "52" },
+    { label: "Hessed Savings Fund for Education", value: "65" },
+    { label: "Bank of Israel", value: "99" },
+]);
   const animatableRef = useRef(null);
   const modalRef = useRef(null);
   const pickerRef = useRef(null);
@@ -58,9 +58,9 @@ const SetUp3 = ({ navigation, handleGlobalClick }) => {
 
   const handleIconPress = (field) => {
     const fieldExplanations = {
-      bank: "אנא בחר בנק מהרשימה.",
-      account: "אנא הזן את מספר חשבון הבנק שלך.",
-      branch: "אנא הזן את מספר סניף הבנק שלך.",
+      bank: "Please select a bank from the list.",
+      account: "Please enter your bank account number.",
+      branch: "Please enter your bank branch number.",
     };
     setExplanation(fieldExplanations[field]);
     setIconAnimation("pulse");
@@ -112,12 +112,12 @@ const SetUp3 = ({ navigation, handleGlobalClick }) => {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         <View style={styles.card}>
-          <Text style={styles.title}>הגדרת פרטי חשבון בנק</Text>
-          <Text style={styles.subtitle}>
-            .כדי שהרובוט המטפל יוכל להפעיל את שירותיו לטובך, נצטרך את פרטי הבנק
-            שלך. קיימת אפשרות לא להזין את פרטי חשבונך אך לא תוכל להשתמש בשירותי
-            הבנק. המידע נשמר בצורה מאובטחת.
-          </Text>
+        <Text style={styles.title}>Setting up bank account details</Text>
+        <Text style={styles.subtitle}>
+          In order for the robot to operate its services for you, we will need your bank
+          details. You can choose not to enter your account details, but you will not be able to use the bank
+          services. The information is stored securely.
+        </Text>
           
           <View style={styles.dropdownSection}>
             <View style={styles.inputContainer}>
@@ -141,7 +141,7 @@ const SetUp3 = ({ navigation, handleGlobalClick }) => {
                   setValue={setSelectedBank}
                   setItems={setItems}
                   textStyle={styles.dropdownText}
-                  placeholder="בחר בנק..."
+                  placeholder="Select a bank..."
                   style={styles.dropdown}
                   dropDownContainerStyle={styles.dropdownContainer}
                   zIndex={3000}
@@ -163,7 +163,7 @@ const SetUp3 = ({ navigation, handleGlobalClick }) => {
             </TouchableOpacity>
             <TextInput
               style={styles.input}
-              placeholder="מספר חשבון בנק"
+              placeholder="Bank account number"
               value={bankAccountNumber}
               onChangeText={(text) => {
                 const numericText = text.replace(/[^0-9]/g, "");
@@ -186,7 +186,7 @@ const SetUp3 = ({ navigation, handleGlobalClick }) => {
             </TouchableOpacity>
             <TextInput
               style={styles.input}
-              placeholder="מספר סניף בנק"
+              placeholder="Bank branch number"
               value={bankBranchNumber}
               onChangeText={(text) => {
                 const numericText = text.replace(/[^0-9]/g, "");
@@ -203,13 +203,13 @@ const SetUp3 = ({ navigation, handleGlobalClick }) => {
               style={[styles.button, styles.forwardBtn]}
               onPress={handleMoveForward}
             >
-              <Text style={styles.buttonText}>המשך</Text>
+              <Text style={styles.buttonText}>Next</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.button, styles.backBtn]}
               onPress={handleGoBack}
             >
-              <Text style={styles.buttonText}>חזור</Text>
+              <Text style={styles.buttonText}>Back</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -228,7 +228,7 @@ const SetUp3 = ({ navigation, handleGlobalClick }) => {
                 style={[styles.button, styles.closeBtn]}
                 onPress={closeModal}
               >
-                <Text style={styles.buttonText}>סגור</Text>
+                <Text style={styles.buttonText}>Close</Text>
               </TouchableOpacity>
             </Animatable.View>
           </View>

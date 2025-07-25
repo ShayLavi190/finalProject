@@ -37,11 +37,11 @@ const SetUp2 = ({ navigation, handleGlobalClick }) => {
 
   const handleIconPress = (field) => {
     const fieldExplanations = {
-      street: "אנא הזן את שם הרחוב שלך.",
+      street: "Please enter your street name.",
       "number and apartment":
-        "אנא הזן את מספר הבית של ומספר דירה אם יש. זהו שדה חובה",
-      city: "אנא הזן את שם העיר שלך.",
-      country: "אנא הזן את שם המדינה שלך.",
+      "Please enter your house number and apartment number if applicable. This is a required field",
+      city: "Please enter your city name.",
+      country: "Please enter your country name.",
     };
     setExplanation(fieldExplanations[field]);
     setIconAnimation("pulse");
@@ -51,25 +51,25 @@ const SetUp2 = ({ navigation, handleGlobalClick }) => {
 
   const validateInputs = () => {
     const errors = [];
-    if (!street.trim()) errors.push("רחוב נדרש. שדה זה חובה");
-    if (!number.trim()) errors.push("מספר בית ודירה אם יש נדרש. שדה זה חובה");
+    if (!street.trim()) errors.push("Street is required. This field is required");
+    if (!number.trim()) errors.push("House and apartment number if any is required. This field is required");
     if (!city.trim())
-      errors.push("נא להזין את העיר בה אתה מתגורר. שדה זה חובה");
-    if (!country.trim())
-      errors.push("נא להזין את המדינה בה אתם גרים. שדה זה חובה");
+      errors.push("Please enter the city where you live. This field is required");
+      if (!country.trim())
+      errors.push("Please enter the country where you live. This field is required");
     if (errors.length > 0) {
             errors.forEach((error, index) => {
               setTimeout(() => {
                 Toast.show({
                   type: "error",
-                  text1: "שגיאה",
+                  text1: "Error",
                   text2: error,
                   visibilityTime: 4000,
                   position: "top",
                   textStyle: { fontSize: 18, textAlign: "right" }, 
                   style: { width: "90%", backgroundColor: "#ff4d4d", borderRadius: 10, alignSelf: "flex-end" },
                 });
-              }, index * 800); 
+              }, index * 800);
             });
       return false;
     }
@@ -125,12 +125,12 @@ const SetUp2 = ({ navigation, handleGlobalClick }) => {
       >
         <Toast/>
         <View style={styles.card}>
-          <Text style={styles.title}> הגדרת כתובת לקוח</Text>
-          <Text style={styles.subtitle}>
-            כדי שהרובוט המטפל יוכל להפעיל את שירותיו לטובך נצטרך את פרטי
-            המגורים. כלל המידע נשמר בצורה מאובטחת ואינו משותף עם שום גורם חיצוני
-            ללא ביצוע שירות ייעודי.
-          </Text>
+        <Text style={styles.title}> Setting a Client Address</Text>
+        <Text style={styles.subtitle}>
+          In order for the care robot to be able to operate its services for your benefit, we will need your residential
+          details. All information is stored securely and is not shared with any external
+          party without performing a dedicated service.
+        </Text>
           {/* Street Input */}
           <View style={styles.inputContainer}>
             <TouchableOpacity onPress={() => handleIconPress("street")}>
@@ -143,7 +143,7 @@ const SetUp2 = ({ navigation, handleGlobalClick }) => {
             </TouchableOpacity>
             <TextInput
               style={styles.input}
-              placeholder="רחוב"
+              placeholder="street"
               value={street}
               onChangeText={(value) => {
                 setStreet(value);
@@ -166,7 +166,7 @@ const SetUp2 = ({ navigation, handleGlobalClick }) => {
             </TouchableOpacity>
             <TextInput
               style={styles.input}
-              placeholder="מספר רחוב ודירה אם יש"
+              placeholder="Street and apartment number if any"
               value={number}
               onChangeText={(value) => {
                 setNumber(value);
@@ -188,7 +188,7 @@ const SetUp2 = ({ navigation, handleGlobalClick }) => {
             </TouchableOpacity>
             <TextInput
               style={styles.input}
-              placeholder="עיר"
+              placeholder="city"
               value={city}
               onChangeText={(value) => {
                 setCity(value);
@@ -209,7 +209,7 @@ const SetUp2 = ({ navigation, handleGlobalClick }) => {
             </TouchableOpacity>
             <TextInput
               style={styles.input}
-              placeholder="מדינה"
+              placeholder="country"
               value={country}
               onChangeText={(value) => {
                 setCountry(value);
@@ -224,13 +224,13 @@ const SetUp2 = ({ navigation, handleGlobalClick }) => {
               style={[styles.button, styles.forwardBtn]}
               onPress={handleMoveForward}
             >
-              <Text style={styles.buttonText}>המשך</Text>
+              <Text style={styles.buttonText}>Next</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.button, styles.backBtn]}
               onPress={handleGoBack}
             >
-              <Text style={styles.buttonText}>חזור</Text>
+              <Text style={styles.buttonText}>Back</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -249,7 +249,7 @@ const SetUp2 = ({ navigation, handleGlobalClick }) => {
                 style={[styles.button, styles.closeBtn]}
                 onPress={closeModal}
               >
-                <Text style={styles.buttonText}>סגור</Text>
+                <Text style={styles.buttonText}>Close</Text>
               </TouchableOpacity>
             </Animatable.View>
           </View>

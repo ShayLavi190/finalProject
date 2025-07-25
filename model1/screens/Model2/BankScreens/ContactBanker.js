@@ -22,21 +22,21 @@ const ContactBankerM2 = ({ navigation, handleGlobalClick }) => {
   const [iconAnimation, setIconAnimation] = useState("");
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState([
-        { label: 'בקשה למידע נוסף', value: 'בקשה למידע נוסף' },
-        { label: 'תלונה', value: 'תלונה' },
-        { label: 'שירות לקוחות', value: 'שירות לקוחות' },
-        { label: 'פעולה', value: 'פעולה' },
-        { label: 'הגדלת מסגרת', value: 'הגדלת מסגרת' },
-        { label: 'הלוואה', value: 'הלוואה' },
-        { label: 'אחר', value: 'אחר' },
+    { label: 'Request for more information', value: 'Request for more information' },
+    { label: 'Complaint', value: 'Complaint' },
+    { label: 'Customer service', value: 'Customer service' },
+    { label: 'Action', value: 'Action' },
+    { label: 'Enlarge frame', value: 'Enlarge frame' },
+    { label: 'Loan', value: 'Loan' },
+    { label: 'Other', value: 'Other' },
   ]);
   const animatableRef = useRef(null);
   const modalRef = useRef(null);
 
   const handleIconPress = (field) => {
     const fieldExplanations = {
-      action: "אנא בחר פעולה שברצונך לבצע מהרשימה.",
-      info: "אנא הזן את תיאור הבקשה לבנקאי שלך.",
+      action: "Please select an action you want to perform from the list.",
+      info: "Please enter a description of the request to your banker.",
     };
     setExplanation(fieldExplanations[field]);
     setIconAnimation("pulse");
@@ -65,13 +65,13 @@ const ContactBankerM2 = ({ navigation, handleGlobalClick }) => {
       // Use setTimeout to ensure the Toast appears after UI updates
       setTimeout(() => {
         Toast.show({
-          type: 'success',
-          position: 'bottom',
-          text1: 'הצלחה',
-          text2: 'הבקשה הועברה לבנקאי בהצלחה',
-          visibilityTime: 4000,
+        type: 'success',
+        position: 'bottom',
+        text1: 'success',
+        text2: 'Request successfully transferred to banker',
+        visibilityTime: 4000,
         });
-      }, 100);
+        }, 100);
       
       setInfo("");
       setSelectedAction("");
@@ -82,13 +82,13 @@ const ContactBankerM2 = ({ navigation, handleGlobalClick }) => {
       // Use setTimeout to ensure the Toast appears after UI updates
       setTimeout(() => {
         Toast.show({
-          type: 'error',
-          position: 'bottom',
-          text1: 'שגיאה',
-          text2: 'לא כל השדות מולאו. מלא/י את כלל השדות',
-          visibilityTime: 4000,
+        type: 'error',
+        position: 'bottom',
+        text1: 'Error',
+        text2: 'Not all fields are filled in. Fill in all fields',
+        visibilityTime: 4000,
         });
-      }, 100);
+        }, 100);
     }
   };
 
@@ -112,10 +112,10 @@ const ContactBankerM2 = ({ navigation, handleGlobalClick }) => {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         <View style={[styles.card, open ? { zIndex: 100 } : {}]}>
-          <Text style={styles.title}>כתוב לבנקאי</Text>
-          <Text style={styles.subtitle}>
-            המידע נשמר בצורה מאובטחת. מלא את כלל הפרטים כדי לבצע העברה.
-          </Text>
+        <Text style={styles.title}>Write to the banker</Text>
+        <Text style={styles.subtitle}>
+        The information is stored securely. Fill in all the details to make a transfer.
+        </Text>
 
           {/* Bank Picker - Updated to match Transaction component */}
           <View style={[styles.inputContainer, { zIndex: 3000 }]}>
@@ -137,7 +137,7 @@ const ContactBankerM2 = ({ navigation, handleGlobalClick }) => {
               }}
               setValue={setSelectedAction}
               setItems={setItems}
-              placeholder="בחר פעולה..."
+              placeholder="Select an action..."
               style={styles.dropdown}
               textStyle={styles.dropdownText}
               dropDownDirection="BOTTOM"
@@ -155,7 +155,7 @@ const ContactBankerM2 = ({ navigation, handleGlobalClick }) => {
             </TouchableOpacity>
             <TextInput
               style={[styles.input, {height:200}]}
-              placeholder="תיאור"
+              placeholder="Description"
               value={info}
               onPress={handleGlobalClick}
               onChangeText={(text) => {setInfo(text);handleGlobalClick();}}
@@ -171,7 +171,7 @@ const ContactBankerM2 = ({ navigation, handleGlobalClick }) => {
               style={[styles.button, styles.sendBtn]}
               onPress={handelSend}
             >
-              <Text style={styles.buttonText}>שליחת בקשה</Text>
+            <Text style={styles.buttonText}>Send request</Text>
             </TouchableOpacity>
           </View>
 
@@ -181,13 +181,13 @@ const ContactBankerM2 = ({ navigation, handleGlobalClick }) => {
               style={[styles.button, styles.forwardBtn]}
               onPress={() => handleNavigate("Bankm2", "forward")}
             >
-              <Text style={styles.buttonText}>פעולות בנקאיות</Text>
+            <Text style={styles.buttonText}>Banking operations</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.button, styles.backBtn]}
               onPress={() => handleNavigate("Home1", "back")}
             >
-              <Text style={styles.buttonText}>מסך בית</Text>
+              <Text style={styles.buttonText}>Home screen</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -202,7 +202,7 @@ const ContactBankerM2 = ({ navigation, handleGlobalClick }) => {
             >
               <Text style={styles.fontex}>{explanation}</Text>
               <TouchableOpacity style={[styles.button, styles.closeBtn]} onPress={closeModal}>
-                <Text style={styles.buttonText}>סגור</Text>
+                <Text style={styles.buttonText}>Close</Text>
               </TouchableOpacity>
             </Animatable.View>
           </View>

@@ -19,35 +19,34 @@ const HomePermissions = ({ handleGlobalClick }) => {
 
   const permissionsOptions = [
     {
-      title: 'שירותים דיגיטליים',
+      title: 'Digital Services',
       icon: 'security',
       screen: 'Premissions13',
       color: '#FFECB3',
-      description: 'נא לאשר לרובוט לבצע פעולות דיגיטליות עבורך במערכות ממשלתיות ובנקאיות.'
+      description: 'Please allow the robot to perform digital actions on your behalf in governmental and banking systems.'
     },
     {
-      title: 'שיחות והודעות',
+      title: 'Calls and Messages',
       icon: 'call',
       screen: 'Premissions23',
       color: '#C8E6C9',
-      description: 'נא לאשר גישה לשליחת הודעות וביצוע שיחות בשמך לצרכי שירות.'
+      description: 'Please allow access to send messages and make calls on your behalf for service purposes.'
     },
     {
-      title: 'שירותים רפואיים',
+      title: 'Healthcare Services',
       icon: 'healing',
       screen: 'Premissions33',
       color: '#B3E5FC',
-      description: 'נא לאשר לרובוט גישה לפרטים רפואיים לצורך קביעת תורים ובדיקות עבורך.'
+      description: 'Please allow the robot access to your medical information to help schedule appointments and tests for you.'
     },
   ];
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>הגדרת הרשאות לביצוע שירותים</Text>
+      <Text style={styles.title}>Permissions Setup for Service Execution</Text>
       <Text style={styles.subtitle}>
-      כדי שהרובוט המטפל יוכל להפעיל את שירותיו לטובך נצטרך את אישורך
-            לפעולות מסויימות . כלל המידע נשמר בצורה מאובטחת ואינו משותף עם שום
-            גורם חיצוני ללא ביצוע שירות ייעודי.      </Text>
+        In order for the caregiving robot to provide services on your behalf, your consent is required for certain actions. All data is securely stored and not shared with any third party unless needed for a specific service.
+      </Text>
 
       {permissionsOptions.map((option, index) => (
         <Animatable.View
@@ -69,7 +68,7 @@ const HomePermissions = ({ handleGlobalClick }) => {
 
       <View>
         <TouchableOpacity style={styles.button} onPress={handleMoveToNext}>
-          <Text style={styles.buttonText}>סיום ההגדרות והמשך לשימוש</Text>
+          <Text style={styles.buttonText}>Finish Setup and Continue</Text>
         </TouchableOpacity>
       </View>
 

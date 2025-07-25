@@ -11,7 +11,7 @@ import Toast from "react-native-toast-message";
 const HealthFundPage = ({ navigation, handleGlobalClick }) => {
   const buttons = [
     {
-      label: "קביעת תור",
+      label: "Reserve Appointment",
       route: "Reservation",
       action: () => {
         handleGlobalClick();
@@ -19,7 +19,7 @@ const HealthFundPage = ({ navigation, handleGlobalClick }) => {
       },
     },
     {
-      label: "תשובות בדיקות",
+      label: "Test Results",
       route: "TestResults",
       action: () => {
         handleGlobalClick();
@@ -27,13 +27,13 @@ const HealthFundPage = ({ navigation, handleGlobalClick }) => {
       },
     },
     {
-      label: "הזמנת תרופות קבועות",
+      label: "Order Medication",
       action: () => {
-        handleGlobalClick?.("הזמנת תרופות קבועות");
+        handleGlobalClick?.("HealthFundScreen");
         Toast.show({
           type: "info",
-          text1: "💊 הזמנת תרופות",
-          text2: "התרופות הוזמנו בהצלחה!",
+          text1: "Order Medication",
+          text2: "The Medication Ordered Successfully.",
           visibilityTime: 4000,
           position: "right",
           textStyle: { fontSize: 18 },
@@ -46,7 +46,7 @@ const HealthFundPage = ({ navigation, handleGlobalClick }) => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.titleContainer}>
-        <Text style={styles.title}>קופת חולים</Text>
+        <Text style={styles.title}>Health Fund</Text>
       </View>
       <View style={styles.buttonRowContainer}>
         {buttons.map((button) => (
@@ -55,8 +55,8 @@ const HealthFundPage = ({ navigation, handleGlobalClick }) => {
               style={styles.button}
               onPress={button.action}
               accessible={true}
-              accessibilityLabel={`לחץ עבור ${button.label}`}
-            >
+              accessibilityLabel={`Press for ${button.label}`}
+              >
               <Text style={styles.buttonText}>{button.label}</Text>
             </TouchableOpacity>
           </View>

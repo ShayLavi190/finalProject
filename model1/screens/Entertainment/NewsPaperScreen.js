@@ -14,11 +14,11 @@ import { WebView } from "react-native-webview";
 import Toast from "react-native-toast-message";
 
 const newspapers = [
-  { id: "1", name: "הארץ", link: "https://www.haaretz.co.il/" },
-  { id: "2", name: "ידיעות אחרונות", link: "https://www.yediot.co.il/" },
-  { id: "3", name: "מעריב", link: "https://www.maariv.co.il/" },
+  { id: "1", name: "Haaretz", link: "https://www.haaretz.co.il/" },
+  { id: "2", name: "Yediot Ahronot", link: "https://www.yediot.co.il/" },
+  { id: "3", name: "Maariv", link: "https://www.maariv.co.il/" },
   { id: "4", name: "The Marker", link: "https://www.themarker.com/" },
-  { id: "5", name: "גלובס", link: "https://www.globes.co.il/" },
+  { id: "5", name: "Globs", link: "https://www.globes.co.il/" },
 ];
 
 const NewspapersPage = ({ handleGlobalClick }) => {
@@ -27,7 +27,7 @@ const NewspapersPage = ({ handleGlobalClick }) => {
   const [loading, setLoading] = useState(false);
 
   const openNewspaper = (url) => {
-    handleGlobalClick(`פתיחת עיתון: ${url}`);
+    handleGlobalClick(`Open NewsPapr: ${url}`);
 
     if (Platform.OS === "web") {
       Linking.openURL(url);
@@ -38,14 +38,14 @@ const NewspapersPage = ({ handleGlobalClick }) => {
   };
 
   const closeModal = () => {
-    handleGlobalClick("סגירת עיתון");
+    handleGlobalClick("Close Newspaper");
     setModalVisible(false);
     setCurrentUrl("");
 
     Toast.show({
       type: "success",
-      text1: "סגירת עיתון",
-      text2: "העיתון נסגר בהצלחה",
+      text1: "Closing Newspaper",
+      text2: "The newspaper has been closed successfully.",
       visibilityTime: 2000,
       position: "top",
     });
@@ -54,7 +54,7 @@ const NewspapersPage = ({ handleGlobalClick }) => {
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <Text style={styles.title}>עיתונים</Text>
+        <Text style={styles.title}>Newspapers</Text>
         <View style={styles.buttonRowContainer}>
           {newspapers.map((item) => (
             <TouchableOpacity
@@ -62,7 +62,7 @@ const NewspapersPage = ({ handleGlobalClick }) => {
               style={styles.card}
               onPress={() => openNewspaper(item.link)}
               accessible={true}
-              accessibilityLabel={`פתח ${item.name}`}
+              accessibilityLabel={`Open ${item.name}`}
             >
               <Text style={styles.cardTitle}>{item.name}</Text>
             </TouchableOpacity>
@@ -74,7 +74,7 @@ const NewspapersPage = ({ handleGlobalClick }) => {
         <Modal visible={isModalVisible} transparent={false} animationType="slide">
           <View style={styles.modalContainer}>
             <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
-              <Text style={styles.closeButtonText}>סגור</Text>
+              <Text style={styles.closeButtonText}>Close</Text>
             </TouchableOpacity>
             {loading && (
               <ActivityIndicator size="large" color="#0000ff" style={styles.loader} />

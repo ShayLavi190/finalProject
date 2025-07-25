@@ -18,16 +18,16 @@ const EditCart = ({ handleGlobalClick,navigation }) => {
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState(products);
   const DEFAULT_CART = [
-    { id: '1', name: 'חלב', quantity: 1 },
-    { id: '2', name: 'לחם', quantity: 2 },
-    { id: '3', name: 'ביצים', quantity: 1 },
+    { id: '1', name: 'Milk', quantity: 1 },
+    { id: '2', name: 'Bread', quantity: 2 },
+    { id: '3', name: 'Eggs', quantity: 1 },
   ];
   const loadCartFromStorage = async () => {
     try {
       const storedCart = await AsyncStorage.getItem('cart');
       if (storedCart) {
         setCartItems(JSON.parse(storedCart));
-        console.log('🛒 עגלה נטענה בהצלחה!', JSON.parse(storedCart));
+        console.log('The cart loaded succefuly', JSON.parse(storedCart));
       } else {
         setCartItems(DEFAULT_CART);
         console.log('🔄 אין נתונים שמורים, נטען ברירת מחדל.');
@@ -117,7 +117,7 @@ const EditCart = ({ handleGlobalClick,navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>עגלת הקניות שלך</Text>
+      <Text style={styles.title}>Your Shopping Cart</Text>
 
       <View style={styles.row}>
         <View style={styles.pickerContainer}>
@@ -132,7 +132,7 @@ const EditCart = ({ handleGlobalClick,navigation }) => {
               handleGlobalClick();
             }}
             setItems={setItems}
-            placeholder="בחר מוצר..."
+            placeholder="Select a product"
             style={styles.dropdown}
             dropDownContainerStyle={styles.dropdownContainer}
           />
@@ -140,26 +140,26 @@ const EditCart = ({ handleGlobalClick,navigation }) => {
         <TextInput
           style={[styles.input, styles.quantityInput]}
           keyboardType="numeric"
-          placeholder="כמות"
+          placeholder="Quantity"
           value={String(productQuantity)}
           onChangeText={(text) => setProductQuantity(parseInt(text) || 1)}
         />
       </View>
 
       <TouchableOpacity style={styles.addButton} onPress={handleAddItem}>
-        <Text style={styles.addButtonText}>הוסף מוצר</Text>
+        <Text style={styles.addButtonText}>Add Product</Text>
       </TouchableOpacity>
 
       <FlatList
         data={cartItems}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
-        ListEmptyComponent={<Text style={styles.emptyCart}>העגלה ריקה</Text>}
+        ListEmptyComponent={<Text style={styles.emptyCart}>The Cart Is Empty</Text>}
       />
 
       {cartItems.length > 0 && (
         <TouchableOpacity style={styles.checkoutButton} onPress={handleCheckout}>
-          <Text style={styles.checkoutButtonText}>שמור</Text>
+          <Text style={styles.checkoutButtonText}>Save</Text>
         </TouchableOpacity>
       )}
     </View>

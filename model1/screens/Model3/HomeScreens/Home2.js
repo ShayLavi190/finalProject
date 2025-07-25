@@ -20,18 +20,18 @@ const Home23 = ({ navigation,handleGlobalClick }) => {
   const [isPlaying, setIsPlaying] = useState(false); // Track if audio is playing
 
   const buttons = [
-    { label: "בידור", route: "Entertainment3", backgroundColor: "#a39193" },
+    { label: "Entertainment", route: "Entertainment3", backgroundColor: "#a39193" },
     {
-      label: "עידכון פרטים אישיים",
-      route: "HomeSetUp",
-      backgroundColor: "#8db1fa",
+    label: "Update Personal Details",
+    route: "HomeSetUp",
+    backgroundColor: "#8db1fa",
     },
     {
-      label: "הרשאות פרטיות",
-      route: "HomePermissions",
-      backgroundColor: "#35223c",
+    label: "Privacy Permissions",
+    route: "HomePermissions",
+    backgroundColor: "#35223c",
     },
-    { label: "ביצועים", route: "Performance3", backgroundColor: "#9dbda4" },
+    { label: "Performance", route: "Performance3", backgroundColor: "#9dbda4" },
   ];
 
   const handleNavigate = (route) => {
@@ -86,9 +86,9 @@ const Home23 = ({ navigation,handleGlobalClick }) => {
     >
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.titleContainer}>
-          <Text style={styles.subtitle}>
-            ברוך הבא לדף הבית. בחר את השירות שברצונך להשתמש...
-          </Text>
+        <Text style={styles.subtitle}>
+          Welcome to the homepage. Select the service you want to use...
+        </Text>
         </View>
         <View style={styles.buttonRowContainer}>
           {buttons.map((button) => (
@@ -109,7 +109,7 @@ const Home23 = ({ navigation,handleGlobalClick }) => {
           style={styles.forwardButton}
           onPress={() => handleNavigate("Home13")}
         >
-          <Text style={styles.forwardButtonText}>חזור</Text>
+          <Text style={styles.forwardButtonText}>Back</Text>
         </TouchableOpacity>
         <View>
           <TouchableOpacity

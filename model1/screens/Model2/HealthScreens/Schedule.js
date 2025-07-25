@@ -28,18 +28,18 @@ const Schedule = ({ navigation, handleGlobalClick }) => {
   const [showDatePicker, setShowDatePicker] = useState(Platform.OS === 'web');
   const [showTimePicker, setShowTimePicker] = useState(Platform.OS === 'web');
   const [items, setItems] = useState([
-    { label: 'בדיקה כללית', value: 'בדיקה כללית' },
-    { label: 'רופא משפחה', value: 'רופא משפחה' },
-    { label: 'בדיקות דם', value: 'בדיקות דם' },
+    { label: 'General Examination', value: 'General Examination' },
+    { label: 'Family Doctor', value: 'Family Doctor' },
+    { label: 'Blood Tests', value: 'Blood Tests' },
   ]);
   const animatableRef = useRef(null);
   const modalRef = useRef(null);
 
   const handleIconPress = (field) => {
     const fieldExplanations = {
-      type: "בחר/י את סוג הטיפול שברצונך לקבוע",
-      time: "בחר/י את השעה שאת/ה מעוניין/ת לקבוע בו את התור",
-      date: "בחר/י את התאריך שאת/ה מעוניין/ת לקבוע בו את התור",
+      type: "Select the type of treatment you want to schedule",
+      time: "Select the time you want to schedule the appointment",
+      date: "Select the date you want to schedule the appointment",
     };
     setExplanation(fieldExplanations[field]);
     setIconAnimation("pulse");
@@ -79,8 +79,8 @@ const Schedule = ({ navigation, handleGlobalClick }) => {
         Toast.show({
           type: 'success',
           position: 'bottom',
-          text1: 'הצלחה',
-          text2: 'התור נקבע בהצלחה',
+          text1: 'success',
+          text2: 'Appointment set successfully',
           visibilityTime: 4000,
           autoHide: true,
         });
@@ -96,12 +96,12 @@ const Schedule = ({ navigation, handleGlobalClick }) => {
       // Use setTimeout to ensure the Toast appears after UI updates
       setTimeout(() => {
         Toast.show({
-          type: 'error',
-          position: 'bottom',
-          text1: 'שגיאה',
-          text2: 'לא כל השדות מולאו. מלא/י את כלל השדות',
-          visibilityTime: 4000,
-          autoHide: true,
+        type: 'error',
+        position: 'bottom',
+        text1: 'Error',
+        text2: 'Not all fields are filled in. Fill in all fields',
+        visibilityTime: 4000,
+        autoHide: true,
         });
       }, 100);
     }
@@ -251,10 +251,10 @@ const Schedule = ({ navigation, handleGlobalClick }) => {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         <View style={[styles.card, open ? { zIndex: 100 } : {}]}>
-          <Text style={styles.title}>קביעת תור</Text>
-          <Text style={styles.subtitle}>
-            המידע נשמר בצורה מאובטחת. מלא את כלל הפרטים כדי לקבוע את התור.
-          </Text>
+        <Text style={styles.title}>Schedule an appointment</Text>
+        <Text style={styles.subtitle}>
+          Your information is stored securely. Fill in all the details to schedule an appointment.
+        </Text>
 
           {/* Treatment Type Dropdown */}
           <View style={[styles.inputContainer, { zIndex: 3000 }]}>
@@ -273,7 +273,7 @@ const Schedule = ({ navigation, handleGlobalClick }) => {
               setOpen={(value) => {setOpen(value); handleGlobalClick();}}
               setValue={setType}
               setItems={setItems}
-              placeholder="בחר סוג טיפול..."
+              placeholder="Select treatment type..."
               style={styles.dropdown}
               textStyle={styles.dropdownText}
               dropDownDirection="BOTTOM"
@@ -320,7 +320,7 @@ const Schedule = ({ navigation, handleGlobalClick }) => {
               style={[styles.button, styles.sendBtn]}
               onPress={handelSend}
             >
-              <Text style={styles.buttonText}>קבע תור</Text>
+              <Text style={styles.buttonText}>Make an appointment</Text>
             </TouchableOpacity>
           </View>
 
@@ -330,13 +330,13 @@ const Schedule = ({ navigation, handleGlobalClick }) => {
               style={[styles.button, styles.forwardBtn]}
               onPress={() => handleNavigate("Results", "forward")}
             >
-              <Text style={styles.buttonText}> תשובות לבדיקות</Text>
+              <Text style={styles.buttonText}> Test Answers</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.button, styles.backBtn]}
               onPress={() => handleNavigate("Health", "back")}
             >
-              <Text style={styles.buttonText}>חזור</Text>
+              <Text style={styles.buttonText}>Back</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -352,7 +352,7 @@ const Schedule = ({ navigation, handleGlobalClick }) => {
             >
               <Text style={styles.fontex}>{explanation}</Text>
               <TouchableOpacity style={[styles.button, styles.closeBtn]} onPress={closeModal}>
-                <Text style={styles.buttonText}>סגור</Text>
+                <Text style={styles.buttonText}>Close</Text>
               </TouchableOpacity>
             </Animatable.View>
           </View>

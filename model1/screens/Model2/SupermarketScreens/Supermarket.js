@@ -29,7 +29,7 @@ const Supermarket = ({ navigation, handleGlobalClick}) => {
   const handelBank = () => {
     Toast.show({
       type: "success",
-      text1: "הסל הוזמן בהצלחה",
+      text1: "The cart has been ordered successfully",
       visibilityTime: 4000,
       position: "top",
       textStyle: { fontSize: 18, textAlign: "right" }, 
@@ -52,28 +52,28 @@ const Supermarket = ({ navigation, handleGlobalClick}) => {
       <ScrollView contentContainerStyle={styles.container}>
         <Toast/>
         <View style={styles.titleContainer}>
-          <Text style={styles.title}>ברוך הבא לשירותי הסופרמרקט</Text>
+          <Text style={styles.title}>Welcome to Supermarket Services</Text>
         </View>
         <View>
-          <Text style={styles.subtitle}>
-            כדי לנווט בין השירותים השונים לשירותים השונים לחץ על לחץ יעודי. אם אין באפשרותכם להשתמש בשירות זה נא לעדכן פרטיכם האישיים וההרשאות המתאימות
-          </Text>
+        <Text style={styles.subtitle}>
+          To navigate between the various services, click on the dedicated button. If you are unable to use this service, please update your personal information and the appropriate permissions
+        </Text>
         </View>
         <TouchableOpacity style={[styles.button, styles.forwardButton,{backgroundColor:'#52bfbf',marginTop:'150'}]} onPress={handelBank}>
-            <Text style={styles.forwardButtonText}>הזמנת סל קיים</Text>
+          <Text style={styles.forwardButtonText}>Order existing cart</Text>
         </TouchableOpacity>
         <View style={styles.buttonRow}>
         <TouchableOpacity
             style={[styles.button, styles.forwardButton,{backgroundColor:'orange'}]}
             onPress={() => handleNavigate("EditCartM2", "forward")}
           >
-            <Text style={styles.forwardButtonText}>עריכת סל קיים</Text>
+            <Text style={styles.forwardButtonText}>Edit existing cart</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.button, styles.forwardButton,{backgroundColor:'green'}]}
             onPress={() => handleNavigate("Home1", "back")}
           >
-            <Text style={styles.forwardButtonText}>מסך בית</Text>
+            <Text style={styles.forwardButtonText}>Home screen</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

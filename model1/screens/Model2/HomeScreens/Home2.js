@@ -14,10 +14,10 @@ const Home2 = ({ navigation }) => {
   const animatableRef = useRef(null);
 
   const buttons = [
-    { label: "בידור", route: "EntertainmentM2", backgroundColor: "#a39193" },
-    { label: 'עידכון פרטים אישיים', route: "SetUp", backgroundColor: "#8db1fa" },
-    { label: 'הרשאות פרטיות', route: "Premissions1", backgroundColor: "#35223c" },
-    { label: "ביצועים", route: "PerformanceM2", backgroundColor: "#9dbda4" },
+    { label: "Entertainment", route: "EntertainmentM2", backgroundColor: "#a39193" },
+    { label: 'Update Personal Details', route: "SetUp", backgroundColor: "#8db1fa" },
+    { label: 'Privacy Permissions', route: "Premissions1", backgroundColor: "#35223c" },
+    { label: "Performance", route: "PerformanceM2", backgroundColor: "#9dbda4" },
   ];
 
   const handleNavigate = (route) => {
@@ -30,8 +30,7 @@ const Home2 = ({ navigation }) => {
     <Animatable.View ref={animatableRef} style={{ flex: 1 }} animation="fadeInDown" duration={2000} >
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.titleContainer}>
-          <Text style={styles.subtitle}>ברוך הבא לדף הבית. בחר את השירות שברצונך להשתמש. כל כפתור יוביל אותך לשירותים באותו נושא. אם קיבלת הודעה שלא ניתן לבצע את השירות הנ״ל ככל הנראה צריך למלא פרטים אישיים מסוימים או להפעיל הרשאות מסויימות. תיקון הפרטים יופיעו בהודעת השגיאה.</Text>
-        </View>
+          <Text style={styles.subtitle}>Welcome to the home page. Select the service you want to use. Each button will take you to services on the same topic. If you received a message that the above service cannot be performed, you probably need to fill in certain personal information or activate certain permissions. Correcting the details will appear in the error message.</Text>        </View>
         <View style={styles.buttonRowContainer}>
           {buttons.map((button) => (
             <View key={button.label} style={styles.buttonWrapper}>
@@ -45,7 +44,7 @@ const Home2 = ({ navigation }) => {
           ))}
         </View>
         <TouchableOpacity style={styles.forwardButton} onPress={() => handleNavigate("Home1")}>
-          <Text style={styles.forwardButtonText}>חזור</Text>
+          <Text style={styles.forwardButtonText}>Back</Text>
         </TouchableOpacity>
       </ScrollView>
     </Animatable.View>

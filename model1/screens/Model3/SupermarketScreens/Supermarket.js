@@ -50,7 +50,7 @@ const Supermarket3 = ({ navigation, handleGlobalClick }) => {
     Toast.show({
       type: "success",
       position: "bottom",
-      text1: "הסל הוזמן בהצלחה",
+      text1: "The cart was ordered successfully",
       visibilityTime: 2000,
       autoHide: true,
     });
@@ -99,14 +99,14 @@ const Supermarket3 = ({ navigation, handleGlobalClick }) => {
     >
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.titleContainer}>
-          <Text style={styles.title}>ברוך הבא לשירותי הסופרמרקט</Text>
+          <Text style={styles.title}>Welcome to Supermarket Services</Text>
         </View>
         <View>
-          <Text style={styles.subtitle}>
-            כדי לנווט בין השירותים השונים לשירותים השונים לחץ על לחצן יעודי. אם
-            אין באפשרותכם להשתמש בשירות זה נא לעדכן פרטיכם האישיים וההרשאות
-            המתאימות
-          </Text>
+        <Text style={styles.subtitle}>
+          To navigate between the different services, click on a dedicated button. If
+          you are unable to use this service, please update your personal information and the appropriate
+          permissions
+        </Text>
         </View>
         <TouchableOpacity
           style={[
@@ -116,7 +116,7 @@ const Supermarket3 = ({ navigation, handleGlobalClick }) => {
           ]}
           onPress={handelBank}
         >
-          <Text style={styles.forwardButtonText}>הזמנת סל קיים</Text>
+          <Text style={styles.forwardButtonText}>Order existing cart</Text>
         </TouchableOpacity>
         <View style={styles.buttonRow}>
           <TouchableOpacity
@@ -127,7 +127,7 @@ const Supermarket3 = ({ navigation, handleGlobalClick }) => {
             ]}
             onPress={() => handleNavigate("EditCart3", "forward")}
           >
-            <Text style={styles.forwardButtonText}>עריכת סל קיים</Text>
+            <Text style={styles.forwardButtonText}>Edit existing cart</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[
@@ -137,7 +137,7 @@ const Supermarket3 = ({ navigation, handleGlobalClick }) => {
             ]}
             onPress={() => handleNavigate("Home13", "back")}
           >
-            <Text style={styles.forwardButtonText}>מסך בית</Text>
+            <Text style={styles.forwardButtonText}>Home screen</Text>
           </TouchableOpacity>
         </View>
         <View>

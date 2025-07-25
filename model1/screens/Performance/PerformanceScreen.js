@@ -25,7 +25,7 @@ const PerformanceGraphs = ({ globalTasks = [], setGlobalTasks }) => {
     const clicks = [];
     const indicators = [];
     const taskOptimalModel1 = [
-      { clicks: 26, pagesChanges: 2 },
+      { clicks: 12, pagesChanges: 2 },
       { clicks: 4, pagesChanges: 2 },
       { clicks: 3, pagesChanges: 2 },
     ];

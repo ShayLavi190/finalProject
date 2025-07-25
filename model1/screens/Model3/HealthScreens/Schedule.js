@@ -33,9 +33,9 @@ const Schedule3 = ({ navigation, handleGlobalClick }) => {
   const [showDatePicker, setShowDatePicker] = useState(Platform.OS === 'web');
   const [showTimePicker, setShowTimePicker] = useState(Platform.OS === 'web');
   const [items, setItems] = useState([
-    { label: 'בדיקה כללית', value: 'בדיקה כללית' },
-    { label: 'רופא משפחה', value: 'רופא משפחה' },
-    { label: 'בדיקות דם', value: 'בדיקות דם' },
+    { label: 'General Examination', value: 'General Examination' },
+    { label: 'Family Doctor', value: 'Family Doctor' },
+    { label: 'Blood Tests', value: 'Blood Tests' },
   ]);
   
   // Audio state variables
@@ -59,9 +59,9 @@ const Schedule3 = ({ navigation, handleGlobalClick }) => {
     stopAudio(); // Stop audio when opening explanation modal
     
     const fieldExplanations = {
-      type: "בחר/י את סוג הטיפול שברצונך לקבוע",
-      time: "בחר/י את השעה שאת/ה מעוניין/ת לקבוע בו את התור",
-      date: "בחר/י את התאריך שאת/ה מעוניין/ת לקבוע בו את התור",
+      type: "Select the type of treatment you want to schedule",
+      time: "Select the time you want to schedule the appointment",
+      date: "Select the date you want to schedule the appointment",
     };
     setExplanation(fieldExplanations[field]);
     setIconAnimation("pulse");
@@ -106,12 +106,12 @@ const Schedule3 = ({ navigation, handleGlobalClick }) => {
         Toast.show({
           type: 'success',
           position: 'bottom',
-          text1: 'הצלחה',
-          text2: 'התור נקבע בהצלחה',
+          text1: 'success',
+          text2: 'Queue set successfully',
           visibilityTime: 4000,
           autoHide: true,
-        });
-      }, 100);
+          });
+        }, 100);
       
       setType(null);
       setDate(new Date());
@@ -125,8 +125,8 @@ const Schedule3 = ({ navigation, handleGlobalClick }) => {
         Toast.show({
           type: 'error',
           position: 'bottom',
-          text1: 'שגיאה',
-          text2: 'לא כל השדות מולאו. מלא/י את כלל השדות',
+          text1: 'Error',
+          text2: 'Not all fields are filled in. Fill in all fields',
           visibilityTime: 4000,
           autoHide: true,
         });
@@ -169,8 +169,8 @@ const Schedule3 = ({ navigation, handleGlobalClick }) => {
         Toast.show({
           type: 'error',
           position: 'bottom',
-          text1: 'שגיאה בהפעלת ההקלטה',
-          text2: 'לא ניתן להפעיל את ההקלטה כרגע',
+          text1: 'Error playing recording',
+          text2: 'Recording cannot be played at this time',
           visibilityTime: 4000,
         });
       }
@@ -321,11 +321,10 @@ const Schedule3 = ({ navigation, handleGlobalClick }) => {
       >
         <View style={styles.cardWrapper}>
           <View style={[styles.card, open ? { zIndex: 100 } : {}]}>
-            <Text style={styles.title}>קביעת תור</Text>
-            <Text style={styles.subtitle}>
-              המידע נשמר בצורה מאובטחת. מלא את כלל הפרטים כדי לקבוע את התור.
-            </Text>
-
+          <Text style={styles.title}>Schedule an appointment</Text>
+          <Text style={styles.subtitle}>
+            Your information is stored securely. Fill in all the details to schedule an appointment.
+          </Text>
             {/* Treatment Type Dropdown */}
             <View style={[styles.inputContainer, { zIndex: 3000 }]}>
               <TouchableOpacity onPress={() => handleIconPress("type")}>
@@ -343,7 +342,7 @@ const Schedule3 = ({ navigation, handleGlobalClick }) => {
                 setOpen={(value) => {setOpen(value); handleGlobalClick();}}
                 setValue={setType}
                 setItems={setItems}
-                placeholder="בחר סוג טיפול..."
+                placeholder="Select treatment type..."
                 style={styles.dropdown}
                 textStyle={styles.dropdownText}
                 dropDownDirection="BOTTOM"
@@ -390,7 +389,7 @@ const Schedule3 = ({ navigation, handleGlobalClick }) => {
                 style={[styles.button, styles.sendBtn]}
                 onPress={handelSend}
               >
-                <Text style={styles.buttonText}>קבע תור</Text>
+                <Text style={styles.buttonText}>Make an appointment</Text>
               </TouchableOpacity>
             </View>
 
@@ -400,13 +399,13 @@ const Schedule3 = ({ navigation, handleGlobalClick }) => {
                 style={[styles.button, styles.forwardBtn]}
                 onPress={() => handleNavigate("Home1", "forward")}
               >
-                <Text style={styles.buttonText}>מסך בית</Text>
+                <Text style={styles.buttonText}>Home screen</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.button, styles.backBtn]}
                 onPress={() => handleNavigate("Health3", "back")}
               >
-                <Text style={styles.buttonText}>שירותי בריאות</Text>
+                <Text style={styles.buttonText}>Health Services</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -423,7 +422,7 @@ const Schedule3 = ({ navigation, handleGlobalClick }) => {
             >
               <Text style={styles.fontex}>{explanation}</Text>
               <TouchableOpacity style={[styles.button, styles.closeBtn]} onPress={closeModal}>
-                <Text style={styles.buttonText}>סגור</Text>
+                <Text style={styles.buttonText}>Close</Text>
               </TouchableOpacity>
             </Animatable.View>
           </View>

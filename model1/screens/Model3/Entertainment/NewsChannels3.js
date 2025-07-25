@@ -17,25 +17,25 @@ const AUDIO_URL = "https://raw.githubusercontent.com/ShayLavi190/finalProject/ma
 const channels = [
   {
     id: "1",
-    name: "ערוץ 12 - חדשות",
+    name: "Channel 12 - News",
     backgroundColor: "#ffe59b",
     link: "https://www.mako.co.il/mako-vod-live-tv/VOD-6540b8dcb64fd31006.htm",
   },
   {
     id: "2",
-    name: "ערוץ 13 - רשת",
+    name: "Channel 13 - Reshet",
     backgroundColor: "#c9272e",
     link: "https://13tv.co.il/live/",
   },
   {
     id: "3",
-    name: "ערוץ 11 - כאן",
+    name: "Channel 11 - Kan",
     backgroundColor: "#d0c0a9",
     link: "https://www.kan.org.il/live/tv.aspx?stationId=2",
   },
   {
     id: "4",
-    name: "ערוץ 14 - עכשיו 14",
+    name: "Channel 14 - Now 14",
     backgroundColor: "#27496d",
     link: "https://now14.co.il/live/",
   },
@@ -52,13 +52,13 @@ const NewsChannels3 = ({ handleGlobalClick, navigation }) => {
       const canOpen = await Linking.canOpenURL(url);
       if (canOpen) {
         await Linking.openURL(url);
-        showToast("נפתח בדפדפן", `מעבר ל${name}`);
+        showToast("Open in browser", `Go to ${name}`);
         handleGlobalClick("Opened external link: " + url);
       } else {
-        showToast("שגיאה", "לא ניתן לפתוח את הקישור");
+        showToast("Error", "Cannot open link");
       }
     } catch (error) {
-      showToast("שגיאה", "אירעה שגיאה בפתיחת הקישור");
+      showToast("Error", "An error occurred while opening the link");
       console.error("Error opening URL:", error);
     }
   };
@@ -132,9 +132,9 @@ const NewsChannels3 = ({ handleGlobalClick, navigation }) => {
       <View style={styles.container}>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <Toast />
-          <Text style={styles.title}>ערוצי חדשות</Text>
+          <Text style={styles.title}>News Channels</Text>
           <Text style={styles.subtitle}>
-            על מנת לצפות בערוצי החדשות לחץ על ערוץ שברצונך לצפות
+            To watch the news channels click on the channel you want to watch
           </Text>
           <View style={styles.buttonRowContainer}>
             {channels.map((channel) => (
@@ -159,7 +159,7 @@ const NewsChannels3 = ({ handleGlobalClick, navigation }) => {
               ]}
               onPress={() => handleNavigate("Home13", "back")}
             >
-              <Text style={styles.forwardButtonText}>מסך בית</Text>
+              <Text style={styles.forwardButtonText}>Home screen</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[
@@ -169,7 +169,7 @@ const NewsChannels3 = ({ handleGlobalClick, navigation }) => {
               ]}
               onPress={() => handleNavigate("Entertainment3", "back")}
             >
-              <Text style={styles.forwardButtonText}>שירותי בידור</Text>
+              <Text style={styles.forwardButtonText}>Entertainment Services</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>

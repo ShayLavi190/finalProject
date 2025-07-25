@@ -57,11 +57,11 @@ const Premissions23 = ({ navigation, handleGlobalClick }) => {
 
     const fieldExplanations = {
       cameraAccess:
-        "ללא הרשאה זו לא נוכל לבצע המון פעולות כגון מעקב אחרי הלקוח, זיהוי מקרי חירום או תזוז של הרובוט. מומלץ להפעיל",
-      voiceRecognition: "ללא הרשאה זו לא נוכל לנהל איתך דו שיח",
-      robotTracking: "ללא הרשאה זו הרובוט לא יוכל לעקוב פיזית אחריך",
-      customization: "שדה זה הוא חובה לטובת הניסוי",
-      maintenance: "ללא הרשאה זו תצטרכ/י לעשות את עידכוני התוכנה בצורה ידנית",
+        "Without this authorization, we will not be able to perform many operations such as tracking the customer, identifying emergency situations, or robot movement. Recommended to enable",
+      voiceRecognition: "Without this authorization, we will not be able to have a conversation with you",
+      robotTracking: "Without this authorization, the robot will not be able to physically follow you",
+      customization: "This field is mandatory for the experiment",
+      maintenance: "Without this authorization, you will need to perform software updates manually",
     };
     setExplanation(fieldExplanations[field]);
     setIconAnimation("pulse");
@@ -129,7 +129,7 @@ const Premissions23 = ({ navigation, handleGlobalClick }) => {
         setIsPlaying(true);
       } catch (error) {
         console.error("Error playing audio:", error);
-        Alert.alert("שגיאה בהפעלת ההקלטה", "לא ניתן להפעיל את ההקלטה כרגע.");
+        Alert.alert("Error playing recording", "Recording cannot be played at this time.");
       }
     }
   };
@@ -163,12 +163,12 @@ const Premissions23 = ({ navigation, handleGlobalClick }) => {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         <View style={styles.card}>
-          <Text style={styles.title}>הגדרת הרשאות למערכת הרובוט המטפל</Text>
-          <Text style={styles.subtitle}>
-            כדי שהרובוט המטפל יוכל להפעיל את שירותיו לטובך נצטרך את אישורך
-            לפעולות מסויימות . כלל המידע נשמר בצורה מאובטחת ואינו משותף עם שום
-            גורם חיצוני ללא ביצוע שירות ייעודי.
-          </Text>
+        <Text style={styles.title}>Setting permissions for the care robot system</Text>
+        <Text style={styles.subtitle}>
+          In order for the care robot to be able to operate its services for your benefit, we will need your permission
+          for certain actions. All information is stored securely and is not shared with any
+          external party without performing a dedicated service.
+        </Text>
 
           <View style={styles.inputContainer}>
             <TouchableOpacity onPress={() => handleIconPress("cameraAccess")}>
@@ -189,7 +189,7 @@ const Premissions23 = ({ navigation, handleGlobalClick }) => {
               }}
               value={cameraAccess}
             />
-            <Text style={styles.input}>גישה למצלמה</Text>
+            <Text style={styles.input}>Camera access</Text>
           </View>
           <View style={styles.inputContainer}>
             <TouchableOpacity onPress={() => handleIconPress("robotTracking")}>
@@ -210,7 +210,7 @@ const Premissions23 = ({ navigation, handleGlobalClick }) => {
               }}
               value={robotTracking}
             />
-            <Text style={styles.input}>מעקב פיזי של הרובוט אחריך</Text>
+            <Text style={styles.input}>The robot physically follows you</Text>
           </View>
           <View style={styles.inputContainer}>
             <TouchableOpacity
@@ -233,7 +233,7 @@ const Premissions23 = ({ navigation, handleGlobalClick }) => {
               }}
               value={voiceRecognition}
             />
-            <Text style={styles.input}>גישה למיקרופון וזיהוי קולי</Text>
+            <Text style={styles.input}>Microphone access and voice recognition</Text>
           </View>
           <View style={styles.inputContainer}>
             <TouchableOpacity onPress={() => handleIconPress("customization")}>
@@ -254,9 +254,7 @@ const Premissions23 = ({ navigation, handleGlobalClick }) => {
               }}
               value={customization}
             />
-            <Text style={styles.input}>
-              גישה לשימוש במידע על שימושך באפליקציה
-            </Text>
+            <Text style={styles.input}> Access to use information about your use of the app </Text>
           </View>
           <View style={styles.inputContainer}>
             <TouchableOpacity onPress={() => handleIconPress("maintenance")}>
@@ -277,7 +275,7 @@ const Premissions23 = ({ navigation, handleGlobalClick }) => {
               }}
               value={maintenance}
             />
-            <Text style={styles.input}>הרשאה לעידכוני מערכת אוטומטיים</Text>
+            <Text style={styles.input}>Permission for automatic system updates</Text>
           </View>
 
             <View style={{ alignItems: 'center' }}>
@@ -285,7 +283,7 @@ const Premissions23 = ({ navigation, handleGlobalClick }) => {
                 style={[{ backgroundColor: "green" }, styles.button]}
                 onPress={handleMoveForward}
               >
-                <Text style={styles.buttonText}>שמור</Text>
+                <Text style={styles.buttonText}>Save</Text>
               </TouchableOpacity>
             </View>
         </View>
@@ -302,7 +300,7 @@ const Premissions23 = ({ navigation, handleGlobalClick }) => {
                 style={[styles.button, { backgroundColor: "red" }]}
                 onPress={closeModal}
               >
-                <Text style={styles.buttonText}>סגור</Text>
+                <Text style={styles.buttonText}>Close</Text>
               </TouchableOpacity>
             </Animatable.View>
           </View>

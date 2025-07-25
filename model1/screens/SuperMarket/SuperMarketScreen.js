@@ -11,7 +11,7 @@ import Toast from "react-native-toast-message";
 const SuperMarketPage = ({ navigation, handleGlobalClick }) => {
   const buttons = [
     {
-      label: "עריכת סל קיים",
+      label: "Edit Cart",
       route: "EditCart",
       action: () => {
         handleGlobalClick("עריכת סל קיים");
@@ -19,13 +19,13 @@ const SuperMarketPage = ({ navigation, handleGlobalClick }) => {
       },
     },
     {
-      label: "הזמנת סל קיים",
+      label: "Order Fixed Cart",
       action: () => {
         handleGlobalClick("הזמנת סל קיים");
         Toast.show({
           type: "success",
-          text1: "הזמנה בוצעה",
-          text2: "הסל הוזמן. אישור יגיע למייל ולטלפון שלך",
+          text1: "Cart Ordered Successfully",
+          text2: "The cart has been ordered. A confirmation will be sent to your email and phone number.",
           visibilityTime: 4000,
           position: "top",
           textStyle: { fontSize: 18 },
@@ -38,7 +38,7 @@ const SuperMarketPage = ({ navigation, handleGlobalClick }) => {
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.titleContainer}>
-          <Text style={styles.title}>סופרמרקט</Text>
+          <Text style={styles.title}>SuperMarket</Text>
         </View>
         <View style={styles.buttonRowContainer}>
           {buttons.map((button, index) => (

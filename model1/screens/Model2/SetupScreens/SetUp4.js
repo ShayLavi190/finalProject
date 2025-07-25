@@ -25,11 +25,11 @@ const SetUp4 = ({ navigation, handleGlobalClick }) => {
   const [iconAnimation, setIconAnimation] = useState("");
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState([
-    { label: "מכבי", value: "מכבי" },
-    { label: "כללית", value: "כללית" },
-    { label: "מאוחדת", value: "מאוחדת" },
-    { label: "לאומית", value: "לאומית" },
-  ]);
+    { label: "Maccabi Healthcare Services", value: "Maccabi Healthcare Services" },
+    { label: "Clalit Health Services", value: "Clalit Health Services" },
+    { label: "Meuhedet Health Services", value: "Meuhedet Health Services" },
+    { label: "Leumit Health Services", value: "Leumit Health Services" },
+]);
 
   const animatableRef = useRef(null);
   const modalRef = useRef(null);
@@ -43,9 +43,9 @@ const SetUp4 = ({ navigation, handleGlobalClick }) => {
 
   const handleIconPress = (field) => {
     const fieldExplanations = {
-      healthFund: "אנא בחר קופת חולים מהרשימה.",
-      account: "אנא הזן את מספר החשבון שלך.",
-      phone: "אנא הזן את מספר הטלפון לאיש קשר למקרה חירום.",
+      healthFund: "Please select a health fund from the list.",
+      account: "Please enter your account number.",
+      phone: "Please enter the emergency contact phone number.",
     };
     setExplanation(fieldExplanations[field]);
     setIconAnimation("pulse");
@@ -102,13 +102,10 @@ const SetUp4 = ({ navigation, handleGlobalClick }) => {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         <View style={styles.card}>
-          <Text style={styles.title}>הגדרת פרטי חשבון קופת חולים ואיש קשר</Text>
-          <Text style={styles.subtitle}>
-            .כדי שהרובוט המטפל יוכל להפעיל את שירותיו לטובך, נצטרך את פרטי קופת
-            החולים שלך ומספר טלפון לאיש קשר למקרה חירום. קיימת אפשרות לא להזין
-            את פרטי חשבונך אך לא תוכל להשתמש בשירותי קופת החולים או להתקשר לאיש
-            קשר במקרה חירום. המידע נשמר בצורה מאובטחת.
-          </Text>
+        <Text style={styles.title}>Setting up your health insurance account details and contact person</Text>
+        <Text style={styles.subtitle}>
+          In order for the robot therapist to be able to operate its services for your benefit, we will need your health insurance details and an emergency contact phone number. You can choose not to enter your account details, but you will not be able to use your health insurance services or call your emergency contact person. The information is stored securely.
+        </Text>
           {/* Bank Picker */}
           <View style={[styles.dropdownSection, { zIndex: open ? 5000 : 1 }]}>
             <View style={styles.inputContainer}>
@@ -129,7 +126,7 @@ const SetUp4 = ({ navigation, handleGlobalClick }) => {
                   setValue={setSelectedhealthFund}
                   setItems={setItems}
                   textStyle={styles.dropdownText}
-                  placeholder="בחר קופת חולים..."
+                  placeholder="Select a health fund..."
                   style={styles.dropdown}
                   dropDownContainerStyle={styles.dropdownContainer}
                   zIndex={5000}
@@ -150,7 +147,7 @@ const SetUp4 = ({ navigation, handleGlobalClick }) => {
             </TouchableOpacity>
             <TextInput
               style={styles.input}
-              placeholder="מספר חשבון קופת חולים"
+              placeholder="Health fund account number"
               value={healthFundAccountNumber}
               onChangeText={(text) => {
                 const numericText = text.replace(/[^0-9]/g, "");
@@ -173,7 +170,7 @@ const SetUp4 = ({ navigation, handleGlobalClick }) => {
             </TouchableOpacity>
             <TextInput
               style={styles.input}
-              placeholder="מספר טלפון לאיש קשר במקרה חירום"
+              placeholder="Emergency contact phone number"
               value={emergencyPhone}
               onChangeText={(text) => {
                 const numericText = text.replace(/[^0-9]/g, "");
@@ -190,13 +187,13 @@ const SetUp4 = ({ navigation, handleGlobalClick }) => {
               style={[styles.button, styles.forwardBtn]}
               onPress={handleMoveForward}
             >
-              <Text style={styles.buttonText}>המשך</Text>
+              <Text style={styles.buttonText}>Next</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.button, styles.backBtn]}
               onPress={handleGoBack}
             >
-              <Text style={styles.buttonText}>חזור</Text>
+              <Text style={styles.buttonText}>Back</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -215,7 +212,7 @@ const SetUp4 = ({ navigation, handleGlobalClick }) => {
                 style={[styles.button, styles.closeBtn]}
                 onPress={closeModal}
               >
-                <Text style={styles.buttonText}>סגור</Text>
+                <Text style={styles.buttonText}>Close</Text>
               </TouchableOpacity>
             </Animatable.View>
           </View>

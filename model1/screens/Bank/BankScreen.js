@@ -11,26 +11,26 @@ import Toast from "react-native-toast-message";
 const BankPage = ({ navigation, handleGlobalClick }) => {
   const buttons = [
     {
-      label: "ביצוע העברה",
+      label: "Bank Transfer",
       route: "Transfer",
     },
     {
-      label: "כתוב לבנקאי",
+      label: "Wrtie To Banker",
       route: "ContactBanker",
     },
     {
-      label: "מצב חשבון",
+      label: "Bank Account Status",
       action: () => {
         Toast.show({
           type: "info",
-          text1: "מצב חשבון",
-          text2: "הצגת מצב חשבון...",
+          text1: "Bank Account Status",
+          text2: "Displaying bank account status...",
           visibilityTime: 4000,
           position: "right",
           textStyle: { fontSize: 18, textAlign: "right" },
           style: { width: "90%", backgroundColor: "#3498db", borderRadius: 10 },
         });
-        handleGlobalClick("מצב חשבון");
+        handleGlobalClick("Bank Account Status");
       },
     },
   ];
@@ -50,8 +50,8 @@ const BankPage = ({ navigation, handleGlobalClick }) => {
                   navigation.navigate(button.route);
                   Toast.show({
                     type: "success",
-                    text1: "🔄 ניווט",
-                    text2: `מעבר ל-${button.label}...`,
+                    text1: "Navigation",
+                    text2: `Navigating to ${button.label}`,
                     visibilityTime: 3000,
                     position: "right",
                     textStyle: { fontSize: 18, textAlign: "right" },

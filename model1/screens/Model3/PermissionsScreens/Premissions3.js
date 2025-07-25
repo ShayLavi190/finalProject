@@ -56,13 +56,13 @@ const Premissions33 = ({ navigation, handleGlobalClick }) => {
     stopAudio(); // Stop audio when opening explanation modal
 
     const fieldExplanations = {
-      socialInteraction: "ללא הרשאה זו לא תוכל/י לנהל דו שיח עם הרובוט המטפל",
-      financialActions: "ללא הרשאה זו לא תוכל/י להשתמש בשירותים פיננסים",
+      socialInteraction: "Without this permission you will not be able to have a conversation with the care robot",
+      financialActions: "Without this permission you will not be able to use financial services",
       automatedTasks:
-        "ללא הרשאה זו הרובוט לא תוכל/י לבצע משימות באופן אוטומטי כמו הזמנת תרופות והזמנת סל קניות קבוע",
-      smartHomeControl: "ללא הרשאה זו לא נוכל לתקשר עם התקני הבית שלך",
+      "Without this permission the robot will not be able to perform tasks automatically such as ordering medicine and ordering a fixed shopping cart",
+      smartHomeControl: "Without this permission we will not be able to communicate with your home devices",
       familyUpdates:
-        "ללא הרשאה זו לא נוכל לעדכן את איש הקשר שלך בעידכונים מצילי חיים",
+      "Without this permission we will not be able to update your contact with life-saving updates",
     };
     setExplanation(fieldExplanations[field]);
     setIconAnimation("pulse");
@@ -140,7 +140,7 @@ const Premissions33 = ({ navigation, handleGlobalClick }) => {
         setIsPlaying(true);
       } catch (error) {
         console.error("Error playing audio:", error);
-        Alert.alert("שגיאה בהפעלת ההקלטה", "לא ניתן להפעיל את ההקלטה כרגע.");
+        Alert.alert("Error playing recording", "Recording cannot be played at this time.");
       }
     }
   };
@@ -164,12 +164,12 @@ const Premissions33 = ({ navigation, handleGlobalClick }) => {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         <View style={styles.card}>
-          <Text style={styles.title}>הגדרת הרשאות למערכת הרובוט המטפל</Text>
-          <Text style={styles.subtitle}>
-            כדי שהרובוט המטפל יוכל להפעיל את שירותיו לטובך נצטרך את אישורך
-            לפעולות מסויימות . כלל המידע נשמר בצורה מאובטחת ואינו משותף עם שום
-            גורם חיצוני ללא ביצוע שירות ייעודי.
-          </Text>
+        <Text style={styles.title}>Setting permissions for the care robot system</Text>
+        <Text style={styles.subtitle}>
+          In order for the care robot to be able to operate its services for your benefit, we will need your permission
+          for certain actions. All information is stored securely and is not shared with any
+          external party without performing a dedicated service.
+        </Text>
 
           <View style={styles.inputContainer}>
             <TouchableOpacity
@@ -192,7 +192,7 @@ const Premissions33 = ({ navigation, handleGlobalClick }) => {
               }}
               value={socialInteraction}
             />
-            <Text style={styles.input}>הרשאה לניהול דו שיח</Text>
+            <Text style={styles.input}>Permission to manage a conversation</Text>
           </View>
           <View style={styles.inputContainer}>
             <TouchableOpacity
@@ -215,7 +215,7 @@ const Premissions33 = ({ navigation, handleGlobalClick }) => {
               }}
               value={financialActions}
             />
-            <Text style={styles.input}>הרשאה לביצוע פעולות פיננסיות</Text>
+            <Text style={styles.input}>Authorization to perform financial operations</Text>
           </View>
           <View style={styles.inputContainer}>
             <TouchableOpacity onPress={() => handleIconPress("automatedTasks")}>
@@ -236,7 +236,7 @@ const Premissions33 = ({ navigation, handleGlobalClick }) => {
               }}
               value={automatedTasks}
             />
-            <Text style={styles.input}>הרשאה לביצוע משימות באופן אוטומטי</Text>
+            <Text style={styles.input}>Permission to perform tasks automatically</Text>
           </View>
           <View style={styles.inputContainer}>
             <TouchableOpacity
@@ -259,7 +259,7 @@ const Premissions33 = ({ navigation, handleGlobalClick }) => {
               }}
               value={smartHomeControl}
             />
-            <Text style={styles.input}>הרשאה לשליטה על מערכות בית חכם</Text>
+            <Text style={styles.input}>Authorization to control smart home systems</Text>
           </View>
           <View style={styles.inputContainer}>
             <TouchableOpacity onPress={() => handleIconPress("familyUpdates")}>
@@ -280,9 +280,7 @@ const Premissions33 = ({ navigation, handleGlobalClick }) => {
               }}
               value={familyUpdates}
             />
-            <Text style={styles.input}>
-              הרשאה לעידכונים חשובים לאיש קשר שהוזן
-            </Text>
+            <Text style={styles.input}> Permission for important updates to the entered contact </Text>
           </View>
 
             <View style={{ alignItems: 'center' }}>
@@ -290,7 +288,7 @@ const Premissions33 = ({ navigation, handleGlobalClick }) => {
                 style={[{ backgroundColor: "green" }, styles.button]}
                 onPress={handleMoveForward}
               >
-                <Text style={styles.buttonText}>שמור</Text>
+                <Text style={styles.buttonText}>Save</Text>
               </TouchableOpacity>
             </View>
         </View>
@@ -307,7 +305,7 @@ const Premissions33 = ({ navigation, handleGlobalClick }) => {
                 style={[styles.button, { backgroundColor: "red" }]}
                 onPress={closeModal}
               >
-                <Text style={styles.buttonText}>סגור</Text>
+                <Text style={styles.buttonText}>Close</Text>
               </TouchableOpacity>
             </Animatable.View>
           </View>

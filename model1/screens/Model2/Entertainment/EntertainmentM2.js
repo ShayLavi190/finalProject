@@ -28,14 +28,14 @@ const Entertainment = ({ navigation,handleGlobalClick }) => {
   };
   const handelConversation = () => {
     Toast.show({
-              type: "info",
-              text1: " דו שיח",
-              text2: "התחלת דו שיח...",
-              visibilityTime: 4000,
-              position: "right",
-              textStyle: { fontSize: 18, textAlign: "right" },
-              style: { width: "90%", backgroundColor: "#3498db", borderRadius: 10 },
-            });
+      type: "info",
+      text1: "Dialog",
+      text2: "Starting a dialog...",
+      visibilityTime: 4000,
+      position: "right",
+      textStyle: { fontSize: 18, textAlign: "right" },
+      style: { width: "90%", backgroundColor: "#3498db", borderRadius: 10 },
+      });
     handleGlobalClick();
     }
   return (
@@ -46,30 +46,30 @@ const Entertainment = ({ navigation,handleGlobalClick }) => {
       duration={2000}
     >
       <ScrollView contentContainerStyle={styles.container}>
-        <View style={styles.titleContainer}>
-          <Text style={styles.title}>ברוך הבא לשירותי בידור</Text>
-        </View>
-        <View>
+      <View style={styles.titleContainer}>
+        <Text style={styles.title}>Welcome to Entertainment Services</Text>
+      </View>
+      <View>
         <Text style={styles.subtitle}>
-            כדי לנווט בין השירותים השונים ניתן לעבור למסך חדשות משם לשאר השירותים
-            שניתנים. להתחלת דו שיח ניתן ללחוץ על המקש במסך זה
-          </Text>
-        </View>
+        To navigate between the various services, you can go to the News screen and from there to the other services
+        provided. To start a conversation, you can press the key on this screen
+        </Text>
+      </View>
         <TouchableOpacity style={[styles.button, styles.forwardButton,{backgroundColor:'#52bfbf',marginTop:'120'}]} onPress={handelConversation}>
-            <Text style={styles.forwardButtonText}>דו שיח</Text>
+          <Text style={styles.forwardButtonText}>Dialog</Text>
         </TouchableOpacity>
         <View style={styles.buttonRow}>
         <TouchableOpacity
             style={[styles.button, styles.forwardButton,{backgroundColor:'orange'}]}
             onPress={() => handleNavigate("NewsChannelsM2", "forward")}
           >
-            <Text style={styles.forwardButtonText}>חדשות</Text>
+            <Text style={styles.forwardButtonText}>News</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.button, styles.forwardButton,{backgroundColor:'green'}]}
             onPress={() => handleNavigate("Home1", "back")}
           >
-            <Text style={styles.forwardButtonText}>מסך בית</Text>
+            <Text style={styles.forwardButtonText}>Home screen</Text>
           </TouchableOpacity>
         </View>
         <Toast />

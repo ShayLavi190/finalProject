@@ -58,20 +58,20 @@ const PremissionScreen = ({ navigation, handleGlobalClick }) => {
   });
 
   const permissionLabels = {
-    healthMonitoring: "מעקב אחר מצב בריאותי",
-    emergencyContacts: "גישה לאנשי קשר לשיחות חירום",
-    shareHealthInfo: "שיתוף מידע עם גורמי בריאות",
-    robotTracking: "מעקב אחר תנועת הלקוח",
-    automatedTasks: "ביצוע משימות אוטומטיות",
-    smartHomeControl: "שליטה על מערכות בית חכם",
-    financialActions: "ביצוע פעולות כלכליות",
-    socialInteraction: "אינטראקציה חברתית",
-    cameraAccess: "גישה למצלמה",
-    voiceRecognition: "זיהוי קולי",
-    publicServices: "תיאום עם שירותים ציבוריים",
-    familyUpdates: "עדכונים למשפחה",
-    customization: "איסוף מידע על שימוש בתוכנה",
-    maintenance: "תחזוקה ועדכונים אוטומטיים",
+      healthMonitoring: "Health status monitoring",
+      emergencyContacts: "Access to emergency contacts",
+      shareHealthInfo: "Sharing information with healthcare providers",
+      robotTracking: "Client movement tracking",
+      automatedTasks: "Execution of automated tasks",
+      smartHomeControl: "Smart home system control",
+      financialActions: "Performing financial actions",
+      socialInteraction: "Social interaction",
+      cameraAccess: "Camera access",
+      voiceRecognition: "Voice recognition",
+      publicServices: "Coordination with public services",
+      familyUpdates: "Family updates",
+      customization: "Collecting information on software usage",
+      maintenance: "Automatic maintenance and updates"    
   };
 
   const toggleSwitch = (key) => {
@@ -92,11 +92,11 @@ const PremissionScreen = ({ navigation, handleGlobalClick }) => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.card}>
-        <Text style={styles.title}>שמור העדפות למערכת</Text>
-        <Text style={styles.description}>
-          ניתן לבחור אילו הרשאות לתת לרובוט. יש לשים לב שביטול הרשאה מסוימת עשוי
-          להגביל את תפקוד הרובוט במערכות הקשורות לה.
-        </Text>
+      <Text style={styles.title}>Save Preferences for the System</Text>
+<Text style={styles.description}>
+  You can choose which permissions to grant the robot. Please note that disabling certain permissions may limit the robot's functionality in related systems.
+</Text>
+
         {Object.keys(permissions).map((key) => (
           <View style={styles.toggleRow} key={key}>
             <Switch
@@ -108,7 +108,7 @@ const PremissionScreen = ({ navigation, handleGlobalClick }) => {
         ))}
         <View style={styles.buttonContainer}>
           <Button
-            title="שמירה"
+            title="Save"
             onPress={() => {
               handleSave();
             }}

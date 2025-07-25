@@ -9,16 +9,16 @@ import {
 
 const Intro = ({ navigation, handleGlobalClick }) => {
   const models = [
-    { label: 'מודל 1', route: 'Setup' },
-    { label: 'מודל 2', route: 'SetUp' },
-    { label: 'מודל 3', route: 'HomeSetUp' ,params: { fromIntro: true } },
+    { label: 'Model 1', route: 'Setup' },
+    { label: 'Model 2', route: 'SetUp' },
+    { label: 'Model 3', route: 'HomeSetUp' ,params: { fromIntro: true } },
   ];
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.titleContainer}>
-        <Text style={styles.title}>ברוך הבא למחקר שלנו</Text>
-        <Text style={styles.subtitle}>בבקשה בחר מודל</Text>
+        <Text style={styles.title}>Welcome to our research</Text>
+        <Text style={styles.subtitle}>Please select a model</Text>
       </View>
       <View style={styles.buttonRowContainer}>
         {models.map((model) => (

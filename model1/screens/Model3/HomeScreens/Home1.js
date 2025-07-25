@@ -11,41 +11,36 @@ import * as Animatable from "react-native-animatable";
 import LottieView from "lottie-react-native";
 import { Audio } from "expo-av";
 import robotAnimation from "../SetupScreens/robot.json";
-const AUDIO_URL = "https://raw.githubusercontent.com/ShayLavi190/finalProject/main/model1/assets/Recordings/homeScreen1.mp3";
 
+const AUDIO_URL = "https://raw.githubusercontent.com/ShayLavi190/finalProject/main/model1/assets/Recordings/homeScreen1.mp3";
 
 const Home13 = ({ navigation, handleGlobalClick }) => {
   const { user } = useUser();
   const animatableRef = useRef(null);
   const [sound, setSound] = useState(null);
-  const [isPlaying, setIsPlaying] = useState(false); // Track if audio is playing
+  const [isPlaying, setIsPlaying] = useState(false);
 
   const buttons = [
-    { label: "בנק", route: "Bank3", backgroundColor: "#0f473a" },
-    { label: "קופת חולים", route: "Health3", backgroundColor: "#4ebcff" },
-    { label: "סופרמרקט", route: "Supermarket3", backgroundColor: "#eab676" },
-    { label: "חירום", route: "Emergency3", backgroundColor: "red" },
+    { label: "Bank", route: "Bank3", backgroundColor: "#0f473a" },
+    { label: "Health Services", route: "Health3", backgroundColor: "#4ebcff" },
+    { label: "Supermarket", route: "Supermarket3", backgroundColor: "#eab676" },
+    { label: "Emergency", route: "Emergency3", backgroundColor: "red" },
   ];
 
   const handleNavigate = (route) => {
-    stopAudio(); // Stop audio when navigating
-    animatableRef.current
-      .animate("fadeOutLeft", 500)
-      .then(() => navigation.navigate(route));
+    stopAudio();
+    animatableRef.current.animate("fadeOutLeft", 500).then(() => navigation.navigate(route));
   };
 
   const handleLottiePress = async () => {
     handleGlobalClick();
     if (sound && isPlaying) {
-      // If playing, pause the audio
       await sound.pauseAsync();
       setIsPlaying(false);
     } else if (sound) {
-      // If paused, resume playing
       await sound.playAsync();
       setIsPlaying(true);
     } else {
-      // Load and play new sound
       const { sound: newSound } = await Audio.Sound.createAsync(
         { uri: AUDIO_URL },
         { shouldPlay: true }
@@ -66,7 +61,7 @@ const Home13 = ({ navigation, handleGlobalClick }) => {
 
   useEffect(() => {
     return () => {
-      stopAudio(); // Stop audio when leaving the screen
+      stopAudio();
     };
   }, []);
 
@@ -79,9 +74,9 @@ const Home13 = ({ navigation, handleGlobalClick }) => {
     >
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.titleContainer}>
-          <Text style={styles.title}> ברוך הבא {user.name} !</Text>
+          <Text style={styles.title}>Welcome, {user.name}!</Text>
           <Text style={styles.subtitle}>
-            ברוך הבא לדף הבית. בחר את השירות שברצונך להשתמש...
+            Welcome to your home screen. Choose the service you wish to use...
           </Text>
         </View>
         <View style={styles.buttonRowContainer}>
@@ -103,7 +98,7 @@ const Home13 = ({ navigation, handleGlobalClick }) => {
           style={styles.forwardButton}
           onPress={() => handleNavigate("Home23")}
         >
-          <Text style={styles.forwardButtonText}>הבא</Text>
+          <Text style={styles.forwardButtonText}>Next</Text>
         </TouchableOpacity>
         <View>
           <TouchableOpacity
@@ -152,6 +147,13 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "#333",
   },
+  subtitle: {
+    fontSize: 20,
+    color: "#555",
+    textAlign: "center",
+    marginTop: 50,
+    fontWeight: "bold",
+  },
   buttonRowContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
@@ -197,13 +199,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     textAlign: "center",
-  },
-  subtitle: {
-    fontSize: 20,
-    color: "#555",
-    textAlign: "center",
-    marginTop: 50,
-    fontWeight: "bold",
   },
 });
 
