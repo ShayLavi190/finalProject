@@ -61,7 +61,7 @@ const Permissions1 = ({ navigation, handleGlobalClick }) => {
           healthMonitoring,
         },
       });
-      navigation.navigate("Permissions2");
+      navigation.navigate("Premissions2");
     });
   };
 
