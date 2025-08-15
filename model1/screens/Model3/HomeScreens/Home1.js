@@ -113,6 +113,9 @@ const Home13 = ({ navigation, handleGlobalClick }) => {
             />
           </TouchableOpacity>
         </View>
+        <Text style={styles.subtitle}>
+          This is the screen where you can choose the services you want to use. Because we are in the BreadCrumbs model, we split the home screen into multiple steps to make it easier to navigate. If you start to use a service for example the bank, you will enter to the service homescreen that contains all the sub services like the bank transfer, call banker etc. Each service will have its own screen with a button to navigate to the next service. In each screen there is a textual and vocal (the robot icon) explanation of what the service is about and what you can do with it.
+        </Text>
       </ScrollView>
     </Animatable.View>
   );

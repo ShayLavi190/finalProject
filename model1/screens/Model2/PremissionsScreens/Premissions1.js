@@ -153,7 +153,9 @@ const Permissions1 = ({ navigation, handleGlobalClick }) => {
             <Text style={styles.buttonText}>Continue</Text>
           </TouchableOpacity>
         </View>
-
+        <Text style={styles.subtitle}>
+          This is the screen where you can manage your permissions. In this model, the permissions setup process is split into 3 screens to reduce cognitive load and has textual cues for each permission and screen. There is an option to go back and forward between screens, and the user can also click on the light bulb icon next to each field to get an explanation of what is required in that field. Also, you don't have to enable all permissions, but it may limit the robot's functionality in related systems.
+        </Text>
         <Modal visible={modalVisible} transparent animationType="none">
           <View style={styles.modalContainer}>
             <Animatable.View ref={modalRef} animation="fadeInUp" duration={500} style={styles.modalContent}>

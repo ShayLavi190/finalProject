@@ -209,7 +209,9 @@ const SetupScreen = ({ navigation, handleGlobalClick }) => {
           )}
         </View>
       </ScrollView>
-
+      <Text style={styles.subtitle}>
+        This is the screen where you can fill in your personal details and connect to the system. This model doesn't contain any textual or vocal cues.
+      </Text>
       <Toast />
     </KeyboardAvoidingView>
   );

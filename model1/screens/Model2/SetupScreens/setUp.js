@@ -188,7 +188,9 @@ const SetUp = ({ navigation, handleGlobalClick }) => {
             <Text style={styles.buttonText}>Continue</Text>
           </TouchableOpacity>
         </View>
-
+        <Text style={styles.subtitle}>
+          This is the screen where you can fill in your personal details and connect to the system. In this model, the setup process is split into 4 screens to reduce cognitive load and has textual cues for each field and screen. There is an option to go back and forward between screens, and the user can also click on the light bulb icon next to each field to get an explanation of what is required in that field. Also you don't to fill fields like a bank and health fund account but it will disable some of the robot's services.
+        </Text>
         <Modal visible={modalVisible} transparent animationType="none">
           <View style={styles.modalContainer}>
             <Animatable.View ref={modalRef} animation="fadeInUp" duration={500} style={styles.modalContent}>

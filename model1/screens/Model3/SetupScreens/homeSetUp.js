@@ -59,7 +59,10 @@ const HomeSetUp = ({ handleGlobalClick }) => {
             <TouchableOpacity style={styles.button} onPress={() =>handelMoveToNext()}>
               <Text style={styles.buttonText}>Continue to set privacy permissions</Text>
             </TouchableOpacity>
-        </View> 
+        </View>
+        <Text style={styles.subtitle}>
+          This is the screen where you can fill in your personal details and connect to the system. In this model, the setup process is split into 4 screens to reduce cognitive load and has textual and vocal (the robot icon) cues for each field and screen. This a home page for the setup process and to complete the setup process you need to enter on all the sub screens icons. There is an option to go back and forward between screens, and the user can also click on the light bulb icon next to each field to get an explanation of what is required in that field. Also you don't to fill fields like a bank and health fund account but it will disable some of the robot's services.
+        </Text>
         <Toast />
     </View>   
   );

@@ -45,6 +45,9 @@ const Home1 = ({ navigation }) => {
             </View>
           ))}
         </View>
+        <Text style={styles.subtitle}>
+          This is the screen where you can choose the services you want to use. Because we are in the Wizard model, we split the home screen into multiple steps to make it easier to navigate. If you start to use a service for example the bank, you need to navigate between all the sub services like the bank transfer, call banker etc. Each service will have its own screen with a button to navigate to the next service. In each screen there is a textual explanation of what the service is about and what you can do with it. If you want to go back to the home screen, you can click on the back button in the top left corner.
+        </Text>
         <TouchableOpacity style={styles.forwardButton} onPress={() => handleNavigate("Home2")}>
           <Text style={styles.forwardButtonText}>Next</Text>
         </TouchableOpacity>

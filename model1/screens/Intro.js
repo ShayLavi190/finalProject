@@ -9,9 +9,9 @@ import {
 
 const Intro = ({ navigation, handleGlobalClick }) => {
   const models = [
-    { label: 'Model 1', route: 'Setup' },
-    { label: 'Model 2', route: 'SetUp' },
-    { label: 'Model 3', route: 'HomeSetUp' ,params: { fromIntro: true } },
+    { label: 'Basic Model', route: 'Setup' },
+    { label: 'Wizard Model', route: 'SetUp' },
+    { label: 'BreadCrumbs Model', route: 'HomeSetUp' ,params: { fromIntro: true } },
   ];
 
   return (
@@ -34,6 +34,9 @@ const Intro = ({ navigation, handleGlobalClick }) => {
           </View>
         ))}
       </View>
+      <Text style={styles.subtitle}>
+        This is the screen where you can choose the model you want to use for the research.
+      </Text>
     </ScrollView>
   );
 };

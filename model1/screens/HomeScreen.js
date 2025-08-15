@@ -39,6 +39,9 @@ const HomePage = ({ navigation,handleGlobalClick }) => {
           </View>
         ))}
       </View>
+      <Text style={styles.subtitle}>
+        This is the screen where you can choose the services you want to use. Because we are in the Basic model, we don't have any textual or vocal explanation for each service.
+      </Text>
     </ScrollView>
   );
 };

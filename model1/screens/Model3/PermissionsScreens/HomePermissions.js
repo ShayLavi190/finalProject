@@ -71,7 +71,9 @@ const HomePermissions = ({ handleGlobalClick }) => {
           <Text style={styles.buttonText}>Finish Setup and Continue</Text>
         </TouchableOpacity>
       </View>
-
+        <Text style={styles.subtitle}>
+          This is the screen where you can manage your permissions. In this model, the permissions setup process is split into 3 screens to reduce cognitive load and has textual and vocal (the robot icon) cues for each field and screen. This a home page for the permissions setup process and to complete the setup process you need to enter on all the sub screens icons. There is an option to go back and forward between screens, and the user can also click on the light bulb icon next to each field to get an explanation of what is required in that field.
+        </Text>
       <Toast />
     </View>
   );

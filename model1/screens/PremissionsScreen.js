@@ -115,6 +115,9 @@ const PremissionScreen = ({ navigation, handleGlobalClick }) => {
           />
         </View>
       </View>
+      <Text style={styles.subtitle}>
+        This is the screen where you can set your permissions for the robot. Because we are in the Basic model, we don't have any textual or vocal explanation for each permission.
+      </Text>
     </ScrollView>
   );
 };
